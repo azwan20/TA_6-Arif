@@ -1,107 +1,591 @@
 :root {
-  --max-width: 1100px;
-  --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
-
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-
-  --primary-glow: conic-gradient(
-    from 180deg at 50% 50%,
-    #16abff33 0deg,
-    #0885ff33 55deg,
-    #54d6ff33 120deg,
-    #0071ff33 160deg,
-    transparent 360deg
-  );
-  --secondary-glow: radial-gradient(
-    rgba(255, 255, 255, 1),
-    rgba(255, 255, 255, 0)
-  );
-
-  --tile-start-rgb: 239, 245, 249;
-  --tile-end-rgb: 228, 232, 233;
-  --tile-border: conic-gradient(
-    #00000080,
-    #00000040,
-    #00000030,
-    #00000020,
-    #00000010,
-    #00000010,
-    #00000080
-  );
-
-  --callout-rgb: 238, 240, 241;
-  --callout-border-rgb: 172, 175, 176;
-  --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
+  --primary-color: #3598D7;
+  --secondary-color: #E9F6FF;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-
-    --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
-    --secondary-glow: linear-gradient(
-      to bottom right,
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0.3)
-    );
-
-    --tile-start-rgb: 2, 13, 46;
-    --tile-end-rgb: 2, 5, 19;
-    --tile-border: conic-gradient(
-      #ffffff80,
-      #ffffff40,
-      #ffffff30,
-      #ffffff20,
-      #ffffff10,
-      #ffffff10,
-      #ffffff80
-    );
-
-    --callout-rgb: 20, 20, 20;
-    --callout-border-rgb: 108, 108, 108;
-    --card-rgb: 100, 100, 100;
-    --card-border-rgb: 200, 200, 200;
-  }
+.login {
+  width: 100%;
+  height: 100vh;
+  background-color: #FAFEFF;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
+.login .loginFill {
+  width: 40%;
+  padding: 40px 0px 0px 40px;
+}
+
+.login .cards {
+  width: 100%;
+  height: 75%;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginFill .card {
+  display: flex;
+  width: 100%;
+  height: 90%;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 10px;
+  background: #FFF;
+  border: none;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.login .card span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px 20px 10px;
+}
+
+.login .card input {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  background-color: #E8E8E8;
+  padding-left: 15px;
+  border: none;
+  border-radius: 10px;
+}
+
+.login .card button {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+}
+
+.login .card a {
+  text-align: end;
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+.login .loginBg {
+  width: 60%;
+  background: url('/login.svg');
+  background-size: cover;
+  background-repeat: no-repeat no-repeat;
+  background-position: center center;
+}
+
+.register {
+  background: url(/register.svg);
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-position: center center;
+  background-repeat: no-repeat no-repeat;
+  background-size: cover;
+}
+
+.register .registerFill {
+  width: 30%;
+  height: 90%;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.80);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.registerFill span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.registerFill input {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #E8E8E8;
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  padding-left: 15px;
+}
+
+.registerFill button {
+  width: 100%;
+  margin-top: 20px;
+  background-color: transparent;
+  color: #000;
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  height: 40px;
+  padding-left: 15px;
+}
+
+.owner,
+.kasir,
+.produk,
+.costumer,
+.transaksi {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--secondary-color);
+}
+
+aside {
+  width: 15%;
+  height: 100%;
+}
+
+aside section {
+  padding-top: 10px;
+}
+
+aside .edit {
+  border-radius: 10px;
+  height: 20px;
+  width: 80%;
+  margin-bottom: 10px;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+aside .edit p {
+  margin: 0;
+  font-size: 14px;
+}
+
+aside section,
+aside section span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+aside section button {
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: #FFF;
+  border: none;
+  height: 40px;
+}
+
+aside .logout {
+  border-radius: 10px;
+  background: #FFF;
+  width: 100%;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+aside a {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.owner article,
+.kasir article,
+.produk article,
+.costumer article,
+.transaksi article {
+  width: 85%;
+  height: 100%;
+  background-color: #fff;
+  padding-top: 20px;
+}
+
+.owner article section {
+  width: 100%;
+  /* height: 50%; */
+}
+
+.owner article .details span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  margin: 20px;
+}
+
+.kasir article .cards {
+  margin: 20px;
+}
+
+.kasir article .card section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kasir article .card p {
   margin: 0;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+
+.kasir .article {
+  width: 40%;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.kasir .article a,
+.kasir .detailCos thead th,
+.produk thead th {
+  background-color: var(--primary-color);
+  color: #fff;
+  text-align: center;
 }
 
-a {
-  color: inherit;
+.produk tbody td {
+  background-color: var(--secondary-color);
+  text-align: center;
+}
+
+.kasir .detailCos {
+  width: 45%;
+  height: 100%;
+  padding-top: 20px;
+}
+
+.detailCos .data {
+  display: flex;
+  padding: 10px 20px;
+}
+
+.detailCos .data p {
+  margin: 7px;
+}
+
+.detailCos .dropdowns {
+  display: flex;
+  justify-content: end;
+  padding-right: 10px;
+}
+
+.detailCos .dropdown {
+  border: 1px solid black;
+  width: fit-content;
+  border-radius: 10px;
+}
+
+.addProduc {
+  display: flex;
+  justify-content: end;
+  padding-bottom: 20px;
+}
+
+.addProduc button {
+  background-color: var(--primary-color);
+  color: #FFF;
+  display: flex;
+  width: 160px;
+  padding: 10px;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  border-radius: 10px;
+}
+
+.produk article {
+  padding: 20px;
+}
+
+.produk .article {
+  width: 50%;
+}
+
+.produk .produkInput {
+  width: 35%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 10px 0;
+}
+
+.produk .produkInput section button {
+  width: 92%;
+  margin: 20px;
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border: none;
+  height: 35px;
+}
+
+.produk .produkInput span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.produk .produkInput p {
+  align-items: center;
+  display: flex;
+  margin: auto 20px;
+  width: 30%;
+}
+
+.produk .produkInput input {
+  margin: 10px;
+  border-radius: 10px;
+  background: #FFF;
+  border: none;
+  height: 40px;
+  width: 70%;
+}
+
+.costumer article {
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0px;
+}
+
+.costumer .navbar form {
+  border-radius: 25.5px;
+  background: #FFF;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+  align-items: center;
+}
+
+.costumer .navbar input {
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
+
+.costumer .card-body {
+  padding: 15px 5px;
+  justify-content: space-between;
+}
+
+.costumer .card-body p {
+  margin-top: 15px;
+}
+
+.costumer .card img {
+  height: 150px;
+}
+
+.costumer .card-body button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-color);
+}
+
+.transaksi .kosong {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary-color);
+}
+
+.transaksi .card-body {
+  padding: 0px;
+  justify-content: space-between;
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.transaksi .card img {
+  width: 150px;
+  border-radius: 10px;
+}
+
+.transaksi .card-body div p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.transaksi .card section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.keranjang {
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.keranjang .cart {
+  width: 45%;
+  height: 100%;
+  padding: 10px 20px 20px;
+  background-color: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.keranjang .card-body {
+  padding: 0;
+}
+
+.keranjang .card img {
+  width: 100px;
+}
+
+.keranjang .card .plusMin span {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.keranjang .card .plusMin div {
+  background-color: var(--secondary-color);
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  height: 30px;
+}
+
+.keranjang .sum {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.keranjang section button {
+  width: 100%;
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  height: 30px;
+}
+
+.keranjang .section {
+  padding: 25px 30px 10px;
+}
+
+.navbars {
   text-decoration: none;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  color: #fff;
+  display: none;
+  background: #FFF;
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.25);
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.navbars a {
+  width: 33%;
+  display: flex;
+  text-decoration: none;
+  align-items: center;
+}
+
+.navbars span {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 35px;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+}
+
+.navbars p {
+  font-size: 1rem;
+  margin: auto;
+}
+
+.kasir .back {
+  display: none;
+}
+
+
+@media screen and (min-width: 321px) and (max-width: 480px) {
+
+  .kasir aside,
+  .produk aside,
+  .costumer aside,
+  .transaksi aside {
+    display: none;
   }
+
+  .kasir,
+  .produk {
+    display: flex;
+    justify-content: center;
+  }
+
+  .kasir article,
+  .produk article,
+  .costumer article,
+  .transaksi article {
+    width: 100%;
+  }
+
+  .produk .produkInput,
+  .kasir .detailCos {
+    width: 100%;
+  }
+
+  .produk .article,
+  .kasir .article {
+    display: none;
+  }
+
+  .addProduk {
+    display: none;
+  }
+
+  .navbars,
+  .showIt {
+    display: block;
+  }
+
+  .kasir .mobileKasir {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .costumer .navbar form {
+    width: 100%;
+  }
+
+  .costumer .keranjangs {
+    margin-bottom: 50px;
+  }
+
+  .transaksi article,
+  .costumer article {
+    padding-bottom: 50px;
+    height: fit-content;
+  }
+
+  .keranjang .cart {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .keranjang .card img {
+  width: 70px;
+  }
+
+  .keranjang .section {
+    padding: 20px 0 0;
+  }
+
+  .keranjang .plusMin {
+    width: 40%;
+  }
+
+  .keranjang .plusMin svg,
+  .keranjang .plusMin div {
+    width: 20px;
+  }
+
 }
