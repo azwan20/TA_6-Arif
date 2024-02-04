@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function Keranjang() {
     const router = useRouter();
     const handleGoBack = () => {
-        router.back(); // Fungsi untuk kembali ke halaman sebelumnya
+        router.back();
     };
 
     const hargaPerItem = 45000;

@@ -335,6 +335,11 @@ aside a {
   width: 70%;
 }
 
+.produk tbody button{
+  border: none;
+  background-color: transparent;
+}
+
 .costumer article {
   flex-direction: column;
   justify-content: space-between;
@@ -353,6 +358,10 @@ aside a {
   background-color: transparent;
   outline: none;
 }
+
+/* .costumer .card{
+  height: 270px;
+} */
 
 .costumer .card-body {
   padding: 15px 5px;
@@ -588,4 +597,48 @@ aside a {
     width: 20px;
   }
 
+}
+
+.popup {
+  width: 400px;
+  height: fit-content;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  z-index: 999;
+  border-radius: 10px;
+}
+
+.popup-content {
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 100%;
+}
+
+.popup button {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.popup button:hover {
+  background-color: #1a2328;
+  color: #fff;
+}
+
+.popup-content span{
+  display: flex;
+  margin-bottom: 20px;
+  justify-content: space-between;
 }
