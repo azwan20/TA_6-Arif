@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import FormError from "./error";
 import { useForm } from 'react-hook-form'
-import { SignIn, GetSignInErrorMessage, SignOut } from '../../public/firebaseConfig';
+import { SignIn, GetSignInErrorMessage, SignOut } from "../../../public/firebaseConfig";
 
 export default function Login() {
     const router = useRouter();

@@ -8,5 +8,5 @@ export default function App({ Component, pageProps }) {
     <AuthStateChangeProvider >
       <Component {...pageProps} />
     </AuthStateChangeProvider>
-  </UserProvider>
+  </UserProvider>;
 }
