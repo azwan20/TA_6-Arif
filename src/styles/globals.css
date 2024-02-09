@@ -335,7 +335,7 @@ aside a {
   width: 70%;
 }
 
-.produk tbody button{
+.produk tbody button {
   border: none;
   background-color: transparent;
 }
@@ -368,8 +368,14 @@ aside a {
   justify-content: space-between;
 }
 
+.costumer .card-body span {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
 .costumer .card-body p {
-  margin-top: 15px;
+  margin: 10px 0 0;
 }
 
 .costumer .card img {
@@ -477,6 +483,30 @@ aside a {
   padding: 25px 30px 10px;
 }
 
+.keranjang .metode {
+  background-color: #fff;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  margin: 20px 0;
+}
+
+.keranjang .metode p,
+.keranjang .inputan p {
+  margin: 0;
+}
+
+.inputan input {
+  background-color: transparent;
+  border: 1px solid black;
+  width: 45%;
+  height: 40px;
+  border-radius: 10px;
+}
+
 .navbars {
   text-decoration: none;
   width: 100%;
@@ -510,6 +540,58 @@ aside a {
 }
 
 .kasir .back {
+  display: none;
+}
+
+.cartNavbar section {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.cartNavbar .garis {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 5px;
+  align-items: center;
+  margin: 20px 30px;
+  background: repeating-linear-gradient(to right,
+      transparent,
+      transparent 10px,
+      black 10px,
+      black 20px);
+}
+
+.cartNavbar p {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+.cartNavbar .time {
+  padding: 0 75px 0 15px;
+}
+
+.cartNavbar .bulat {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background-color: #000;
+  z-index: 99;
+}
+
+.navbarButton {
+  display: flex;
+  justify-content: space-between;
+  width: 100%
+}
+
+.navbarButton button {
+  width: 49% !important;
+}
+
+.visibles{
   display: none;
 }
 
@@ -581,7 +663,7 @@ aside a {
   }
 
   .keranjang .card img {
-  width: 70px;
+    width: 70px;
   }
 
   .keranjang .section {
@@ -637,7 +719,7 @@ aside a {
   color: #fff;
 }
 
-.popup-content span{
+.popup-content span {
   display: flex;
   margin-bottom: 20px;
   justify-content: space-between;

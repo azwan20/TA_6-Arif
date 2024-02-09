@@ -1,12 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore"
-// import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, } from
+    'firebase/auth'
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyCedPD-Rck8yVxRassdU5FJQhUv4boTJHo",
     authDomain: "arif-fachmil.firebaseapp.com",
@@ -24,3 +21,40 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export { db };
+
+export const FirebaseAuth = getAuth()
+
+export const Authentication = () => {
+    return FirebaseAuth
+}
+
+export const SignUp = async (email, password) => {
+    await createUserWithEmailAndPassword(FirebaseAuth, email, password)
+}
+
+export const SignIn = async (email, password) => {
+    await signInWithEmailAndPassword(FirebaseAuth, email, password)
+}
+
+export const SignOut = async () => {
+    await signOut(FirebaseAuth)
+}
+
+export const GetSignInErrorMessage = (code) => {
+    switch (code) {
+        case 'auth/invalid-credential':
+            return 'Email tidak terdaftar'
+        // case 'auth/wrong-password': 
+        default:
+            return 'Email atau password salah'
+    }
+}
+
+export const GetSignUpErrorMessage = (code) => {
+    switch (code) {
+        case 'auth/email-already-in-use':
+            return 'Email telah terdaftar.'
+        default:
+            return 'Terjadi kesalahan saat proses sign up.'
+    }
+} 

@@ -13,7 +13,7 @@ export default function Register() {
                     </span>
                     <span>
                         <button style={{ backgroundColor: '#3598D7', color: '#fff' }}>Register</button>
-                        <button>Login</button>
+                        <Link href="/login/login"><button>Login</button></Link>
                     </span>
                 </div>
             </div>

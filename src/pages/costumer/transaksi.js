@@ -1,16 +1,89 @@
 import Link from "next/link";
 import CostumerAside from "./CostumerAside";
 import Navbar from "./navbar";
+import { getDataKernajnag } from "./keranjang";
+import { useEffect, useState } from "react";
+import { db } from "../../../public/firebaseConfig";
+import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath } from "firebase/firestore";
+import { useRouter } from "next/router";
+
+async function fetchData_ModelTransaksi() {
+    const querySnapshot = await getDocs(collection(db, "model_transaksi"));
+
+    const data = [];
+
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
+
 
 export default function Transaksi() {
-    const transactions = [0];
+    const [isTransaksiActive, setIsTransaksiActive] = useState(true);
+    const [isProdukActive, setIsProdukActive] = useState(false);
+    const [produkDataModelTransaksi, setProdukDataModelTransaksi] = useState([]);
+
+    const handleButtonClick = (buttonType) => {
+        if (buttonType === "transaksi") {
+            setIsTransaksiActive(true);
+            setIsProdukActive(false);
+        } else if (buttonType === "produk") {
+            setIsTransaksiActive(false);
+            setIsProdukActive(true);
+        }
+    };
+
+    const dataKernajnag = getDataKernajnag();
+
+    console.log("ini data Keranjang", dataKernajnag);
+
+
+    const addDataToFirestore = async () => {
+        try {
+            // Assuming dataKernajnag is an array of objects
+            for (const produk of dataKernajnag) {
+                const docRef = await addDoc(collection(db, "model_transaksi"), {
+                    nama_produk: produk.name,
+                    harga_total: produk.totalHarga,
+                    created_at: produk.tanggal,
+                    // Add other properties as needed
+                    timestamp: serverTimestamp(),
+                });
+
+                console.log("Document written with ID: ", docRef.id);
+            }
+
+            // Optional: You can clear the dataKernajnag array after adding to Firestore
+            // set dataKernajnag to an empty array or update it based on your logic
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
+    };
+
+    useEffect(() => {
+        async function fetchData() {
+            const data = await fetchData_ModelTransaksi();
+            setProdukDataModelTransaksi(data);
+        }
+        fetchData();
+    }, []);
+
+    const router = useRouter();
+
+    const handleDetailTransaksi = (id) => {
+        // Redirect to /detail-transaksi/[id]
+        router.push(`detail/${id}`);
+    };
+
+
     return (
         <>
             <div>
                 <div className="transaksi d-flex">
-                    <CostumerAside />
-                    <article>
-                        {transactions.length === 0 ? (
+                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
+                    <article style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+                        {produkDataModelTransaksi.length === 0 ? (
                             <div className="kosong d-flex">
                                 <h1>Belum ada transaksi</h1>
                             </div>
@@ -19,9 +92,9 @@ export default function Transaksi() {
                                 <div className="container">
                                     <div className="cards">
                                         <div className="row">
-                                            {[0, 1, 2, 3].map((index) => (
-                                                <div className="col-md-6 mb-3" key={index}>
-                                                    <div className="card" style={{ border: 'none' }}>
+                                            {produkDataModelTransaksi.map((produk, index) => (
+                                                <div className="col-md-6 mb-3" key={produk}>
+                                                    <div onClick={() => handleDetailTransaksi(produk.id)} className="card" style={{ border: 'none' }}>
                                                         <div className="card-body d-flex">
                                                             <section>
                                                                 <div className="d-flex">
@@ -31,12 +104,13 @@ export default function Transaksi() {
                                                                         alt=""
                                                                     />
                                                                     <div className="d-flex flex-column justify-content-between p-1">
+                                                                        {produk.menu_pesanan.map((menu) => (
+                                                                            <span>
+                                                                                <p className="card-text">{menu.name}</p>
+                                                                            </span>
+                                                                        ))}
                                                                         <span>
-                                                                            <p className="card-text">Kripik Makaroni</p>
-                                                                            <p className="card-text">Kripik Makaroni Balado</p>
-                                                                        </span>
-                                                                        <span>
-                                                                            <h5 className="card-title">Rp 45.000</h5>
+                                                                            <h5 className="card-title">{produk.harga_total}</h5>
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -46,7 +120,7 @@ export default function Transaksi() {
                                                                     <b className="card-title">Proses Packing</b>
                                                                 </span>
                                                                 <span>
-                                                                    <p>12/01/2025</p>
+                                                                    <p>{produk.tanggal}</p>
                                                                 </span>
                                                             </section>
                                                         </div>

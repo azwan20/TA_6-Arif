@@ -5,8 +5,8 @@ export default function Home() {
   return (
     <>
       <div className="">
-      <Login />
-      {/* <Register /> */}
+        <Login />
+        {/* <Register /> */}
       </div>
     </>
   );

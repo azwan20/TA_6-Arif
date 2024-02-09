@@ -1,15 +1,79 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { getNewData } from ".";
+import CartNavbar from "./cartNavbar";
+import NavbarButton from "./navbarButton";
+import Link from "next/link";
+import { db } from "../../../public/firebaseConfig";
+import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath } from "firebase/firestore";
+
+async function AddData_ModelTransaksi(
+    status_pemesanan,
+    lokasi_ruangan,
+    nama_admin,
+    nama_user,
+    date_terima_pesanan,
+    date_proses_packing,
+    date_pengantaran,
+    date_selesai,
+    telah_diterima,
+    metode_pengambilan,
+    menu_pesanan,
+    metode_pembayaran,
+    jumlah,
+    harga_total,
+    created_at,
+) {
+    try {
+        const docRef = await addDoc(collection(db, "model_transaksi"), {
+            status_pemesanan: status_pemesanan,
+            lokasi_ruangan: lokasi_ruangan,
+            nama_admin: nama_admin,
+            nama_user: nama_user,
+            date_terima_pesanan: date_terima_pesanan,
+            date_proses_packing: date_proses_packing,
+            date_pengantaran: date_pengantaran,
+            date_selesai: date_selesai,
+            telah_diterima: telah_diterima,
+            metode_pengambilan: metode_pengambilan,
+            menu_pesanan: menu_pesanan, // Store all products in a single array
+            metode_pembayaran: metode_pembayaran,
+            jumlah: jumlah,
+            harga_total: harga_total,
+            created_at: created_at,
+        });
+
+        console.log("Input Berhasil", docRef.id);
+        return true;
+    } catch (error) {
+        console.error("Input gagal", error);
+        return false;
+    }
+}
 
 export default function Keranjang() {
+    const newData = getNewData();
+
+    console.log("ini passing", newData);
     const router = useRouter();
     const handleGoBack = () => {
         router.back();
     };
 
     const hargaPerItem = 45000;
+
+    const [visible, setVisible] = useState(true);
+
+    const handleButtonVisible = () => {
+        setVisible(false);
+    }
+
+    const handleButtonNoVisible = () => {
+        setVisible(true);
+    }
+
     const initialItemState = Array.from({ length: 2 }, () => 1);
-    const [itemCounts, setItemCounts] = useState(initialItemState);
+    const [itemCounts, setItemCounts] = useState(Array(newData.length).fill(1));
 
     const handleTambahClick = (index) => {
         setItemCounts((prevCounts) => {
@@ -28,26 +92,79 @@ export default function Keranjang() {
             });
         }
     };
-    
-    const totalHarga = itemCounts.reduce((acc, count) => acc + count * hargaPerItem, 0);
+
+    const currentDate = new Date();
+    const [keranjangMenu, setKeranjangMenu] = useState([]);
+
+    const totalHarga = newData.reduce((acc, item, index) => acc + itemCounts[index] * item.harga, 0);
+    const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+
+    // const handleTambahKeranjang = () => {
+    // };
+
+    const handleSubmit_ModelTransaksi = async (event) => {
+        event.preventDefault();
+
+        try {
+            const menuPesanan = newData.map((item, index) => ({
+                id: item.id,
+                name: item.name,
+                harga: item.harga,
+                jumlah: itemCounts[index],
+                totalHarga: itemCounts[index] * item.harga,
+                tanggal: formattedDate,
+            }));
+
+            const added = await AddData_ModelTransaksi(
+                "Proses",
+                "lokasi_ruangan",
+                "nama_admin",
+                "nama_user",
+                "date_terima_pesanan",
+                "date_proses_packing",
+                "date_pengantaran",
+                "date_selesai",
+                "telah_diterima",
+                "metode_pengambilan",
+                menuPesanan, // Pass the menuPesanan array
+                "metode_pembayaran",
+                itemCounts.reduce((acc, count) => acc + count, 0),
+                totalHarga,
+                "created_at"
+            );
+
+            if (added) {
+                router.push("/costumer/transaksi");
+            } else {
+                console.error("Failed to add data to the database.");
+            }
+        } catch (error) {
+            console.error("Error in submitting data: ", error);
+        }
+    };
+
     return (
         <>
             <div className="keranjang d-flex">
                 <div className="cart" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                     <section>
-                        <svg onClick={handleGoBack} style={{ cursor: 'pointer' }} xmlns="http://www.w3.org/2000/svg" width="32" height="23" viewBox="0 0 32 23" fill="none">
+                        <svg onClick={handleGoBack} style={{ cursor: 'pointer', marginBottom: '20px' }} xmlns="http://www.w3.org/2000/svg" width="32" height="23" viewBox="0 0 32 23" fill="none">
                             <rect x="0.0808105" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 0.0808105 11.3643)" fill="#3598D7" />
                             <rect x="11.4458" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 11.4458 22.8916)" fill="#3598D7" />
                             <rect x="9.05811" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 9.05811 11.3643)" fill="#3598D7" />
                             <rect x="20.4231" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 20.4231 22.8916)" fill="#3598D7" />
                         </svg>
+                        <div className="navbarButton">
+                            <button onClick={handleButtonNoVisible}>Ambil sendiri</button>
+                            <button onClick={handleButtonVisible}>Diantarkan</button>
+                        </div>
                         <div className="section">
                             <div>
                                 <div className="container">
                                     <div className="cards">
                                         <div className="row">
-                                        {itemCounts.map((count, index) => (
-                                                <div className="col-md-12 mb-3" key={index}>
+                                            {newData.map((item, index) => (
+                                                <div className="col-md-12 mb-3" key={item}>
                                                     <div className="card" style={{ border: 'none' }}>
                                                         <div className="card-body d-flex justify-content-between">
                                                             <section>
@@ -59,10 +176,10 @@ export default function Keranjang() {
                                                                     />
                                                                     <div className="d-flex flex-column justify-content-between p-1">
                                                                         <span>
-                                                                            <p className="card-text"><b>Kripik Ambong</b></p>
+                                                                            <p className="card-text"><b>{item.name}</b></p>
                                                                         </span>
                                                                         <span>
-                                                                            <p>Rp 45.000</p>
+                                                                            <p>{item.harga}</p>
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -77,7 +194,7 @@ export default function Keranjang() {
                                                                 </span>
                                                                 <span>
                                                                     <div>
-                                                                        <p className="m-auto">{count}</p>
+                                                                        <p className="m-auto">{itemCounts[index]}</p>
                                                                     </div>
                                                                 </span>
                                                                 <span>
@@ -98,12 +215,21 @@ export default function Keranjang() {
                                 </div>
                             </div>
                             <hr />
+                            <span className="inputan d-flex justify-content-between align-items-center">
+                                <p className={` ${visible ? 'visibles' : 'hidden'}`}>Masukkan No Kamar</p>
+                                <input className={` ${visible ? 'visibles' : 'hidden'}`} type="text" placeholder="mis R. Lab Riset" />
+                            </span>
+                            <span className="metode">
+                                <p>Metode pembayaran</p>
+                                <p>Tunai</p>
+                            </span>
                             <div className="sum">
                                 <span>
                                     <p>Jumlah</p>
                                     <p>Harga Total</p>
                                 </span>
                                 <span style={{ textAlign: "right" }}>
+                                    {/* <p>3pcs</p> */}
                                     <p>{itemCounts.reduce((acc, count) => acc + count, 0)}</p>
                                     <p><b>{totalHarga}</b></p>
                                 </span>
@@ -111,10 +237,20 @@ export default function Keranjang() {
                         </div>
                     </section>
                     <section className="section">
-                        <button>Beli Sekarang</button>
+                        <button onClick={handleSubmit_ModelTransaksi}>Beli Sekarang</button>
                     </section>
                 </div>
             </div>
         </>
     )
 }
+
+const dataKernajang = [
+
+];
+
+console.log("new Kernajang", dataKernajang);
+
+export const getDataKernajnag = () => {
+    return dataKernajang;
+};

@@ -29,13 +29,13 @@ async function deleteDataFromFirebase(id) {
     }
 }
 
-async function addDataToFirebase(name, harga, gambar, kode, jml_produk) {
+async function addDataToFirebase(name, gambar, kode, harga,   jml_produk) {
     try {
         const docRef = await addDoc(collection(db, "produk"), {
             name: name,
-            harga: harga,
-            gambar: "aa",
+            gambar: gambar,
             kode: kode,
+            harga: harga,
             jml_produk: jml_produk,
         });
         console.log("Document input document ID : ", docRef.id);
@@ -63,8 +63,8 @@ export default function Produk() {
     const [id, setID] = useState('');
     const [name, setName] = useState('');
     const [gambar, setGambar] = useState('');
-    const [harga, setHarga] = useState('');
     const [kode, setKode] = useState('');
+    const [harga, setHarga] = useState('');
     const [jml_produk, setJml_produk] = useState('');
     const [produkData, setProdukData] = useState([]);
     const [isPopupVisible, setPopupVisible] = useState(false);
@@ -82,12 +82,12 @@ export default function Produk() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const added = await addDataToFirebase(name, harga, gambar, kode, jml_produk);
+        const added = await addDataToFirebase(name, gambar, kode, harga, jml_produk);
         if (added) {
             setName("");
-            setHarga("");
-            setGambar("aa");
+            setGambar("");
             setKode("");
+            setHarga("");
             setJml_produk("");
 
             alert("Data berhasil di upload");
@@ -115,14 +115,6 @@ export default function Produk() {
     const handleCardClick = () => {
         setShowProdukInput(!showProdukInput);
     };
-
-    // const handlePopupClose = () => {
-    //     // Hide the popup
-    //     setPopupVisible(false);
-    //     setEditPopupRow(null);
-    // };
-
-
 
     const [selectedProductId, setSelectedProductId] = useState('');
     const [selectedProductName, setSelectedProductName] = useState('');
@@ -155,65 +147,31 @@ export default function Produk() {
         setProdukData(data);
     };
 
-
-    // Modified function to handle the "Save" button click
-    // const handleSaveClick = async () => {
-    //     const updatedData = editedDataForSelectedRows[editPopupRow];
-
-    //     // Call the update function with the selected row's ID and updated data
-    //     await updateDataInFirebase(editPopupRow, updatedData);
-
-    //     // Hide the popup
-    //     setPopupVisible(false);
-    //     setEditPopupRow(null);
-
-    //     // Optionally, you may want to refresh the data after saving
-    //     const data = await fetchDataFromFirestore();
-    //     setProdukData(data);
-    // };
-
-    // const getEditedFieldValue = (rowId, fieldName) => {
-    //     return editedDataForSelectedRows[rowId] ? editedDataForSelectedRows[rowId][fieldName] : '';
-    // };
-
-    // // Helper function to handle changes in field values
-    // const handleFieldChange = (rowId, fieldName, value) => {
-    //     setEditedDataForSelectedRows((prevData) => ({
-    //         ...prevData,
-    //         [rowId]: {
-    //             ...prevData[rowId],
-    //             [fieldName]: value,
-    //         },
-    //     }));
-    // };
-
     // const [produkData, setProdukData] = useState([]);
     const [idSementara, setIdSementara] = useState('');
+    const [editedName, setEditedName] = useState('');
+    const [editedGambar, setEditedGambar] = useState('');
     const [editedHarga, setEditedHarga] = useState('');
     const [editedKode, setEditedKode] = useState('');
-    const [editedGambar, setEditedGambar] = useState('');
-    const [editedName, setEditedName] = useState('');
     const [editedJml_produk, setEditedJml_produk] = useState('');
 
     const [editPopupVisible, setEditPopupVisible] = useState(false);
 
-    const popups = (id, name, harga, gambar, kode, jml_produk) => {
+    const popups = (id, name, gambar, kode, harga, jml_produk) => {
         setIdSementara(id);
         setEditedName(name);
-        setEditedHarga(harga);
         setEditedGambar(gambar);
         setEditedKode(kode);
+        setEditedHarga(harga);
         setEditedJml_produk(jml_produk);
         setEditPopupVisible(true);
     };
 
-    // const handleEdit = async (id, updatedData) => {
-    //     const edited = await updateDataInFirebase(id, updatedData);
-    //     if (edited) {
-    //         alert("Data edited in Firebase DB");
-    //         setEditPopupVisible(false);
-    //     }
-    // };
+    const handlePopupClose = () => {
+        setEditPopupVisible(false);
+
+    }
+
     const handleEdit = async (id, updatedData) => {
         console.log("ini data: ", id);
         const edited = await updateDataInFirebase(id, updatedData);
@@ -262,7 +220,7 @@ export default function Produk() {
                                 <thead>
                                     <tr>
                                         <th scope="col">No</th>
-                                        <th scope="col" style={{display: 'none'}}>id</th>
+                                        <th scope="col" style={{ display: 'none' }}>id</th>
                                         <th scope="col">Nama Produk</th>
                                         <th scope="col">Gambar</th>
                                         <th scope="col">Kode Produk</th>
@@ -274,7 +232,7 @@ export default function Produk() {
                                     {produkData.map((produks, value) => (
                                         <tr key={produks.id}>
                                             <td scope="row">{value + 1}</td>
-                                            <td style={{display: 'none'}}>{produks.id}</td>
+                                            <td style={{ display: 'none' }}>{produks.id}</td>
                                             <td>{produks.name}</td>
                                             <td>{produks.gambar}</td>
                                             <td>{produks.kode}</td>
@@ -320,7 +278,7 @@ export default function Produk() {
                                     </span>
                                     <span>
                                         <p>Gambar</p>
-                                        <input type="text" id="nama" value={"aa"} onChange={(e) => setGambar(e.target.value)} />
+                                        <input type="text" id="nama" value={gambar} onChange={(e) => setGambar(e.target.value)} />
                                     </span>
                                     <span>
                                         <p>Kode Produk</p>
@@ -351,7 +309,7 @@ export default function Produk() {
                         {/* <h2>Edit ID: {getEditedFieldValue(editPopupRow, 'id')}</h2> */}
                         <span>
                             <p>id</p>
-                            <input type="text" id="id" value={id} readOnly />
+                            <input type="text" id="id" value={idSementara} readOnly />
                         </span>
                         <span>
                             <p>Nama Produk</p>
@@ -361,8 +319,8 @@ export default function Produk() {
                             />
                         </span>
                         <span>
-                            <p>Gabarr</p>
-                            <input type="text" id="nama"
+                            <p>Gambar</p>
+                            <input type="text" id="gambar"
                                 value={editedGambar}
                                 onChange={(e) => setEditedGambar(e.target.value)}
                             />
@@ -382,13 +340,13 @@ export default function Produk() {
                         </span>
                         <span>
                             <p>Jumlah Produk</p>
-                            <input type="text" id="harga"
+                            <input type="text" id="jml_produk"
                                 value={editedJml_produk}
                                 onChange={(e) => setEditedJml_produk(e.target.value)} />
                         </span>
                         {/* <button onClick={handleSaveClick}>Save</button> */}
-                        {/* <button onClick={handlePopupClose}>Close</button> */}
-                        <button onClick={() => handleEdit(idSementara, { harga: editedHarga, name: editedName, kode: editedKode, jml_produk: editedJml_produk })}>Save</button>
+                        <button onClick={() => handleEdit(idSementara, {  name: editedName, gambar: editedGambar, kode: editedKode, harga: editedHarga, jml_produk: editedJml_produk })}>Save</button>
+                        <button onClick={handlePopupClose}>Close</button>
                     </div>
                 </div>
             )}

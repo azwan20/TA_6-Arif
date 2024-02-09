@@ -5,6 +5,7 @@ import Navbar from "./navbar";
 import { db } from "../../../public/firebaseConfig";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
+
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "produk"));
 
@@ -17,11 +18,31 @@ async function fetchDataFromFirestore() {
 }
 
 export default function Home() {
+    const [isTransaksiActive, setIsTransaksiActive] = useState(false);
+    const [isProdukActive, setIsProdukActive] = useState(true);
+
+    const handleButtonClick = (buttonType) => {
+        if (buttonType === "transaksi") {
+            setIsTransaksiActive(true);
+            setIsProdukActive(false);
+        } else if (buttonType === "produk") {
+            setIsTransaksiActive(false);
+            setIsProdukActive(true);
+        }
+    };
+
     const [produkData, setProdukData] = useState([]);
     const cards = Array.from({ length: 10 }, (_, index) => index + 1); // Creating an array of 10 items
     const [clickCount, setClickCount] = useState(0);
+    const [cartItems, setCartItems] = useState([]);
 
-    const handleAddClick = () => {
+
+
+    let listCart = [];
+
+
+    const handleAddClick = (id) => {
+        setCartItems((prevItems) => [...prevItems, id]);
         setClickCount((prevCount) => prevCount + 1);
     };
 
@@ -32,11 +53,32 @@ export default function Home() {
         }
         fetchData();
     }, []);
+
+    const truncateText = (text, maxLength) => {
+        return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    };
+
+    const handleTambahKeranjang = (items) => {
+        // Mungkin Anda ingin menyimpan data ke variabel newData di sini
+        items.forEach((e, index) => {
+            newData.push({
+                id: e.id,
+                'name': e.name,
+                'harga': e.harga,
+            });
+        });
+
+        // Anda dapat menggunakan newData sesuai kebutuhan di sini
+        console.log("newData", newData);
+    };
+
+
+
     return (
         <>
             <div>
                 <div className="costumer d-flex">
-                    <CostumerAside />
+                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
                     <article className="d-flex" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <section>
                             <nav class="navbar" style={{ marginBottom: '20px' }}>
@@ -64,18 +106,20 @@ export default function Home() {
                                                 />
                                                 <div className="card-body d-flex">
                                                     <span>
-                                                        <b className="card-title">{cardNumber.name}</b>
+                                                        <b className="card-title">{truncateText(cardNumber.name, 15)}</b>
                                                         <p className="card-text">
-                                                        {cardNumber.harga}
+                                                            Rp.
+                                                            {cardNumber.harga}
                                                         </p>
                                                     </span>
                                                     <span>
-                                                        <button className="add" onClick={handleAddClick}>
+                                                        <button className="add" onClick={() => handleAddClick(cardNumber)}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
                                                                 <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
                                                                 <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="white" />
                                                             </svg>
                                                         </button>
+                                                        <p>20pcs</p>
                                                     </span>
                                                 </div>
                                             </div>
@@ -85,7 +129,7 @@ export default function Home() {
                             </div>
                         </section>
                         <section className="d-flex ms-auto" style={{ margin: '20px 20px 0px' }}>
-                            <Link href={`/costumer/keranjang`} className="keranjangs d-flex" style={{ textDecoration: 'none', position: 'fixed', bottom: 0, right: 20, padding: '10px', color: '#3598D7' }}>
+                            <Link href={`/costumer/keranjang`} onClick={() => handleTambahKeranjang(cartItems)} className="keranjangs d-flex" style={{ textDecoration: 'none', position: 'fixed', bottom: 0, right: 20, padding: '10px', color: '#3598D7' }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 80 80" fill="none">
                                     <rect width="79.0103" height="79.0103" rx="39.5051" fill="#E9F6FF" />
                                     <path d="M23.5913 30.3232H63.6671L56.3234 46.2696H30.935L23.5913 30.3232Z" fill="#3598D7" />
@@ -97,6 +141,7 @@ export default function Home() {
                                     <rect x="30.8301" y="53.5088" width="3.9866" height="3.9866" rx="1.9933" fill="#3598D7" />
                                 </svg>
                                 <p><b>{clickCount}</b></p>
+                                {console.log("ini passing", cartItems)}
                             </Link>
                         </section>
                     </article>
@@ -106,3 +151,13 @@ export default function Home() {
         </>
     )
 }
+
+const newData = [
+
+];
+
+console.log("new data", newData);
+
+export const getNewData = () => {
+    return newData;
+};
