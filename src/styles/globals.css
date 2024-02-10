@@ -74,6 +74,10 @@
   background-position: center center;
 }
 
+.login .loginBgn {
+  display: none;
+}
+
 .register {
   background: url(/register.svg);
   width: 100%;
@@ -87,7 +91,7 @@
 
 .register .registerFill {
   width: 30%;
-  height: 90%;
+  height: 80%;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.80);
   flex-direction: column;
@@ -121,6 +125,10 @@
   border-radius: 10px;
   height: 40px;
   padding-left: 15px;
+}
+
+.registerFill a{
+  width: 100%;
 }
 
 .lupaPassword {
@@ -682,6 +690,31 @@ aside a {
   .keranjang .plusMin svg,
   .keranjang .plusMin div {
     width: 20px;
+  }
+
+  .login .loginFill {
+    width: 90%;
+    margin: auto;
+    padding: 0;
+  }
+
+  .login .loginBgn {
+    display: block;
+    width: 90%;
+    height: 150px;
+    background: url('/login.svg');
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    background-position: center center;
+  }
+
+  .login .loginBg {
+    display: none;
+  }
+
+  .register .registerFill{
+    width: 90%;
+    height: 70%;
   }
 
 }

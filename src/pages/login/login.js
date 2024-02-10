@@ -31,7 +31,7 @@ export default function Login() {
     return (
         <>
             <div className="login d-flex">
-                <section className="loginFill">
+                <section className="loginFill" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                     <div style={{ width: '90%' }}>
                         <h1>Login</h1>
                         <p>Selamat datang kembali! Ayo login untuk pengalaman belanja online yang lebih mudah dan aman</p>
@@ -54,8 +54,9 @@ export default function Login() {
                                     variant="filled"
                                     {...register("password", { required: true, minLength: 8 })}
                                     placeholder="Password" />
-                                <Link href="#">Forget Password</Link>
+                                <Link href="login/lupa-password">Forget Password</Link>
                             </span>
+                            <div className="loginBgn"></div>
                             <span>
                                 <button>Login With Google</button>
                                 <button type="button" onClick={handleSubmit(onSubmit)} style={{ backgroundColor: '#3598D7' }}>Login</button>

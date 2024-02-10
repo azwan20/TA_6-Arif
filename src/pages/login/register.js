@@ -35,6 +35,7 @@ export default function Register() {
             <div className="register d-flex">
                 <div className="registerFill d-flex">
                     <span>
+                        <h1 >Register</h1>
                         <input
                             id="email"
                             type="email"
