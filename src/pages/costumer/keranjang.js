@@ -53,6 +53,7 @@ async function AddData_ModelTransaksi(
 
 export default function Keranjang() {
     const newData = getNewData();
+    const [noKamar, setNoKamar] = useState('');
 
     console.log("ini passing", newData);
     const router = useRouter();
@@ -115,22 +116,27 @@ export default function Keranjang() {
                 tanggal: formattedDate,
             }));
 
+            const now = new Date();
+            const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            let metodePengambilan = visible ? 'Ambil Sendiri' : 'Diantarkan';
+            console.log("Ini jam", timeString);
+
             const added = await AddData_ModelTransaksi(
                 "Proses",
-                "lokasi_ruangan",
+                noKamar,
                 "nama_admin",
                 "nama_user",
                 "date_terima_pesanan",
-                "date_proses_packing",
-                "date_pengantaran",
+                "",
+                "",
                 "date_selesai",
                 "telah_diterima",
-                "metode_pengambilan",
+                metodePengambilan,
                 menuPesanan, // Pass the menuPesanan array
                 "metode_pembayaran",
                 itemCounts.reduce((acc, count) => acc + count, 0),
                 totalHarga,
-                "created_at"
+                timeString
             );
 
             if (added) {
@@ -217,7 +223,10 @@ export default function Keranjang() {
                             <hr />
                             <span className="inputan d-flex justify-content-between align-items-center">
                                 <p className={` ${visible ? 'visibles' : 'hidden'}`}>Masukkan No Kamar</p>
-                                <input className={` ${visible ? 'visibles' : 'hidden'}`} type="text" placeholder="mis R. Lab Riset" />
+                                <input className={` ${visible ? 'visibles' : 'hidden'}`} type="text"
+                                    placeholder="mis R. Lab Riset"
+                                    id="noKamar" value={noKamar} onChange={(e) => setNoKamar(e.target.value)}
+                                />
                             </span>
                             <span className="metode">
                                 <p>Metode pembayaran</p>

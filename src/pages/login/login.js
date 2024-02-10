@@ -1,12 +1,19 @@
 import Link from "next/link";
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import FormError from "./error";
+import { useUser } from "../../../public/user";
 import { useForm } from 'react-hook-form'
 import { SignIn, GetSignInErrorMessage, SignOut } from "../../../public/firebaseConfig";
 
 export default function Login() {
     const router = useRouter();
+    const { email, uid } = useUser();
+
+    useEffect(() => {
+        if (uid) {
+            router.push('/costumer');
+        }
+    }, [uid]);
     const { register, handleSubmit, formState: { errors } } = useForm()
 
     const onSubmit = async (values) => {
@@ -14,7 +21,7 @@ export default function Login() {
         try {
             await SignIn(email, password)
             alert("login berhasil")
-            router.push('/');
+            router.push('/costumer');
         } catch (error) {
             const message = GetSignInErrorMessage(error.code)
             console.log(message)

@@ -123,6 +123,11 @@
   padding-left: 15px;
 }
 
+.lupaPassword {
+  height: fit-content !important;
+  background-color: #fff !important;
+}
+
 .owner,
 .kasir,
 .produk,
@@ -591,7 +596,7 @@ aside a {
   width: 49% !important;
 }
 
-.visibles{
+.visibles {
   display: none;
 }
 

@@ -1,25 +1,6 @@
 import { useState } from "react";
 
-export default function CartNavbar({ activeButtonType, handleButtonClick }) {
-    // const [packingActive, setPackingActive] = useState(true);
-    // const [antarkActive, setAntarkActive] = useState(false);
-    // const [selesaiActive, setSelesaiActive] = useState(false);
-
-    // const handleButtonClick = (buttonType) => {
-    //     if (buttonType === "packing") {
-    //         setPackingActive(true);
-    //         setAntarkActive(false);
-    //         setSelesaiActive(false);
-    //     } else if (buttonType === "antar") {
-    //         setPackingActive(false);
-    //         setAntarkActive(true);
-    //         setSelesaiActive(false);
-    //     } else if (buttonType === "selesai") {
-    //         setPackingActive(false);
-    //         setAntarkActive(false);
-    //         setSelesaiActive(true);
-    //     }
-    // };
+export default function CartNavbar({ timeTerima, timePacking, timeAntar, packingActive, antarActive, selesaiActive, handleButtonClick, showAntarButton }) {
 
     return (
         <>
@@ -27,30 +8,36 @@ export default function CartNavbar({ activeButtonType, handleButtonClick }) {
                 <section>
                     <p>Pesanan diterima</p>
                     <p>Proses packing</p>
-                    <p>Proses pengantaran</p>
+                    {showAntarButton && (
+                        <p>Proses pengantaran</p>
+                    )}
                     <p>Pesanan selesai</p>
                 </section>
                 <section>
                     <div className="garis ">
                         <button className="bulat"></button>
                         <button
-                            className={`bulat ${activeButtonType === "packing" ? "active" : ""}`}
+                            className={`bulat ${packingActive ? "active" : ""}`}
                             onClick={() => handleButtonClick("packing")}
                         ></button>
+                        {showAntarButton && (
+                            <button
+                                className={`bulat ${antarActive ? "active" : ""}`}
+                                onClick={() => handleButtonClick("antar")}
+                            ></button>
+                        )}
                         <button
-                            className={`bulat ${activeButtonType === "antar" ? "active" : ""}`}
-                            onClick={() => handleButtonClick("antar")}
-                        ></button>
-                        <button
-                            className={`bulat ${activeButtonType === "selesai" ? "active" : ""}`}
+                            className={`bulat ${selesaiActive ? "active" : ""}`}
                             onClick={() => handleButtonClick("selesai")}
                         ></button>
                     </div>
                 </section>
                 <section className="time">
-                    <p>20:00 WITA</p>
-                    <p>20:01 WITA</p>
-                    <p>22:10 WITA</p>
+                    <p>{timeTerima} WITA</p>
+                    <p>{timePacking} WITA</p>
+                    {showAntarButton && (
+                        <p>{timeAntar} WITA</p>
+                    )}
                     <p></p>
                 </section>
             </div>

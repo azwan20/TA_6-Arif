@@ -89,11 +89,34 @@ export default function Transaksi() {
     console.log("ini id", detailData);
 
     const handleEdit_ModelTransaksi = async (id, updatedData) => {
+        if (updatedData.status_pemesanan === "Proses Packing") {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
+
+            updatedData.date_proses_packing = currentTime;
+        } else if (updatedData.status_pemesanan === "Proses Pengantaran") {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
+            
+            updatedData.date_pengantaran = currentTime;
+
+        }
+
+        
         const edited = await updateData_ModelTransaksi(id, updatedData);
         if (edited) {
             alert("Data edited in Firebase DB");
+            // Refresh the detailData after updating
+            const updatedDetailData = await fetchData_ModelTransaksi2(id);
+            setDetailData(updatedDetailData);
         }
     };
+
+
 
     return (
         <>
@@ -124,7 +147,7 @@ export default function Transaksi() {
                                                         </span>
                                                         <span>
                                                             <p>Tanggal</p>
-                                                            <b>{item.created_at}</b>
+                                                            <b>{item.menu_pesanan[0].tanggal}</b>
                                                         </span>
                                                     </section>
                                                 </div>

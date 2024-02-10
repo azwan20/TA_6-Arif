@@ -94,15 +94,6 @@ export default function Produk() {
         }
     };
 
-
-    // fungsi edit, digunakan untuk mengedit data di Firebase
-    // const handleEdit = async (id, updatedData) => {
-    //     const edited = await updateDataInFirebase(id, updatedData);
-    //     if (edited) {
-    //         alert("Data edited in Firebase DB");
-    //     }
-    // };
-
     // // fungsi hapus, digunakan untuk menghapus data di Firebase
     const handleDelete = async (id) => {
         const deleted = await deleteDataFromFirebase(id);

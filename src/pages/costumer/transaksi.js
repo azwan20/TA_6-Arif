@@ -117,7 +117,7 @@ export default function Transaksi() {
                                                             </section>
                                                             <section className="align-items-end p-1">
                                                                 <span>
-                                                                    <b className="card-title">Proses Packing</b>
+                                                                    <b className="card-title"> {produk.status_pemesanan}</b>
                                                                 </span>
                                                                 <span>
                                                                     <p>{produk.tanggal}</p>
