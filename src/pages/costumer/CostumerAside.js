@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { useState } from "react";
+import { db, SignOut } from "../../../public/firebaseConfig";
+import { useUser } from "../../../public/user";
 
-export default function CashierAside({isTransaksiActive, isProdukActive, handleButtonClick }) {
-
+export default function CashierAside({ isTransaksiActive, isProdukActive, handleButtonClick, email }) {
     return (
         <>
             <aside>
                 <section style={{ height: '35%' }}>
                     <img src="https://yt3.googleusercontent.com/JEUJQpROm96FqcQwLO_vMDp1WrY-KaT67Tgx28JPw_mS7ZT9pfl45SqeOSyJV4oZ83AuySpjYA=s176-c-k-c0x00ffffff-no-rj" className="rounded-circle" alt="Profile" width={100} height={100} />
                     <div className="container-fluid d-flex flex-column align-items-center">
-                        <h5>Hilmi Ambong</h5>
+                        <h5>{email}</h5>
                         <button className="edit"><p>Edit</p></button>
                     </div>
                     <div />
@@ -28,7 +29,7 @@ export default function CashierAside({isTransaksiActive, isProdukActive, handleB
                         </Link>
                     </span>
                     <span style={{ width: '80%' }}>
-                        <button className='logout'>Logout</button>
+                        <button className='logout' onClick={SignOut}>Logout</button>
                     </span>
                 </section>
             </aside>

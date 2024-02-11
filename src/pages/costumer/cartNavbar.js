@@ -1,13 +1,17 @@
 import { useState } from "react";
 
-export default function CartNavbar({ timeTerima, timePacking, timeAntar, packingActive, antarActive, selesaiActive, handleButtonClick, showAntarButton }) {
+export default function CartNavbar({ timeTerima, timePacking, timeAntar, timeSelesai, packingActive, antarActive, selesaiActive, handleButtonClick, showAntarButton }) {
 
     return (
         <>
             <div className="cartNavbar">
                 <section>
                     <p>Pesanan diterima</p>
-                    <p>Proses packing</p>
+                    {showAntarButton ?
+                        <p>Proses packing</p>
+                        :
+                        <p>Siap diambil</p>
+                    }
                     {showAntarButton && (
                         <p>Proses pengantaran</p>
                     )}
@@ -38,7 +42,7 @@ export default function CartNavbar({ timeTerima, timePacking, timeAntar, packing
                     {showAntarButton && (
                         <p>{timeAntar} WITA</p>
                     )}
-                    <p></p>
+                    <p>{timeSelesai} WITA</p>
                 </section>
             </div>
             <style jsx>{`

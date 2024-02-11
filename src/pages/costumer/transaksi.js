@@ -104,11 +104,11 @@ export default function Transaksi() {
                                                                         alt=""
                                                                     />
                                                                     <div className="d-flex flex-column justify-content-between p-1">
-                                                                        {produk.menu_pesanan.map((menu) => (
-                                                                            <span>
+                                                                        <span>
+                                                                            {produk.menu_pesanan.map((menu) => (
                                                                                 <p className="card-text">{menu.name}</p>
-                                                                            </span>
-                                                                        ))}
+                                                                            ))}
+                                                                        </span>
                                                                         <span>
                                                                             <h5 className="card-title">{produk.harga_total}</h5>
                                                                         </span>

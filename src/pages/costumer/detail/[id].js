@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getNewData } from "..";
 import CartNavbar from "../cartNavbar";
 import { db } from "../../../../public/firebaseConfig";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath, getDoc, serverTimestamp } from "firebase/firestore";
 
 async function fetchData_ModelTransaksi(id) {
     const docRef = doc(db, "model_transaksi", id);
@@ -17,6 +17,39 @@ async function fetchData_ModelTransaksi(id) {
         return [];
     }
 }
+
+// async function fetchData_ModelTransaksi2(id) {
+//     try {
+//         const docRef = doc(db, "model_transaksi", id);
+//         const docSnapshot = await getDoc(docRef);
+
+//         if (docSnapshot.exists()) {
+//             const data = { id: docSnapshot.id, ...docSnapshot.data() };
+//             return data;
+//         } else {
+//             // Handle case where the document doesn't exist
+//             return null;
+//         }
+//     } catch (error) {
+//         console.error("Error fetching data: ", error);
+//         return null;
+//     }
+// }
+
+// async function updateData_ModelTransaksi(id, updatedData) {
+//     try {
+//         const produkRef = doc(db, 'model_transaksi', id);
+//         await updateDoc(produkRef, updatedData);
+//         console.log("Document successfully updated!");
+//         location.reload();
+//         return true;
+//     } catch (error) {
+//         console.error("Error updating document: ", error);
+//         return false;
+//     }
+// }
+
+
 
 
 
@@ -46,6 +79,53 @@ export default function DetailTransaksi({ cartItems }) {
 
     const [detailData, setDetailData] = useState(null);
 
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         if (id) {
+    //             const data = await fetchData_ModelTransaksi2(id);
+    //             setDetailData(data);
+    //         }
+    //     }
+    //     fetchData();
+    // }, [id]);
+
+    const handleEdit_ModelTransaksi = async (id, updatedData) => {
+        try {
+            if (!id) {
+                console.error("Invalid document id");
+                return false;
+            }
+
+            // Tambahkan waktu selesai ke dalam updatedData
+            updatedData.date_selesai = serverTimestamp();
+
+            const produkRef = doc(db, 'model_transaksi', id);
+            await updateDoc(produkRef, updatedData);
+            console.log("Document successfully updated!");
+            router.replace(router.asPath);
+            // Menggantikan location.reload() dan router.replace(router.asPath)
+            setDetailData(prevData => [{ ...prevData[0], ...updatedData }]);
+            return true;
+        } catch (error) {
+            console.error("Error updating document: ", error);
+            return false;
+        }
+    };
+
+    const formatTime = (timestamp) => {
+        // Check if the timestamp is a Firestore Timestamp
+        if (timestamp && typeof timestamp.toDate === 'function') {
+            const date = timestamp.toDate();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        } else {
+            // Handle the case where timestamp is not a Firestore Timestamp
+            return '';
+        }
+    };
+    
+
     useEffect(() => {
         async function fetchData() {
             if (id) {
@@ -62,6 +142,18 @@ export default function DetailTransaksi({ cartItems }) {
 
                     const createdTimeAntar = data[0].date_pengantaran;
                     setTimeAntar(createdTimeAntar);
+
+                    const createdTimeSelesai = data[0].date_selesai;
+                    setTimeSelesai(createdTimeSelesai ? formatTime(createdTimeSelesai) : '');
+
+                    const statusPemesanan = data[0].status_pemesanan;
+
+                    setPackingActive(statusPemesanan === 'Proses Packing');
+                    setAntarActive(statusPemesanan === 'Proses Pengantaran');
+                    setSelesaiActive(statusPemesanan === 'Proses Selesai');
+
+                    setShowTerimaButton(statusPemesanan === 'Proses Pengantaran');
+
                 }
             }
         }
@@ -75,11 +167,12 @@ export default function DetailTransaksi({ cartItems }) {
     const [timePacking, setTimePacking] = useState("");
     const [timeAntar, setTimeAntar] = useState("");
     const [timeSelesai, setTimeSelesai] = useState("");
-    console.log("Ini waktu packing", timeAntar);
+    console.log("Ini waktu selesai", timeSelesai);
 
     const [packingVisible, setPackingVisible] = useState(true);
     const [antarVisible, setAntarVisible] = useState(false);
     const [selesaiVisible, setSelesaiVisible] = useState(false);
+    const [showTerimaButton, setShowTerimaButton] = useState(false);
 
     const [activeButtonType, setActiveButtonType] = useState(null);
 
@@ -113,11 +206,10 @@ export default function DetailTransaksi({ cartItems }) {
         });
     };
 
-
-
     const metodePengambilan = detailData && detailData[0] ? detailData[0].metode_pengambilan : '';
-
     const showAntarButton = metodePengambilan === 'Diantarkan'; // Change this condition based on your actual values
+    // const selesai = detailData && detailData[0] ? detailData[0].status_pemesanan : '';
+    // setSelesaiVisible = metodePengambilan === 'Proses Pengantaran'; // Change this condition based on your actual values
 
     const totalHarga = itemCounts.reduce((acc, count) => acc + count * hargaPerItem, 0);
     return (
@@ -131,7 +223,7 @@ export default function DetailTransaksi({ cartItems }) {
                             <rect x="9.05811" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 9.05811 11.3643)" fill="#3598D7" />
                             <rect x="20.4231" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 20.4231 22.8916)" fill="#3598D7" />
                         </svg>
-                        <CartNavbar timeTerima={timeTerima} timePacking={timePacking} timeAntar={timeAntar} packingActive={packingActive} antarActive={antarActive} selesaiActive={selesaiActive} showAntarButton={showAntarButton} handleButtonClick={handleButtonClick} />
+                        <CartNavbar timeTerima={timeTerima} timePacking={timePacking} timeAntar={timeAntar} timeSelesai={timeSelesai} packingActive={packingActive} antarActive={antarActive} selesaiActive={selesaiActive} showAntarButton={showAntarButton} handleButtonClick={handleButtonClick} />
                         <div className="section">
                             <div>
                                 <div className="container">
@@ -198,11 +290,11 @@ export default function DetailTransaksi({ cartItems }) {
                             </div>
                         </div>
                     </section>
-                    {/* {(selesaiVisible) && (
+                    {(showTerimaButton) && (
                         <section className="section">
-                            <button>Barang telah diterima</button>
+                            <button onClick={() => handleEdit_ModelTransaksi(detailData?.[0]?.id, { status_pemesanan: "Proses Selesai" })}>Barang telah diterima</button>
                         </section>
-                    )} */}
+                    )}
                 </div>
             </div>
         </>

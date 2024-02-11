@@ -4,20 +4,58 @@ import { useEffect, useState } from "react";
 import Navbar from "./navbar";
 import { db } from "../../../public/firebaseConfig";
 import { collection, addDoc, getDocs } from "firebase/firestore";
+import withProtected from "../../../public/withProtected";
+import { useUser } from "../../../public/user";
+import { useRouter } from "next/router";
 
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "produk"));
-
     const data = [];
-
     querySnapshot.forEach((doc) => {
         data.push({ id: doc.id, ...doc.data() });
     });
     return data;
 }
 
-export default function Home() {
+async function fetchData_ModelUser() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
+
+function Home() {
+    const { email, uid } = useUser();
+    const router = useRouter();
+    const [username, setUsername] = useState("");
+    console.log("username ni", username);
+
+    useEffect(() => {
+        if (!uid) {
+            router.push('/');
+        }
+
+    }, [uid]);
+
+    //fungsi baca data user
+    useEffect(() => {
+        if (email) {
+            // alert(email)
+            async function fetchData() {
+                const data = await fetchData_ModelUser();
+                const isEmailExist = data.find(user => user.email === email);
+                if (isEmailExist) {
+                    const targetUsername = "@" + isEmailExist.username;
+                    setUsername(targetUsername);
+                }
+            }
+            fetchData();
+        }
+    }, []);
+
     const [isTransaksiActive, setIsTransaksiActive] = useState(false);
     const [isProdukActive, setIsProdukActive] = useState(true);
 
@@ -32,7 +70,7 @@ export default function Home() {
     };
 
     const [produkData, setProdukData] = useState([]);
-    const cards = Array.from({ length: 10 }, (_, index) => index + 1); // Creating an array of 10 items
+    const cards = Array.from({ length: 10 }, (_, index) => index + 1);
     const [clickCount, setClickCount] = useState(0);
     const [cartItems, setCartItems] = useState([]);
 
@@ -78,7 +116,7 @@ export default function Home() {
         <>
             <div>
                 <div className="costumer d-flex">
-                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
+                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} handleButtonClick={handleButtonClick} />
                     <article className="d-flex" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <section>
                             <nav class="navbar" style={{ marginBottom: '20px' }}>
@@ -161,3 +199,5 @@ console.log("new data", newData);
 export const getNewData = () => {
     return newData;
 };
+
+export default Home
