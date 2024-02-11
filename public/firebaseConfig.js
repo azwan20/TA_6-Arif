@@ -1,8 +1,15 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore"
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, } from
-    'firebase/auth'
+import { getStorage } from "firebase/storage"
+
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    sendPasswordResetEmail
+} from 'firebase/auth'
 
 const firebaseConfig = {
     apiKey: "AIzaSyCedPD-Rck8yVxRassdU5FJQhUv4boTJHo",
@@ -17,6 +24,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
+export const storage = getStorage(app);
 
 const db = getFirestore(app);
 
@@ -36,13 +44,17 @@ export const SignIn = async (email, password) => {
     await signInWithEmailAndPassword(FirebaseAuth, email, password)
 }
 
+export const ResetPass = async (email) => {
+    await sendPasswordResetEmail(FirebaseAuth, email)
+}
+
 export const SignOut = async () => {
     await signOut(FirebaseAuth)
 }
 
 export const GetSignInErrorMessage = (code) => {
     switch (code) {
-        case 'auth/invalid-credential':
+        case 'auth/invalid-email':
             return 'Email tidak terdaftar'
         // case 'auth/wrong-password': 
         default:
