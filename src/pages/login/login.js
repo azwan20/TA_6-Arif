@@ -39,7 +39,7 @@ export default function Login() {
                     <div className="cards d-flex">
                         <div className="card">
                             <span>
-                                <input placeholder="Username"
+                                <input placeholder="Email"
                                     id="email"
                                     type="email"
                                     name="email"

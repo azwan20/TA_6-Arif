@@ -1,14 +1,26 @@
 import Link from "next/link";
-import { useEffect } from 'react';
+import FormError from "./error";
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from "../../../public/user";
 import { useForm } from "react-hook-form";
-import {
-    SignUp as SignUpToFirebase,
-    GetSignUpErrorMessage
-} from "../../../public/firebaseConfig";
+import { SignUp as SignUpToFirebase, GetSignUpErrorMessage, db, SignOut } from "../../../public/firebaseConfig";
+import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath } from "firebase/firestore";
+
+async function AddData_ModelUser(img_profil, email, username) {
+    try {
+        const docRef = await addDoc(collection(db, "model_user"), {
+            img_profil: img_profil,
+            email: email,
+            username: username,
+        });
+    } catch (error) {
+    }
+}
 
 export default function Register() {
+    const [username, setUsername] = useState("");
+    const [img_profil, setImg_profil] = useState("");
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm()
     const { email, uid } = useUser();
@@ -21,8 +33,11 @@ export default function Register() {
 
     const onSubmit = async (values) => {
         const { email, password } = values
+
         try {
+            await AddData_ModelUser(img_profil, email, username);
             await SignUpToFirebase(email, password)
+            await SignOut()
             alert("Register berhasil")
             router.push('/');
         } catch (error) {
@@ -35,7 +50,6 @@ export default function Register() {
             <div className="register d-flex">
                 <div className="registerFill d-flex">
                     <span>
-                        <h1 >Register</h1>
                         <input
                             id="email"
                             type="email"
@@ -45,6 +59,24 @@ export default function Register() {
                             placeholder="email"
                             {...register("email", { required: true })}
                         />
+                        <FormError error={errors.email} />
+                        <input
+                            id="username"
+                            type="text"
+                            name="username"
+                            label="username"
+                            value={username}
+                            placeholder="username"
+                            onChange={(e) => {
+                                const inputUsername = e.target.value;
+                                const trimmedUsername = inputUsername.trim();
+                                if (!trimmedUsername.includes(" ")) {
+                                    setUsername(trimmedUsername);
+                                }
+                            }}
+
+                        />
+                        <FormError error={errors.email} />
                         <input
                             id="password"
                             name="password"
@@ -54,9 +86,11 @@ export default function Register() {
                             placeholder="password"
                             {...register("password", { required: true, minLength: 8 })}
                         />
+                        <FormError error={errors.password} />
                     </span>
                     <span>
                         <button style={{ backgroundColor: '#3598D7', color: '#fff' }} onClick={handleSubmit(onSubmit)}>Register</button>
+                        {/* <button style={{ backgroundColor: '#3598D7', color: '#fff' }} onClick={handleSubmit_ModelUser}>Register</button> */}
                         <Link href="/login/login"><button>Login</button></Link>
                     </span>
                 </div>
