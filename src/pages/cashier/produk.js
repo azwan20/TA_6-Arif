@@ -29,7 +29,7 @@ async function deleteDataFromFirebase(id) {
     }
 }
 
-async function addDataToFirebase(name, gambar, kode, harga,   jml_produk) {
+async function addDataToFirebase(name, gambar, kode, harga, jml_produk) {
     try {
         const docRef = await addDoc(collection(db, "produk"), {
             name: name,
@@ -188,14 +188,24 @@ export default function Produk() {
         }));
     };
 
+    const [isTransaksiActive, setIsTransaksiActive] = useState(false);
+    const [isProdukActive, setIsProdukActive] = useState(true);
 
-
+    const handleButtonClick = (buttonType) => {
+        if (buttonType === "transaksi") {
+            setIsTransaksiActive(true);
+            setIsProdukActive(false);
+        } else if (buttonType === "produk") {
+            setIsTransaksiActive(false);
+            setIsProdukActive(true);
+        }
+    };
 
     return (
         <>
             <div>
                 <div className="produk d-flex">
-                    <CashierAside />
+                    <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
                     <article className={`${showProdukInput ? 'article' : ''}`} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <div className="addProduc">
                             <button type="button" onClick={() => handleCardClick()}>
@@ -269,7 +279,7 @@ export default function Produk() {
                                     </span>
                                     <span>
                                         <p>Gambar</p>
-                                        <input type="text" id="nama" value={gambar} onChange={(e) => setGambar(e.target.value)} />
+                                        <input type="file" id="nama" value={gambar} onChange={(e) => setGambar(e.target.value)} />
                                     </span>
                                     <span>
                                         <p>Kode Produk</p>
@@ -291,7 +301,7 @@ export default function Produk() {
                         </div>
                     )}
                 </div>
-                <Navar />
+                <Navar isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
             </div>
             {editPopupVisible && (
                 <div className="popup">
@@ -311,9 +321,9 @@ export default function Produk() {
                         </span>
                         <span>
                             <p>Gambar</p>
-                            <input type="text" id="gambar"
-                                value={editedGambar}
+                            <input type="file" id="gambar"
                                 onChange={(e) => setEditedGambar(e.target.value)}
+                                style={{ width: '53%' }}
                             />
                         </span>
                         <span>
@@ -336,7 +346,7 @@ export default function Produk() {
                                 onChange={(e) => setEditedJml_produk(e.target.value)} />
                         </span>
                         {/* <button onClick={handleSaveClick}>Save</button> */}
-                        <button onClick={() => handleEdit(idSementara, {  name: editedName, gambar: editedGambar, kode: editedKode, harga: editedHarga, jml_produk: editedJml_produk })}>Save</button>
+                        <button onClick={() => handleEdit(idSementara, { name: editedName, gambar: editedGambar, kode: editedKode, harga: editedHarga, jml_produk: editedJml_produk })}>Save</button>
                         <button onClick={handlePopupClose}>Close</button>
                     </div>
                 </div>

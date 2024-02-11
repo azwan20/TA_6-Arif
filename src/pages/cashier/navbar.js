@@ -1,26 +1,26 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export default function Navbar() {
-    const [isTransaksiActive, setIsTransaksiActive] = useState(true);
-    const [isProdukActive, setIsProdukActive] = useState(false);
-    const [isProfileActive, setIsProfileActive] = useState(false);
+export default function Navbar({isTransaksiActive, isProdukActive, isProfileActive, handleButtonClick }) {
+    // const [isTransaksiActive, setIsTransaksiActive] = useState(true);
+    // const [isProdukActive, setIsProdukActive] = useState(false);
+    // const [isProfileActive, setIsProfileActive] = useState(false);
 
-    const handleButtonClick = (buttonType) => {
-        if (buttonType === "transaksi") {
-            setIsTransaksiActive(true);
-            setIsProdukActive(false);
-            setIsProfileActive(false);
-        } else if (buttonType === "produk") {
-            setIsTransaksiActive(false);
-            setIsProdukActive(true);
-            setIsProfileActive(false);
-        } else if (buttonType === "profile") {
-            setIsTransaksiActive(false);
-            setIsProdukActive(false);
-            setIsProfileActive(true);
-        }
-    };
+    // const handleButtonClick = (buttonType) => {
+    //     if (buttonType === "transaksi") {
+    //         setIsTransaksiActive(true);
+    //         setIsProdukActive(false);
+    //         setIsProfileActive(false);
+    //     } else if (buttonType === "produk") {
+    //         setIsTransaksiActive(false);
+    //         setIsProdukActive(true);
+    //         setIsProfileActive(false);
+    //     } else if (buttonType === "profile") {
+    //         setIsTransaksiActive(false);
+    //         setIsProdukActive(false);
+    //         setIsProfileActive(true);
+    //     }
+    // };
 
     return (
         <>
@@ -36,7 +36,7 @@ export default function Navbar() {
                             <p>Produk</p>
                         </span>
                     </Link>
-                    <Link href="/cashier/produk">
+                    <Link href="/cashier/cashierAside">
                         <span className={`mb-0 ${isProfileActive ? "active" : ""}`} onClick={() => handleButtonClick("profile")}>
                             <p>Profile</p>
                         </span>

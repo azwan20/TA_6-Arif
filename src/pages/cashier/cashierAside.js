@@ -1,23 +1,31 @@
 import Link from "next/link";
 import { useState } from "react";
+import Navar from "./navbar";
 
-export default function CashierAside() {
-    const [isTransaksiActive, setIsTransaksiActive] = useState(true);
-    const [isProdukActive, setIsProdukActive] = useState(false);
+export default function CashierAside({ isTransaksiActive, isProdukActive, handleButtonClick }) {
+    const [isTransaksiActive2, setIsTransaksiActive] = useState(false);
+    const [isProdukActive2, setIsProdukActive] = useState(false);
+    const [isProfileActive2, setIsProfileActive] = useState(true);
 
-    const handleButtonClick = (buttonType) => {
+    const handleButtonClick2 = (buttonType) => {
         if (buttonType === "transaksi") {
             setIsTransaksiActive(true);
             setIsProdukActive(false);
+            setIsProfileActive(false);
         } else if (buttonType === "produk") {
             setIsTransaksiActive(false);
             setIsProdukActive(true);
+            setIsProfileActive(false);
+        } else if (buttonType === "profile") {
+            setIsTransaksiActive(false);
+            setIsProdukActive(false);
+            setIsProfileActive(true);
         }
     };
 
     return (
         <>
-            <aside>
+            <aside className="asideCashier">
                 <section style={{ height: '35%' }}>
                     <img src="https://yt3.googleusercontent.com/JEUJQpROm96FqcQwLO_vMDp1WrY-KaT67Tgx28JPw_mS7ZT9pfl45SqeOSyJV4oZ83AuySpjYA=s176-c-k-c0x00ffffff-no-rj" className="rounded-circle" alt="Profile" width={100} height={100} />
                     <div className="container-fluid d-flex flex-column align-items-center">
@@ -44,6 +52,7 @@ export default function CashierAside() {
                     </span>
                 </section>
             </aside>
+            <Navar isTransaksiActive={isTransaksiActive2} isProdukActive={isProdukActive2} isProfileActive={isProfileActive2} handleButtonClick={handleButtonClick2} />
             <style jsx>{`
                 button {
                     background-color: #ffffff;

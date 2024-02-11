@@ -40,6 +40,7 @@ async function updateData_ModelTransaksi(id, updatedData) {
         const produkRef = doc(db, 'model_transaksi', id);
         await updateDoc(produkRef, updatedData);
         console.log("Document successfully updated!");
+        location.reload();
         return true;
     } catch (error) {
         console.error("Error updating document: ", error);
@@ -101,12 +102,12 @@ export default function Transaksi() {
             const hours = now.getHours().toString().padStart(2, '0');
             const minutes = now.getMinutes().toString().padStart(2, '0');
             const currentTime = `${hours}:${minutes}`;
-            
+
             updatedData.date_pengantaran = currentTime;
 
         }
 
-        
+
         const edited = await updateData_ModelTransaksi(id, updatedData);
         if (edited) {
             alert("Data edited in Firebase DB");
@@ -116,13 +117,26 @@ export default function Transaksi() {
         }
     };
 
+    const [isTransaksiActive, setIsTransaksiActive] = useState(true);
+    const [isProdukActive, setIsProdukActive] = useState(false);
+
+    const handleButtonClick = (buttonType) => {
+        if (buttonType === "transaksi") {
+            setIsTransaksiActive(true);
+            setIsProdukActive(false);
+        } else if (buttonType === "produk") {
+            setIsTransaksiActive(false);
+            setIsProdukActive(true);
+        }
+    };
+
 
 
     return (
         <>
             <div>
                 <div className="kasir d-flex">
-                    <CashierAside />
+                    <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
                     <article className={` ${selectedCard !== null ? 'article' : ''} `} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <div className="container">
                             <h4>Transaksi Costumer</h4>
@@ -196,7 +210,7 @@ export default function Transaksi() {
                                             <p><b>: {detailData.nama_user}</b></p>
                                             <p><b>: {detailData.nama_admin}</b></p>
                                             <p><b>: {detailData.metode_pembayaran}</b></p>
-                                            <p><b>: {detailData.created_at}</b></p>
+                                            <p><b>: {detailData.menu_pesanan[0].tanggal}</b></p>
                                         </section>
                                     </div>
                                     <div>
@@ -228,7 +242,7 @@ export default function Transaksi() {
                         </div>
                     )}
                 </div>
-                <Navar />
+                <Navar isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
             </div>
         </>
     )
