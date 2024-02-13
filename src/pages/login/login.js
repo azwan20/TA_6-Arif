@@ -4,14 +4,30 @@ import { useRouter } from 'next/router';
 import { useUser } from "../../../public/user";
 import { useForm } from 'react-hook-form'
 import { SignIn, GetSignInErrorMessage, SignOut } from "../../../public/firebaseConfig";
+import { db } from "../../../public/firebaseConfig";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+
+
+
+async function fetchData_ModelUser() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
 
 export default function Login() {
     const router = useRouter();
-    const { email, uid } = useUser();
+    const { emaill, uid, role } = useUser();
 
     useEffect(() => {
         if (uid) {
-            router.push('/costumer');
+            console.log("ini uid use effe: ", uid);
+
+
+
         }
     }, [uid]);
     const { register, handleSubmit, formState: { errors } } = useForm()
@@ -19,9 +35,22 @@ export default function Login() {
     const onSubmit = async (values) => {
         const { email, password } = values
         try {
-            await SignIn(email, password)
-            alert("login berhasil")
-            router.push('/costumer');
+            console.log("step one")
+
+            await SignIn(email, password);
+            console.log("step two")
+
+            const data = await fetchData_ModelUser();
+            const userData = data.find(user => user.email === email);
+
+            console.log("step three")
+
+            if (userData.role != 'admin') {
+                router.push('/costumer');
+            } else {
+                router.push('/cashier');
+            }
+
         } catch (error) {
             const message = GetSignInErrorMessage(error.code)
             console.log(message)

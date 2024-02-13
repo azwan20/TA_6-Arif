@@ -102,9 +102,11 @@ export default function DetailTransaksi({ cartItems }) {
             const produkRef = doc(db, 'model_transaksi', id);
             await updateDoc(produkRef, updatedData);
             console.log("Document successfully updated!");
-            router.replace(router.asPath);
             // Menggantikan location.reload() dan router.replace(router.asPath)
+            router.replace(router.asPath);
             setDetailData(prevData => [{ ...prevData[0], ...updatedData }]);
+
+            location.reload();
             return true;
         } catch (error) {
             console.error("Error updating document: ", error);
@@ -124,7 +126,7 @@ export default function DetailTransaksi({ cartItems }) {
             return '';
         }
     };
-    
+
 
     useEffect(() => {
         async function fetchData() {
@@ -151,6 +153,7 @@ export default function DetailTransaksi({ cartItems }) {
                     setPackingActive(statusPemesanan === 'Proses Packing');
                     setAntarActive(statusPemesanan === 'Proses Pengantaran');
                     setSelesaiActive(statusPemesanan === 'Proses Selesai');
+                    setTerimaActive(statusPemesanan === 'Pesanan Diterima');
 
                     setShowTerimaButton(statusPemesanan === 'Proses Pengantaran');
 
@@ -169,14 +172,16 @@ export default function DetailTransaksi({ cartItems }) {
     const [timeSelesai, setTimeSelesai] = useState("");
     console.log("Ini waktu selesai", timeSelesai);
 
-    const [packingVisible, setPackingVisible] = useState(true);
+    const [packingVisible, setPackingVisible] = useState(false);
     const [antarVisible, setAntarVisible] = useState(false);
     const [selesaiVisible, setSelesaiVisible] = useState(false);
+    const [terimaVisible, setTerimaVisible] = useState(false);
     const [showTerimaButton, setShowTerimaButton] = useState(false);
 
     const [activeButtonType, setActiveButtonType] = useState(null);
 
-    const [packingActive, setPackingActive] = useState(true);
+    const [packingActive, setPackingActive] = useState(false);
+    const [terimaActive, setTerimaActive] = useState(false);
     const [antarActive, setAntarActive] = useState(false);
     const [selesaiActive, setSelesaiActive] = useState(false);
 
@@ -187,21 +192,31 @@ export default function DetailTransaksi({ cartItems }) {
                 setPackingVisible(true);
                 setAntarVisible(false);
                 setSelesaiVisible(false);
+                setTerimaVisible(false);
             } else if (buttonType === "antar" && item.status_pemesanan === "Proses Pengantaran") {
                 setActiveButtonType("antar");
                 setPackingVisible(false);
                 setAntarVisible(true);
                 setSelesaiVisible(false);
+                setTerimaVisible(false);
             } else if (buttonType === "selesai" && item.status_pemesanan === "Proses Selesai") {
                 setActiveButtonType("selesai");
                 setPackingVisible(false);
                 setAntarVisible(false);
                 setSelesaiVisible(true);
+                setTerimaVisible(false);
+            } else if (buttonType === "terima" && item.status_pemesanan === "Pesanan Diterima") {
+                setActiveButtonType("terima");
+                setPackingVisible(false);
+                setAntarVisible(false);
+                setSelesaiVisible(false);
+                setTerimaVisible(true);
             } else {
                 setActiveButtonType(null);
                 setPackingVisible(false);
                 setAntarVisible(false);
                 setSelesaiVisible(false);
+                setTerimaVisible(false);
             }
         });
     };
@@ -223,7 +238,7 @@ export default function DetailTransaksi({ cartItems }) {
                             <rect x="9.05811" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 9.05811 11.3643)" fill="#3598D7" />
                             <rect x="20.4231" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 20.4231 22.8916)" fill="#3598D7" />
                         </svg>
-                        <CartNavbar timeTerima={timeTerima} timePacking={timePacking} timeAntar={timeAntar} timeSelesai={timeSelesai} packingActive={packingActive} antarActive={antarActive} selesaiActive={selesaiActive} showAntarButton={showAntarButton} handleButtonClick={handleButtonClick} />
+                        <CartNavbar timeTerima={timeTerima} timePacking={timePacking} timeAntar={timeAntar} timeSelesai={timeSelesai} terimaActive={terimaActive} packingActive={packingActive} antarActive={antarActive} selesaiActive={selesaiActive} showAntarButton={showAntarButton} handleButtonClick={handleButtonClick} />
                         <div className="section">
                             <div>
                                 <div className="container">
@@ -246,7 +261,7 @@ export default function DetailTransaksi({ cartItems }) {
                                                                                 <p className="card-text"><b>{menu.name}</b></p>
                                                                             </span>
                                                                             <span>
-                                                                                <p>{menu.harga}</p>
+                                                                                <p>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(menu.harga).replace(/\,00$/, '')}</p>
                                                                             </span>
                                                                         </div>
                                                                     </div>
@@ -284,7 +299,7 @@ export default function DetailTransaksi({ cartItems }) {
                                         )}
                                         <p>Tunai</p>
                                         <p>{item.jumlah}</p>
-                                        <p>Rp.<b>{item.harga_total}</b></p>
+                                        <p><b>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.harga_total).replace(/\,00$/, '')}</b></p>
                                     </span>
                                 ))}
                             </div>

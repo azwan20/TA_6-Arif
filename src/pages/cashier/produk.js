@@ -237,7 +237,7 @@ export default function Produk() {
                                             <td>{produks.name}</td>
                                             <td>{produks.gambar}</td>
                                             <td>{produks.kode}</td>
-                                            <td>{produks.harga}</td>
+                                            <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(produks.harga).replace(/\,00$/, '')}</td>
                                             <td>
                                                 <button
                                                     // onClick={() => handleSimpanClick(produks.id)}

@@ -110,7 +110,7 @@ export default function Transaksi() {
                                                                             ))}
                                                                         </span>
                                                                         <span>
-                                                                            <h5 className="card-title">{produk.harga_total}</h5>
+                                                                            <h5 className="card-title">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(produk.harga_total).replace(/\,00$/, '')}</h5>
                                                                         </span>
                                                                     </div>
                                                                 </div>

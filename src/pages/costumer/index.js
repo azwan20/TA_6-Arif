@@ -74,7 +74,7 @@ function Home() {
     const [clickCount, setClickCount] = useState(0);
     const [cartItems, setCartItems] = useState([]);
 
-
+    console.log("ini produk", produkData);
 
     let listCart = [];
 
@@ -103,6 +103,8 @@ function Home() {
                 id: e.id,
                 'name': e.name,
                 'harga': e.harga,
+                'username': username,
+                'jml_produk' : e.jml_produk,
             });
         });
 
@@ -110,7 +112,15 @@ function Home() {
         console.log("newData", newData);
     };
 
+    const [searchInput, setSearchInput] = useState("");
 
+    const handleSearchChange = (event) => {
+        setSearchInput(event.target.value);
+    };
+
+    const filteredProdukData = produkData.filter((product) =>
+        product.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
 
     return (
         <>
@@ -128,13 +138,14 @@ function Home() {
                                             <rect x="20.1362" y="14.5596" width="8.98584" height="8.98584" rx="4.49292" transform="rotate(45 20.1362 14.5596)" fill="#3598D7" />
                                             <rect x="24.2476" y="23.5947" width="9.79524" height="2.02494" rx="1.01247" transform="rotate(45 24.2476 23.5947)" fill="white" />
                                         </svg>
-                                        <input class="" type="search" placeholder="Search" aria-label="Search" />
+                                        <input class="" type="search" placeholder="Search" aria-label="Search" value={searchInput}
+                                            onChange={handleSearchChange} />
                                     </form>
                                 </div>
                             </nav>
                             <div className="container">
                                 <div className="row row-cols-2 row-cols-md-5 g-4">
-                                    {produkData.map((cardNumber) => (
+                                    {filteredProdukData.map((cardNumber) => (
                                         <div key={cardNumber} className="col">
                                             <div className="card">
                                                 <img
@@ -143,21 +154,20 @@ function Home() {
                                                     alt={`Card ${cardNumber}`}
                                                 />
                                                 <div className="card-body d-flex">
-                                                    <span>
+                                                    <span style={{ marginBottom: '10px' }}>
                                                         <b className="card-title">{truncateText(cardNumber.name, 15)}</b>
-                                                        <p className="card-text">
-                                                            Rp.
-                                                            {cardNumber.harga}
-                                                        </p>
-                                                    </span>
-                                                    <span>
                                                         <button className="add" onClick={() => handleAddClick(cardNumber)}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
                                                                 <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
                                                                 <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="white" />
                                                             </svg>
                                                         </button>
-                                                        <p>20pcs</p>
+                                                    </span>
+                                                    <span>
+                                                        <p >
+                                                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(cardNumber.harga).replace(/\,00$/, '')}
+                                                        </p>
+                                                        <p className="card-text">Tersisa : {cardNumber.jml_produk}</p>
                                                     </span>
                                                 </div>
                                             </div>

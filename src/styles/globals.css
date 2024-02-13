@@ -137,6 +137,7 @@
 }
 
 .owner,
+.dataAdmin,
 .kasir,
 .produk,
 .costumer,
@@ -201,6 +202,7 @@ aside a {
 }
 
 .owner article,
+.dataAdmin article,
 .kasir article,
 .produk article,
 .costumer article,
@@ -224,6 +226,10 @@ aside a {
   margin: 20px;
 }
 
+.owner .chart {
+  width: 80%;
+}
+
 .kasir article .cards {
   margin: 20px;
 }
@@ -245,12 +251,14 @@ aside a {
 
 .kasir .article a,
 .kasir .detailCos thead th,
+.dataAdmin thead th,
 .produk thead th {
   background-color: var(--primary-color);
   color: #fff;
   text-align: center;
 }
 
+.dataAdmin tbody td,
 .produk tbody td {
   background-color: var(--secondary-color);
   text-align: center;
@@ -305,10 +313,16 @@ aside a {
   padding: 20px;
 }
 
+.dataAdmin .article,
 .produk .article {
   width: 50%;
 }
 
+.dataAdmin article {
+  padding: 20px;
+}
+
+.dataAdmin .produkInput,
 .produk .produkInput {
   width: 35%;
   flex-direction: column;
@@ -316,6 +330,7 @@ aside a {
   padding: 20px 10px 0;
 }
 
+.dataAdmin .produkInput section button,
 .produk .produkInput section button {
   width: 92%;
   margin: 20px;
@@ -326,12 +341,14 @@ aside a {
   height: 35px;
 }
 
+.dataAdmin .produkInput span,
 .produk .produkInput span {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+.dataAdmin .produkInput p,
 .produk .produkInput p {
   align-items: center;
   display: flex;
@@ -339,6 +356,7 @@ aside a {
   width: 30%;
 }
 
+.dataAdmin .produkInput input,
 .produk .produkInput input {
   margin: 10px;
   border-radius: 10px;
@@ -377,18 +395,27 @@ aside a {
 } */
 
 .costumer .card-body {
-  padding: 15px 5px;
+  padding: 10px 5px;
   justify-content: space-between;
+  flex-direction: column;
 }
 
 .costumer .card-body span {
   display: flex;
   justify-content: space-between;
-  flex-direction: column;
 }
 
 .costumer .card-body p {
-  margin: 10px 0 0;
+  margin: auto 0;
+}
+
+.costumer .card-body .card-text {
+  background-color: #900000;
+  padding: 0px 5px;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 13px;
+  margin: auto 0;
 }
 
 .costumer .card img {
@@ -675,6 +702,7 @@ aside a {
     width: 100%;
   }
 
+  .dataAdmin .produkInput,
   .produk .produkInput,
   .kasir .detailCos {
     width: 100%;

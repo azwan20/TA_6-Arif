@@ -55,11 +55,19 @@ export default function Keranjang() {
     const newData = getNewData();
     const [noKamar, setNoKamar] = useState('');
 
-    console.log("ini passing", newData);
+    console.log("ini passing", newData.username);
     const router = useRouter();
     const handleGoBack = () => {
         router.back();
     };
+
+    // const [jumlah_produk, setJumalah_produk] = useState("");
+
+    // newData.map((item) => {
+    //     setJumalah_produk(item.jml_produk);
+    // })
+
+    // console.log(jumlah_produk);
 
     const hargaPerItem = 45000;
 
@@ -72,6 +80,13 @@ export default function Keranjang() {
     const handleButtonNoVisible = () => {
         setVisible(true);
     }
+
+    // const listNew = newData.map(angka => angka.harga.toLocaleString());
+    // const listNew = newData.map(angka => ({
+    //     ...angka,
+    //     harga: parseInt(angka.harga).toLocaleString('id-ID') // Convert to number and format
+    //   }));
+    // console.log("ini listNew", listNew);
 
     const initialItemState = Array.from({ length: 2 }, () => 1);
     const [itemCounts, setItemCounts] = useState(Array(newData.length).fill(1));
@@ -107,25 +122,34 @@ export default function Keranjang() {
         event.preventDefault();
 
         try {
+            const firstItem = newData[0];
             const menuPesanan = newData.map((item, index) => ({
                 id: item.id,
                 name: item.name,
                 harga: item.harga,
                 jumlah: itemCounts[index],
                 totalHarga: itemCounts[index] * item.harga,
+                // jumlahProduk : item.jml_produk - itemCounts[index],
                 tanggal: formattedDate,
             }));
+
 
             const now = new Date();
             const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
             let metodePengambilan = visible ? 'Ambil Sendiri' : 'Diantarkan';
             console.log("Ini jam", timeString);
 
+            const updateOperations = newData.map((item, index) =>
+                updateDoc(doc(db, "produk", item.id), {
+                    jml_produk: item.jml_produk - itemCounts[index]
+                })
+            );
+
             const added = await AddData_ModelTransaksi(
-                "Proses",
+                "Pesanan Diterima",
                 noKamar,
                 "nama_admin",
-                "nama_user",
+                firstItem.username,
                 "date_terima_pesanan",
                 "",
                 "",
@@ -148,6 +172,8 @@ export default function Keranjang() {
             console.error("Error in submitting data: ", error);
         }
     };
+
+    console.log("jumlah produk", newData[0].jml_produk);
 
     return (
         <>
@@ -185,7 +211,7 @@ export default function Keranjang() {
                                                                             <p className="card-text"><b>{item.name}</b></p>
                                                                         </span>
                                                                         <span>
-                                                                            <p>{item.harga}</p>
+                                                                            <p>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.harga).replace(/\,00$/, '')}</p>
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -240,7 +266,7 @@ export default function Keranjang() {
                                 <span style={{ textAlign: "right" }}>
                                     {/* <p>3pcs</p> */}
                                     <p>{itemCounts.reduce((acc, count) => acc + count, 0)}</p>
-                                    <p><b>{totalHarga}</b></p>
+                                    <p><b>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalHarga).replace(/\,00$/, '')}</b></p>
                                 </span>
                             </div>
                         </div>

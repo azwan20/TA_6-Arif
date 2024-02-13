@@ -13,6 +13,7 @@ async function AddData_ModelUser(img_profil, email, username) {
             img_profil: img_profil,
             email: email,
             username: username,
+            role: "user",
         });
     } catch (error) {
     }

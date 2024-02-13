@@ -5,6 +5,7 @@ import Navar from "./navbar";
 import { db } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
+import { useUser } from "../../../public/user";
 
 async function fetchData_ModelTransaksi() {
     const querySnapshot = await getDocs(collection(db, "model_transaksi"));
@@ -48,6 +49,15 @@ async function updateData_ModelTransaksi(id, updatedData) {
     }
 }
 
+async function fetchData_ModelUser() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
+
 
 export default function Transaksi() {
     const [selectedCard, setSelectedCard] = useState(null);
@@ -75,16 +85,30 @@ export default function Transaksi() {
     console.log("ini id", isDetailTransaksi);
 
     const [detailData, setDetailData] = useState(null);
+    const [totalHarga, setTotalHarga] = useState(0);
 
     useEffect(() => {
         async function fetchData() {
             if (isDetailTransaksi) {
                 const data = await fetchData_ModelTransaksi2(isDetailTransaksi);
+
+                var tempHarga = 0;
+                if (data) {
+
+                    data.menu_pesanan.forEach(e => {
+                        tempHarga += e.totalHarga;
+                    });
+
+
+                }
                 setDetailData(data);
+                setTotalHarga(tempHarga);
             }
         }
         fetchData();
     }, [isDetailTransaksi]);
+
+
 
 
     console.log("ini id", detailData);
@@ -129,6 +153,9 @@ export default function Transaksi() {
             setIsProdukActive(true);
         }
     };
+
+
+
 
 
 
@@ -229,11 +256,15 @@ export default function Transaksi() {
                                                     <tr key={index}>
                                                         <th scope="row">{menu.name}</th>
                                                         <td>02034012</td>
-                                                        <td>{menu.harga}</td>
+                                                        <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(menu.harga).replace(/\,00$/, '')}</td>
                                                         <td>{menu.jumlah}</td>
-                                                        <td>{menu.totalHarga}</td>
+                                                        <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(menu.totalHarga).replace(/\,00$/, '')}</td>
                                                     </tr>
                                                 ))}
+                                                <tr className="table-primary">
+                                                    <th colspan="4">Total Harga</th>
+                                                    <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalHarga).replace(/\,00$/, '')}</td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>

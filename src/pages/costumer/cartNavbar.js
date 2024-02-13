@@ -1,35 +1,38 @@
 import { useState } from "react";
 
-export default function CartNavbar({ timeTerima, timePacking, timeAntar, timeSelesai, packingActive, antarActive, selesaiActive, handleButtonClick, showAntarButton }) {
+export default function CartNavbar({ timeTerima, timePacking, timeAntar, timeSelesai, terimaActive, packingActive, antarActive, selesaiActive, handleButtonClick, showAntarButton }) {
 
     return (
         <>
             <div className="cartNavbar">
                 <section>
                     <p>Pesanan diterima</p>
-                    {showAntarButton ?
+                    {showAntarButton && (
                         <p>Proses packing</p>
+                    )}
+                    {showAntarButton ?
+                        <p>Proses pengantaran</p>
                         :
                         <p>Siap diambil</p>
                     }
-                    {showAntarButton && (
-                        <p>Proses pengantaran</p>
-                    )}
                     <p>Pesanan selesai</p>
                 </section>
                 <section>
                     <div className="garis ">
-                        <button className="bulat"></button>
                         <button
-                            className={`bulat ${packingActive ? "active" : ""}`}
-                            onClick={() => handleButtonClick("packing")}
+                            className={`bulat ${terimaActive ? "active" : ""}`}
+                            onClick={() => handleButtonClick("terima")}
                         ></button>
                         {showAntarButton && (
                             <button
-                                className={`bulat ${antarActive ? "active" : ""}`}
-                                onClick={() => handleButtonClick("antar")}
+                                className={`bulat ${packingActive ? "active" : ""}`}
+                                onClick={() => handleButtonClick("packing")}
                             ></button>
                         )}
+                        <button
+                            className={`bulat ${antarActive ? "active" : ""}`}
+                            onClick={() => handleButtonClick("antar")}
+                        ></button>
                         <button
                             className={`bulat ${selesaiActive ? "active" : ""}`}
                             onClick={() => handleButtonClick("selesai")}
@@ -37,12 +40,12 @@ export default function CartNavbar({ timeTerima, timePacking, timeAntar, timeSel
                     </div>
                 </section>
                 <section className="time">
-                    <p>{timeTerima} WITA</p>
-                    <p>{timePacking} WITA</p>
+                    <p>{timeTerima ? `${timeTerima} WITA` : ""}</p>
                     {showAntarButton && (
-                        <p>{timeAntar} WITA</p>
+                        <p style={{ paddingRight: timeAntar === "" ? "50px" : "0" }}>{timePacking ? `${timePacking} WITA` : ""}</p>
                     )}
-                    <p>{timeSelesai} WITA</p>
+                    <p style={{ paddingRight: timeSelesai === "" ? "50px" : "0" }}>{timeAntar ? `${timeAntar} WITA` : ""}</p>
+                    <p>{timeSelesai ? `${timeSelesai} WITA` : ""}</p>
                 </section>
             </div>
             <style jsx>{`

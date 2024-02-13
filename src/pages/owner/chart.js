@@ -6,22 +6,23 @@ Chart.register(CategoryScale, LinearScale, BarElement, Title, Legend);
 
 const ChartComponent = ({ data }) => {
     const chartData = {
-        labels: ['Label 1', 'Label 2', 'Label 3'],
+        labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
         datasets: [
             {
-                label: 'Data Set 1',
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
+                label: 'Jumlah Transaksi',
+                backgroundColor: '#3598D7',
+                borderColor: '#C0C0C0',
                 borderWidth: 1,
                 data: data.dataset1,
             },
             {
-                label: 'Data Set 2',
-                backgroundColor: 'rgba(255,99,132,0.4)',
-                borderColor: 'rgba(255,99,132,1)',
+                label: 'Max Transaksi',
+                backgroundColor: '#C0C0C0',
+                borderColor: '#C0C0C0',
                 borderWidth: 1,
                 data: data.dataset2,
             },
+
         ],
     };
 
