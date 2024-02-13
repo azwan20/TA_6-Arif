@@ -4,7 +4,7 @@ import { CategoryScale, LinearScale, Chart, BarElement, Title, Legend } from 'ch
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Legend);
 
-const ChartComponent = ({ data }) => {
+const ChartComponent = ({ data = {} }) => {
     const chartData = {
         labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
         datasets: [
@@ -13,16 +13,15 @@ const ChartComponent = ({ data }) => {
                 backgroundColor: '#3598D7',
                 borderColor: '#C0C0C0',
                 borderWidth: 1,
-                data: data.dataset1,
+                data: data.dataset1 || [],
             },
             {
                 label: 'Max Transaksi',
                 backgroundColor: '#C0C0C0',
                 borderColor: '#C0C0C0',
                 borderWidth: 1,
-                data: data.dataset2,
+                data: data.dataset2 || [],
             },
-
         ],
     };
 
@@ -35,5 +34,6 @@ const ChartComponent = ({ data }) => {
 
     return <Bar data={chartData} options={options} />;
 };
+
 
 export default ChartComponent;
