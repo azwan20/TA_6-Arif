@@ -2,7 +2,8 @@ import { createContext, useContext, useState } from 'react'
 
 export const InitialUserState = {
     email: null,
-    uid: null
+    uid: null,
+    role : null,
 }
 
 const UserContext = createContext()
