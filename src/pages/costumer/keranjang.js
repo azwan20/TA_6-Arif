@@ -173,7 +173,7 @@ export default function Keranjang() {
         }
     };
 
-    console.log("jumlah produk", newData[0].jml_produk);
+    // console.log("jumlah produk", newData[0].jml_produk);
 
     return (
         <>
