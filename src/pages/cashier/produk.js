@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import CashierAside from "./cashierAside";
 import Navar from "./navbar";
-
+import { useRouter } from "next/router";
+import { useUser } from "../../../public/user";
 import { db } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 
@@ -9,7 +10,7 @@ async function updateDataInFirebase(id, updatedData) {
     try {
         const produkRef = doc(db, "produk", id);
         await updateDoc(produkRef, updatedData);
-        console.log("Document successfully updated!");
+        // console.log("Document successfully updated!");
         return true;
     } catch (error) {
         console.error("Error updating document: ", error);
@@ -21,7 +22,7 @@ async function deleteDataFromFirebase(id) {
     try {
         const produkRef = doc(db, "produk", id);
         await deleteDoc(produkRef);
-        console.log("Document successfully deleted!");
+        // console.log("Document successfully deleted!");
         return true;
     } catch (error) {
         console.error("Error deleting document: ", error);
@@ -38,7 +39,7 @@ async function addDataToFirebase(name, gambar, kode, harga, jml_produk) {
             harga: harga,
             jml_produk: jml_produk,
         });
-        console.log("Document input document ID : ", docRef.id);
+        // console.log("Document input document ID : ", docRef.id);
         return true;
     } catch (error) {
         console.error("Error adding document: ", error);
@@ -70,6 +71,28 @@ export default function Produk() {
     const [isPopupVisible, setPopupVisible] = useState(false);
     const [editPopupRow, setEditPopupRow] = useState(null);
     const [editedDataForSelectedRows, setEditedDataForSelectedRows] = useState({});
+
+
+    const router = useRouter();
+    const { email, uid, role } = useUser();
+
+    useEffect(() => {
+        if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
+
+            if (role === 'admin') {
+                // router.push('/cashier');
+            } else if (role === 'user') {
+                router.push('/costumer');
+            } else {
+                router.push('/owner');
+            }
+        } else {
+            router.push('/');
+        }
+    }, [uid]);
 
     useEffect(() => {
         async function fetchData() {
@@ -164,7 +187,7 @@ export default function Produk() {
     }
 
     const handleEdit = async (id, updatedData) => {
-        console.log("ini data: ", id);
+        // console.log("ini data: ", id);
         const edited = await updateDataInFirebase(id, updatedData);
 
         if (edited) {

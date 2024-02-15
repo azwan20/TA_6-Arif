@@ -230,6 +230,15 @@ aside a {
   width: 80%;
 }
 
+.owner .pieCharts {
+  height: 70vh;
+  width: 800px;
+}
+
+.owner .pieCharts canvas {
+  height: fit-content;
+}
+
 .kasir article .cards {
   margin: 20px;
 }
@@ -366,6 +375,7 @@ aside a {
   width: 70%;
 }
 
+.dataAdmin tbody button,
 .produk tbody button {
   border: none;
   background-color: transparent;
@@ -457,12 +467,28 @@ aside a {
 .transaksi .card-body div p {
   margin: 0;
   font-weight: bold;
+  font-size: 15px;
 }
 
 .transaksi .card section {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.transaksi .card-body span {
+  padding: 5px 10px;
+}
+
+.transaksi .card-body .cardd p {
+  margin: 0 0 7px;
+  font-size: 15px;
+}
+
+.transaksi .card-body .cardd .card-title {
+  width: 100%;
+  color: #FFF;
+  margin: auto;
 }
 
 .keranjang {
@@ -684,22 +710,32 @@ aside a {
 
   .kasir aside,
   .produk aside,
+  .owner aside,
+  .dataAdmin aside,
   .costumer aside,
   .transaksi aside {
     display: none;
   }
 
   .kasir,
+  .dataAdmin,
   .produk {
     display: flex;
     justify-content: center;
   }
 
+  .owner article,
+  .dataAdmin article,
   .kasir article,
   .produk article,
   .costumer article,
   .transaksi article {
     width: 100%;
+  }
+
+  .owner .chart {
+    width: 90%;
+    height: 50vh;
   }
 
   .dataAdmin .produkInput,
@@ -709,6 +745,7 @@ aside a {
   }
 
   .produk .article,
+  .dataAdmin .article,
   .kasir .article {
     display: none;
   }
@@ -740,6 +777,33 @@ aside a {
   .costumer article {
     padding-bottom: 50px;
     height: fit-content;
+  }
+
+  .transaksi .card img {
+    width: 120px;
+  }
+
+  .transaksi .card-body span {
+    padding: 0;
+    padding-right: 3px;
+  }
+
+  .transaksi .card-body b,
+  .transaksi .card-body p,
+  .transaksi .card-body div p {
+    font-size: 12px;
+  }
+
+  /* .transaksi .card-body div p {
+    font-size: 10px;
+  } */
+
+  .costumer .card-body .card-title {
+    font-size: 14px;
+  }
+
+  .costumer .card-body span p {
+    font-size: 12px;
   }
 
   .keranjang .cart {

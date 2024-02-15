@@ -40,7 +40,7 @@ async function updateData_ModelTransaksi(id, updatedData) {
     try {
         const produkRef = doc(db, 'model_transaksi', id);
         await updateDoc(produkRef, updatedData);
-        console.log("Document successfully updated!");
+        // console.log("Document successfully updated!");
         location.reload();
         return true;
     } catch (error) {
@@ -64,6 +64,27 @@ export default function Transaksi() {
     const [produkDataModelTransaksi, setProdukDataModelTransaksi] = useState([]);
     const [isDetailTransaksi, setDetailTransaksi] = useState([]);
 
+    const router = useRouter();
+    const { email, uid, role } = useUser();
+
+    useEffect(() => {
+        if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
+
+            if (role === 'admin') {
+                // router.push('/cashier');
+            } else if (role === 'user') {
+                router.push('/costumer');
+            } else {
+                router.push('/owner');
+            }
+        } else {
+            router.push('/');
+        }
+    }, [uid]);
+
     const handleCardClick = (index) => {
         setSelectedCard(index === selectedCard ? null : index);
     };
@@ -82,7 +103,8 @@ export default function Transaksi() {
         setDetailTransaksi(id);
     };
 
-    console.log("ini id", isDetailTransaksi);
+
+    // console.log("ini id", isDetailTransaksi);
 
     const [detailData, setDetailData] = useState(null);
     const [totalHarga, setTotalHarga] = useState(0);
@@ -111,7 +133,7 @@ export default function Transaksi() {
 
 
 
-    console.log("ini id", detailData);
+    // console.log("ini id", detailData);
 
     const handleEdit_ModelTransaksi = async (id, updatedData) => {
         if (updatedData.status_pemesanan === "Proses Packing") {

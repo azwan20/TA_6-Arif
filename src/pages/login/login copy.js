@@ -20,44 +20,40 @@ async function fetchData_ModelUser() {
 
 export default function Login() {
     const router = useRouter();
-    const { email, uid, role } = useUser();
+    const { emaill, uid, role } = useUser();
 
     useEffect(() => {
         if (uid) {
-            // console.log("ini uid user: ", uid);
-            // console.log("ini email user: ", email);
-            // console.log("ini role user: ", role);
+            console.log("ini uid use effe: ", uid);
 
-            if (role === 'admin') {
-                router.push('/cashier');
-            } else if (role === 'user') {
-                router.push('/costumer');
-            } else {
-                router.push('/owner');
-            }
+
+
         }
     }, [uid]);
-
     const { register, handleSubmit, formState: { errors } } = useForm()
 
     const onSubmit = async (values) => {
         const { email, password } = values
         try {
+            console.log("step one")
+
+            await SignIn(email, password);
+            console.log("step two")
+
             const data = await fetchData_ModelUser();
             const userData = data.find(user => user.email === email);
 
-            await SignIn(email, password);
-            if (userData.role === 'admin') {
-                router.push('/cashier');
-            } else if (userData.role === 'user') {
+            console.log("step three")
+
+            if (userData.role != 'admin') {
                 router.push('/costumer');
             } else {
-                router.push('/owner');
+                router.push('/cashier');
             }
 
         } catch (error) {
             const message = GetSignInErrorMessage(error.code)
-            // console.log("ini salah")
+            console.log(message)
             alert(message)
         }
     }

@@ -1,97 +1,79 @@
 // pages/index.js
-// import Chart from '../components/Chart';
-// import Chart from './chart';
-import { useEffect, useState } from 'react';
-import ChartComponent from './chart';
+
+import React, { useEffect, useState } from 'react';
+import PieChart from './pieChart';
+import OwnerAside from './ownerAside';
 import { db } from "../../../public/firebaseConfig";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import OwnerAside from './ownerAside';
+
+// ... (kode sebelumnya)
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "model_transaksi"));
     const data = [];
+    let totalProduk = 0;
+    let jumlah = 0;  // Inisialisasi variabel untuk menyimpan total harga
+
     querySnapshot.forEach((doc) => {
-        data.push({ id: doc.id, ...doc.data() });
+        const transactionData = { id: doc.id, ...doc.data() };
+        data.push(transactionData);
+
+        jumlah += transactionData.jumlah || 0;
+
+        // Hitung total produk
+        if (transactionData.menu_pesanan) {
+            transactionData.menu_pesanan.forEach(pesanan => {
+                totalProduk += pesanan.jumlahProduk || 0;
+            });
+        }
     });
-    return data;
+
+    // Mengembalikan data dan total produk
+    return { data, totalProduk, jumlah };
+}
+
+// Menambahkan fungsi untuk menghitung jumlah transaksi pada masing-masing label
+function calculateTransactionsByLabel(data) {
+    const transactionsByLabel = {
+        totalProduk: 0,  // Inisialisasi totalProduk
+        jumlah: 0,
+    };
+
+    data.forEach(item => {
+        // Akumulasi totalProduk dari setiap transaksi
+        transactionsByLabel.jumlah += item.jumlah || 0;
+
+        // Gantilah dengan properti label yang sesuai jika ada properti lain yang ingin Anda hitung
+    });
+
+    return transactionsByLabel;
 }
 
 
-const Home = () => {
-    function groupDataByDay(data) {
-        const daysData = {
-            Senin: 0,
-            Selasa: 0,
-            Rabu: 0,
-            Kamis: 0,
-            Jumat: 0,
-            Sabtu: 0,
-            Minggu: 0,
-            MaxData: 0,
-        };
+const IndexPage = () => {
+    const [produkData, setProdukData] = useState([]);
+    const [totalProduk, setTotalProduk] = useState(0);
 
-        data.forEach(item => {
-            const dayName = convertTimestampToDay(item.date_selesai);
-            daysData[dayName] += 1;
-
-            if (daysData[dayName] > daysData.MaxData) {
-                daysData.MaxData = daysData[dayName];
-            }
-        });
-
-
-
-
-
-        return daysData;
-    }
-
-    // Fungsi untuk mengonversi timestamp menjadi nama hari
-    function convertTimestampToDay(jsonTimestamp) {
-        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        // const timestamp = new Timestamp(jsonTimestamp.seconds, jsonTimestamp.nanoseconds)
-        const fireBaseTime = new Date(
-            jsonTimestamp.seconds * 1000 + jsonTimestamp.nanoseconds / 1000000,
-        );
-        const date = fireBaseTime;
-        const dayIndex = date.getDay();
-
-        return days[dayIndex];
-    }
-    const initDayData = {
-        Senin: 0,
-        Selasa: 0,
-        Rabu: 0,
-        Kamis: 0,
-        Jumat: 0,
-        Sabtu: 0,
-        Minggu: 0
-    };
-
-    const [produkData, setProdukData] = useState(initDayData);
     useEffect(() => {
         async function fetchData() {
-
-
-            const data = await fetchDataFromFirestore();
-            const result = groupDataByDay(data);
-            setProdukData(result);
-
+            const { data, totalProduk } = await fetchDataFromFirestore();
+            setProdukData(data);
+            setTotalProduk(totalProduk);
         }
         fetchData();
     }, []);
 
-    console.log("ini data transaksi", produkData)
+    // Menghitung jumlah transaksi pada masing-masing label
+    const transactionsByLabel = calculateTransactionsByLabel(produkData);
 
-    const chartData = {
-        dataset1: [produkData.Senin, produkData.Selasa, produkData.Rabu, produkData.Kamis, produkData.Jumat, produkData.Sabtu, produkData.Minggu],
-        dataset2: [produkData.MaxData - produkData.Senin, produkData.MaxData - produkData.Selasa, produkData.MaxData, produkData.MaxData, produkData.MaxData, produkData.MaxData, produkData.MaxData - produkData.Minggu],
-    };
+    // Menghasilkan data dan label untuk diagram pie
+    const chartData = [totalProduk, transactionsByLabel.jumlah];
+    const chartLabels = ['Total Produk', 'Produk Terjual'];
 
-    const [harianAktive, setHarianActive] = useState(true);
+    const [harianAktive, setHarianActive] = useState(false);
     const [bulananActive, setBulananActive] = useState(false);
     const [tahunanActive, setTahunanActive] = useState(false);
-    const [totalActive, setTotalActive] = useState(false);
+    const [totalActive, setTotalActive] = useState(true);
     const [adminActive, setAdminActive] = useState(false);
 
     const handleButtonClick = (buttonType) => {
@@ -131,10 +113,12 @@ const Home = () => {
         <div className="owner d-flex">
             <OwnerAside harianAktive={harianAktive} bulananActive={bulananActive} tahunanActive={tahunanActive} totalActive={totalActive} adminActive={adminActive} handleButtonClick={handleButtonClick} />
             <article className="d-flex" style={{ display: 'flex', height: '100vh', padding: '20px' }}>
-                <section className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
-                    <div className='chart'>
-                        <h1>Pendapatan Harian</h1>
-                        <ChartComponent data={chartData} />
+                <section className="d-flex justify-content-center" style={{ height: '100%' }}>
+                    <div className='pieCharts'>
+                        <h1>Pendapatan Total</h1>
+                        <p>Total Produk: {totalProduk}</p>
+                        <p>Produk Terjual: {transactionsByLabel.jumlah}</p>
+                        <PieChart data={chartData} labels={chartLabels} />
                     </div>
                 </section>
             </article>
@@ -142,4 +126,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default IndexPage;

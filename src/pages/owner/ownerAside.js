@@ -16,15 +16,15 @@ export default function OwnerAside({ harianAktive, bulananActive, tahunanActive,
                                 Pendapatan harian
                             </button>
                         </Link>
-                        <Link href="/owner">
+                        <Link href="/owner/pendapatan-bulanan">
                             <button className={bulananActive ? "active" : ""} onClick={() => handleButtonClick("bulanan")}>
                                 Pendapatan bulanan</button>
                         </Link>
-                        <Link href="/owner">
+                        <Link href="/owner/pendapatan-tahunan">
                             <button className={tahunanActive ? "active" : ""} onClick={() => handleButtonClick("tahunan")}>
                                 Pendapatan tahunan</button>
                         </Link>
-                        <Link href="/owner">
+                        <Link href="/owner/pendapatan-total">
                             <button className={totalActive ? "active" : ""} onClick={() => handleButtonClick("total")}>
                                 Pendapatan Total</button>
                         </Link>

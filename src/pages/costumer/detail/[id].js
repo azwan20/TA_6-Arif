@@ -18,41 +18,6 @@ async function fetchData_ModelTransaksi(id) {
     }
 }
 
-// async function fetchData_ModelTransaksi2(id) {
-//     try {
-//         const docRef = doc(db, "model_transaksi", id);
-//         const docSnapshot = await getDoc(docRef);
-
-//         if (docSnapshot.exists()) {
-//             const data = { id: docSnapshot.id, ...docSnapshot.data() };
-//             return data;
-//         } else {
-//             // Handle case where the document doesn't exist
-//             return null;
-//         }
-//     } catch (error) {
-//         console.error("Error fetching data: ", error);
-//         return null;
-//     }
-// }
-
-// async function updateData_ModelTransaksi(id, updatedData) {
-//     try {
-//         const produkRef = doc(db, 'model_transaksi', id);
-//         await updateDoc(produkRef, updatedData);
-//         console.log("Document successfully updated!");
-//         location.reload();
-//         return true;
-//     } catch (error) {
-//         console.error("Error updating document: ", error);
-//         return false;
-//     }
-// }
-
-
-
-
-
 export default function DetailTransaksi({ cartItems }) {
     const newData = getNewData();
     console.log("ini passing", newData);
@@ -78,16 +43,6 @@ export default function DetailTransaksi({ cartItems }) {
     }
 
     const [detailData, setDetailData] = useState(null);
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         if (id) {
-    //             const data = await fetchData_ModelTransaksi2(id);
-    //             setDetailData(data);
-    //         }
-    //     }
-    //     fetchData();
-    // }, [id]);
 
     const handleEdit_ModelTransaksi = async (id, updatedData) => {
         try {
@@ -223,8 +178,6 @@ export default function DetailTransaksi({ cartItems }) {
 
     const metodePengambilan = detailData && detailData[0] ? detailData[0].metode_pengambilan : '';
     const showAntarButton = metodePengambilan === 'Diantarkan'; // Change this condition based on your actual values
-    // const selesai = detailData && detailData[0] ? detailData[0].status_pemesanan : '';
-    // setSelesaiVisible = metodePengambilan === 'Proses Pengantaran'; // Change this condition based on your actual values
 
     const totalHarga = itemCounts.reduce((acc, count) => acc + count * hargaPerItem, 0);
     return (
@@ -252,7 +205,7 @@ export default function DetailTransaksi({ cartItems }) {
                                                                 <section>
                                                                     <div className="d-flex">
                                                                         <img
-                                                                            src="https://down-id.img.susercontent.com/file/4297d96793c0da24cfb79dd2760e8d8c"
+                                                                            src={menu.gambar}
                                                                             className="card-img-top"
                                                                             alt=""
                                                                         />

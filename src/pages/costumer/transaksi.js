@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { db } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath } from "firebase/firestore";
 import { useRouter } from "next/router";
+import { useUser } from "../../../public/user";
 
 async function fetchData_ModelTransaksi() {
     const querySnapshot = await getDocs(collection(db, "model_transaksi"));
@@ -34,9 +35,28 @@ export default function Transaksi() {
         }
     };
 
+    const { email, uid, role } = useUser();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
+            if (role === 'admin') {
+                router.push('/cashier');
+            } else if (role === 'user') {
+                // router.push('/costumer');
+            } else {
+                router.push('/owner');
+            }
+        }
+
+    }, [uid]);
+
     const dataKernajnag = getDataKernajnag();
 
-    console.log("ini data Keranjang", dataKernajnag);
+    // console.log("ini data Keranjang", dataKernajnag);
 
 
     const addDataToFirestore = async () => {
@@ -50,12 +70,7 @@ export default function Transaksi() {
                     // Add other properties as needed
                     timestamp: serverTimestamp(),
                 });
-
-                console.log("Document written with ID: ", docRef.id);
             }
-
-            // Optional: You can clear the dataKernajnag array after adding to Firestore
-            // set dataKernajnag to an empty array or update it based on your logic
         } catch (error) {
             console.error("Error adding document: ", error);
         }
@@ -69,13 +84,10 @@ export default function Transaksi() {
         fetchData();
     }, []);
 
-    const router = useRouter();
-
     const handleDetailTransaksi = (id) => {
         // Redirect to /detail-transaksi/[id]
         router.push(`detail/${id}`);
     };
-
 
     return (
         <>
@@ -99,7 +111,7 @@ export default function Transaksi() {
                                                             <section>
                                                                 <div className="d-flex">
                                                                     <img
-                                                                        src="https://down-id.img.susercontent.com/file/4297d96793c0da24cfb79dd2760e8d8c"
+                                                                        src={produk.menu_pesanan[0].gambar}
                                                                         className="card-img-top"
                                                                         alt=""
                                                                     />
@@ -115,12 +127,12 @@ export default function Transaksi() {
                                                                     </div>
                                                                 </div>
                                                             </section>
-                                                            <section className="align-items-end p-1">
+                                                            <section className="align-items-end p-1 cardd">
                                                                 <span>
-                                                                    <b className="card-title"> {produk.status_pemesanan}</b>
+                                                                    <b className={`card-title btn ${produk.status_pemesanan === 'Proses Selesai' ? 'btn-success' : 'btn-secondary'}`}>{produk.status_pemesanan}</b>
                                                                 </span>
                                                                 <span>
-                                                                    <p>{produk.tanggal}</p>
+                                                                    <p>{produk.menu_pesanan[0].tanggal}</p>
                                                                 </span>
                                                             </section>
                                                         </div>

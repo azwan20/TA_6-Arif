@@ -55,7 +55,7 @@ export default function Keranjang() {
     const newData = getNewData();
     const [noKamar, setNoKamar] = useState('');
 
-    console.log("ini passing", newData.username);
+    console.log("ini passing", newData);
     const router = useRouter();
     const handleGoBack = () => {
         router.back();
@@ -71,22 +71,28 @@ export default function Keranjang() {
 
     const hargaPerItem = 45000;
 
+    const [ambilActive, setAmbilActive] = useState(true);
+    const [diantarActive, setAntarActive] = useState(false);
     const [visible, setVisible] = useState(true);
 
-    const handleButtonVisible = () => {
-        setVisible(false);
-    }
+    const handleButtonClick2 = (buttonType) => {
+        if (buttonType === "ambil") {
+            setAmbilActive(true);
+            setAntarActive(false);
+            setVisible(true);
+        } else if (buttonType === "antar") {
+            setAmbilActive(false);
+            setAntarActive(true);
+            setVisible(false);
+        }
+    };
 
-    const handleButtonNoVisible = () => {
-        setVisible(true);
-    }
 
-    // const listNew = newData.map(angka => angka.harga.toLocaleString());
-    // const listNew = newData.map(angka => ({
-    //     ...angka,
-    //     harga: parseInt(angka.harga).toLocaleString('id-ID') // Convert to number and format
-    //   }));
-    // console.log("ini listNew", listNew);
+    // const handleButtonVisible = () => {
+    // }
+
+    // const handleButtonNoVisible = () => {
+    // }
 
     const initialItemState = Array.from({ length: 2 }, () => 1);
     const [itemCounts, setItemCounts] = useState(Array(newData.length).fill(1));
@@ -126,10 +132,10 @@ export default function Keranjang() {
             const menuPesanan = newData.map((item, index) => ({
                 id: item.id,
                 name: item.name,
+                gambar : item.gambar,
                 harga: item.harga,
                 jumlah: itemCounts[index],
                 totalHarga: itemCounts[index] * item.harga,
-                // jumlahProduk : item.jml_produk - itemCounts[index],
                 tanggal: formattedDate,
             }));
 
@@ -187,8 +193,8 @@ export default function Keranjang() {
                             <rect x="20.4231" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 20.4231 22.8916)" fill="#3598D7" />
                         </svg>
                         <div className="navbarButton">
-                            <button onClick={handleButtonNoVisible}>Ambil sendiri</button>
-                            <button onClick={handleButtonVisible}>Diantarkan</button>
+                            <button className={ambilActive ? "active" : ""} onClick={() => handleButtonClick2("ambil")}>Ambil sendiri</button>
+                            <button className={diantarActive ? "active" : ""} onClick={() => handleButtonClick2("antar")}>Diantarkan</button>
                         </div>
                         <div className="section">
                             <div>
@@ -202,7 +208,7 @@ export default function Keranjang() {
                                                             <section>
                                                                 <div className="d-flex">
                                                                     <img
-                                                                        src="https://down-id.img.susercontent.com/file/4297d96793c0da24cfb79dd2760e8d8c"
+                                                                        src={item.gambar}
                                                                         className="card-img-top"
                                                                         alt=""
                                                                     />
@@ -276,6 +282,23 @@ export default function Keranjang() {
                     </section>
                 </div>
             </div>
+            <style jsx>{`
+                button {
+                    background-color: #ffffff;
+                    border: none;
+                    padding: 10px;
+                    cursor: pointer;
+                }
+
+                button.active {
+                    background-color: #3598D7;
+                    color: #ffffff;
+                }
+
+                .logout {
+
+                }
+            `}</style>
         </>
     )
 }

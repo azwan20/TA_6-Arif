@@ -28,13 +28,24 @@ async function fetchData_ModelUser() {
 }
 
 function Home() {
-    const { email, uid } = useUser();
+    const { email, uid, role } = useUser();
     const router = useRouter();
     const [username, setUsername] = useState("");
-    console.log("username ni", username);
+    // console.log("username ni", username);
 
     useEffect(() => {
-        if (!uid) {
+        if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
+            if (role === 'admin') {
+                router.push('/cashier');
+            } else if (role === 'user') {
+                router.push('/costumer');
+            } else {
+                router.push('/owner');
+            }
+        } else {
             router.push('/');
         }
 
@@ -74,7 +85,7 @@ function Home() {
     const [clickCount, setClickCount] = useState(0);
     const [cartItems, setCartItems] = useState([]);
 
-    console.log("ini produk", produkData);
+    // console.log("ini produk", produkData);
 
     let listCart = [];
 
@@ -101,15 +112,16 @@ function Home() {
         items.forEach((e, index) => {
             newData.push({
                 id: e.id,
+                'gambar' : e.gambar,
                 'name': e.name,
                 'harga': e.harga,
                 'username': username,
-                'jml_produk' : e.jml_produk,
+                'jml_produk': e.jml_produk,
             });
         });
 
         // Anda dapat menggunakan newData sesuai kebutuhan di sini
-        console.log("newData", newData);
+        // console.log("newData", newData);
     };
 
     const [searchInput, setSearchInput] = useState("");
@@ -149,7 +161,7 @@ function Home() {
                                         <div key={cardNumber} className="col">
                                             <div className="card">
                                                 <img
-                                                    src="https://down-id.img.susercontent.com/file/4297d96793c0da24cfb79dd2760e8d8c"
+                                                    src={cardNumber.gambar}
                                                     className="card-img-top"
                                                     alt={`Card ${cardNumber}`}
                                                 />
@@ -189,7 +201,7 @@ function Home() {
                                     <rect x="30.8301" y="53.5088" width="3.9866" height="3.9866" rx="1.9933" fill="#3598D7" />
                                 </svg>
                                 <p><b>{clickCount}</b></p>
-                                {console.log("ini passing", cartItems)}
+                                {/* {console.log("ini passing", cartItems)} */}
                             </Link>
                         </section>
                     </article>

@@ -18,38 +18,8 @@ async function fetchDataFromFirestore() {
 
 
 const Home = () => {
-    function groupDataByDay(data) {
-        const daysData = {
-            Senin: 0,
-            Selasa: 0,
-            Rabu: 0,
-            Kamis: 0,
-            Jumat: 0,
-            Sabtu: 0,
-            Minggu: 0,
-            MaxData: 0,
-        };
-
-        data.forEach(item => {
-            const dayName = convertTimestampToDay(item.date_selesai);
-            daysData[dayName] += 1;
-
-            if (daysData[dayName] > daysData.MaxData) {
-                daysData.MaxData = daysData[dayName];
-            }
-        });
-
-
-
-
-
-        return daysData;
-    }
-
-    // Fungsi untuk mengonversi timestamp menjadi nama hari
     function convertTimestampToDay(jsonTimestamp) {
         const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        // const timestamp = new Timestamp(jsonTimestamp.seconds, jsonTimestamp.nanoseconds)
         const fireBaseTime = new Date(
             jsonTimestamp.seconds * 1000 + jsonTimestamp.nanoseconds / 1000000,
         );
@@ -58,34 +28,79 @@ const Home = () => {
 
         return days[dayIndex];
     }
+    function groupDataByDay(data) {
+        const daysData = {
+            Senin: { total: 0, count: 0 },
+            Selasa: { total: 0, count: 0 },
+            Rabu: { total: 0, count: 0 },
+            Kamis: { total: 0, count: 0 },
+            Jumat: { total: 0, count: 0 },
+            Sabtu: { total: 0, count: 0 },
+            Minggu: { total: 0, count: 0 },
+            MaxData: 0,
+        };
+
+        data.forEach(item => {
+            const dayName = convertTimestampToDay(item.date_selesai);
+            const hargaTotal = item.harga_total || 0;
+        
+            if (!daysData[dayName]) {
+                // Jika objek hari belum dibuat, buat objek baru dengan properti total dan count
+                daysData[dayName] = { total: 0, count: 0 };
+            }
+        
+            daysData[dayName].total += hargaTotal;
+            daysData[dayName].count += 1;
+        
+            if (daysData[dayName].total > daysData.MaxData) {
+                daysData.MaxData = daysData[dayName].total;
+            }
+        });
+
+
+        return daysData;
+    }
+
     const initDayData = {
-        Senin: 0,
-        Selasa: 0,
-        Rabu: 0,
-        Kamis: 0,
-        Jumat: 0,
-        Sabtu: 0,
-        Minggu: 0
+        Senin: { total: 0, count: 0 },
+        Selasa: { total: 0, count: 0 },
+        Rabu: { total: 0, count: 0 },
+        Kamis: { total: 0, count: 0 },
+        Jumat: { total: 0, count: 0 },
+        Sabtu: { total: 0, count: 0 },
+        Minggu: { total: 0, count: 0 },
     };
+
 
     const [produkData, setProdukData] = useState(initDayData);
     useEffect(() => {
         async function fetchData() {
-
-
             const data = await fetchDataFromFirestore();
             const result = groupDataByDay(data);
             setProdukData(result);
-
         }
         fetchData();
     }, []);
 
-    console.log("ini data transaksi", produkData)
-
     const chartData = {
-        dataset1: [produkData.Senin, produkData.Selasa, produkData.Rabu, produkData.Kamis, produkData.Jumat, produkData.Sabtu, produkData.Minggu],
-        dataset2: [produkData.MaxData - produkData.Senin, produkData.MaxData - produkData.Selasa, produkData.MaxData, produkData.MaxData, produkData.MaxData, produkData.MaxData, produkData.MaxData - produkData.Minggu],
+        dataset1: [
+            produkData.Senin.total,
+            produkData.Selasa.total,
+            produkData.Rabu.total,
+            produkData.Kamis.total,
+            produkData.Jumat.total,
+            produkData.Sabtu.total,
+            produkData.Minggu.total,
+        ],
+        dataset2: [
+            produkData.MaxData - produkData.Senin.total,
+            produkData.MaxData - produkData.Selasa.total,
+            produkData.MaxData - produkData.Rabu.total,
+            produkData.MaxData - produkData.Kamis.total,
+            produkData.MaxData - produkData.Jumat.total,
+            produkData.MaxData - produkData.Sabtu.total,
+            produkData.MaxData - produkData.Minggu.total,
+        ],
     };
 
     const [harianAktive, setHarianActive] = useState(true);
