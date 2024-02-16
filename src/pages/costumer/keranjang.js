@@ -12,6 +12,7 @@ async function AddData_ModelTransaksi(
     lokasi_ruangan,
     nama_admin,
     nama_user,
+    email_user,
     date_terima_pesanan,
     date_proses_packing,
     date_pengantaran,
@@ -30,6 +31,7 @@ async function AddData_ModelTransaksi(
             lokasi_ruangan: lokasi_ruangan,
             nama_admin: nama_admin,
             nama_user: nama_user,
+            email_user: email_user,
             date_terima_pesanan: date_terima_pesanan,
             date_proses_packing: date_proses_packing,
             date_pengantaran: date_pengantaran,
@@ -132,7 +134,7 @@ export default function Keranjang() {
             const menuPesanan = newData.map((item, index) => ({
                 id: item.id,
                 name: item.name,
-                gambar : item.gambar,
+                gambar: item.gambar,
                 harga: item.harga,
                 jumlah: itemCounts[index],
                 totalHarga: itemCounts[index] * item.harga,
@@ -156,6 +158,7 @@ export default function Keranjang() {
                 noKamar,
                 "nama_admin",
                 firstItem.username,
+                firstItem.email,
                 "date_terima_pesanan",
                 "",
                 "",
@@ -278,13 +281,14 @@ export default function Keranjang() {
                         </div>
                     </section>
                     <section className="section">
-                        <button onClick={handleSubmit_ModelTransaksi}>Beli Sekarang</button>
+                        <button onClick={handleSubmit_ModelTransaksi} style={{ backgroundColor: '#3598D7', color: '#fff' }}>Beli Sekarang</button>
                     </section>
                 </div>
             </div>
             <style jsx>{`
                 button {
                     background-color: #ffffff;
+                    color: #000000;
                     border: none;
                     padding: 10px;
                     cursor: pointer;

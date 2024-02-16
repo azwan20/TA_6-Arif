@@ -31,22 +31,20 @@ function Home() {
     const { email, uid, role } = useUser();
     const router = useRouter();
     const [username, setUsername] = useState("");
-    // console.log("username ni", username);
+    const [loading, setLoading] = useState(true); // Add loading state
+    console.log("username ni", email);
 
     useEffect(() => {
         if (uid) {
-            // console.log("ini uid user: ", uid);
-            // console.log("ini email user: ", email);
-            // console.log("ini role user: ", role);
             if (role === 'admin') {
                 router.push('/cashier');
             } else if (role === 'user') {
                 router.push('/costumer');
-            } else {
+            } else if (role === 'owner') {
                 router.push('/owner');
+            } else {
+                router.push('/');
             }
-        } else {
-            router.push('/');
         }
 
     }, [uid]);
@@ -62,6 +60,7 @@ function Home() {
                     const targetUsername = "@" + isEmailExist.username;
                     setUsername(targetUsername);
                 }
+                setLoading(false); // Set loading to false once data is fetched
             }
             fetchData();
         }
@@ -112,16 +111,14 @@ function Home() {
         items.forEach((e, index) => {
             newData.push({
                 id: e.id,
-                'gambar' : e.gambar,
+                'gambar': e.gambar,
                 'name': e.name,
                 'harga': e.harga,
                 'username': username,
                 'jml_produk': e.jml_produk,
+                'email' : email,
             });
         });
-
-        // Anda dapat menggunakan newData sesuai kebutuhan di sini
-        // console.log("newData", newData);
     };
 
     const [searchInput, setSearchInput] = useState("");
@@ -133,6 +130,11 @@ function Home() {
     const filteredProdukData = produkData.filter((product) =>
         product.name.toLowerCase().includes(searchInput.toLowerCase())
     );
+
+    // if (loading) {
+    //     // Render loading indicator
+    //     return <div>Loading...</div>;
+    // }
 
     return (
         <>

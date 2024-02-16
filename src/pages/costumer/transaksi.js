@@ -19,11 +19,36 @@ async function fetchData_ModelTransaksi() {
     return data;
 }
 
+async function fetchData_ModelUser() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
 
 export default function Transaksi() {
     const [isTransaksiActive, setIsTransaksiActive] = useState(true);
     const [isProdukActive, setIsProdukActive] = useState(false);
     const [produkDataModelTransaksi, setProdukDataModelTransaksi] = useState([]);
+    const [username, setUsername] = useState("");
+
+    useEffect(() => {
+        if (email) {
+            // alert(email)
+            async function fetchData() {
+                const data = await fetchData_ModelUser();
+                const isEmailExist = data.find(user => user.email === email);
+                if (isEmailExist) {
+                    const targetUsername = "@" + isEmailExist.username;
+                    setUsername(targetUsername);
+                }
+                // setLoading(false); // Set loading to false once data is fetched
+            }
+            fetchData();
+        }
+    }, []);
 
     const handleButtonClick = (buttonType) => {
         if (buttonType === "transaksi") {
@@ -93,7 +118,7 @@ export default function Transaksi() {
         <>
             <div>
                 <div className="transaksi d-flex">
-                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
+                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} handleButtonClick={handleButtonClick} />
                     <article style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         {produkDataModelTransaksi.length === 0 ? (
                             <div className="kosong d-flex">

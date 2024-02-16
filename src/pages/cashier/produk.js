@@ -3,8 +3,10 @@ import CashierAside from "./cashierAside";
 import Navar from "./navbar";
 import { useRouter } from "next/router";
 import { useUser } from "../../../public/user";
-import { db } from "../../../public/firebaseConfig";
+import { db, storage } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 
 async function updateDataInFirebase(id, updatedData) {
     try {
@@ -63,7 +65,8 @@ export default function Produk() {
     const [showProdukInput, setShowProdukInput] = useState(false);
     const [id, setID] = useState('');
     const [name, setName] = useState('');
-    const [gambar, setGambar] = useState('');
+    const [gambar, setGambar] = useState(null);
+    // const [url_gambar, setUrlGambar] = useState();
     const [kode, setKode] = useState('');
     const [harga, setHarga] = useState('');
     const [jml_produk, setJml_produk] = useState('');
@@ -102,29 +105,68 @@ export default function Produk() {
         fetchData();
     }, []);
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const added = await addDataToFirebase(name, gambar, kode, harga, jml_produk);
-        if (added) {
-            setName("");
-            setGambar("");
-            setKode("");
-            setHarga("");
-            setJml_produk("");
 
-            alert("Data berhasil di upload");
+        if (gambar !== null) {
+            const fileName = gambar[0].name;
+            const fileref = ref(storage, `imgProduk/${fileName}`);
+
+            try {
+                // Upload image to storage
+                const snapshot = await uploadBytes(fileref, gambar[0]);
+                const url = await getDownloadURL(snapshot.ref);
+
+                // Add new data to Firebase
+                const added = await addDataToFirebase(name, url, kode, harga, jml_produk);
+
+                if (added) {
+                    // If data is successfully added, fetch the updated data
+                    const newData = await fetchDataFromFirestore();
+                    setProdukData(newData);
+
+                    // Reset form fields
+                    setName("");
+                    setGambar("");
+                    setKode("");
+                    setHarga("");
+                    setJml_produk("");
+
+                    // Optionally, show a success message
+                    alert("Data berhasil di upload");
+                } else {
+                    console.error("Data gagal di upload");
+                }
+            } catch (error) {
+                console.error("gagal upload image:", error);
+                // Handle the error, show an error message, etc.
+            }
+        } else {
+            alert("Pilih gambar");
         }
     };
+
 
     // // fungsi hapus, digunakan untuk menghapus data di Firebase
     const handleDelete = async (id) => {
-        const deleted = await deleteDataFromFirebase(id);
-        if (deleted) {
-            alert("Data deleted from Firebase DB");
-            location.reload();
+        try {
+            // Delete the data from Firebase
+            const deleted = await deleteDataFromFirebase(id);
+
+            if (deleted) {
+                // If the data is successfully deleted, update the state without reloading
+                const newData = await fetchDataFromFirestore();
+                setProdukData(newData);
+
+                // Optionally, show a success message
+                alert("Data deleted from Firebase DB");
+            }
+        } catch (error) {
+            console.error("Error deleting data: ", error);
+            // Handle the error, show an error message, etc.
         }
     };
+
 
     const handleCardClick = () => {
         setShowProdukInput(!showProdukInput);
@@ -187,14 +229,24 @@ export default function Produk() {
     }
 
     const handleEdit = async (id, updatedData) => {
-        // console.log("ini data: ", id);
-        const edited = await updateDataInFirebase(id, updatedData);
+        try {
+            // Update the data in Firebase
+            const edited = await updateDataInFirebase(id, updatedData);
 
-        if (edited) {
-            // alert("Data edited in Firebase DB");
-            location.reload();
+            if (edited) {
+                // If the data is successfully edited, update the state with the new data
+                const newData = await fetchDataFromFirestore();
+                setProdukData(newData);
+
+                // Optionally, close the edit popup or show a success message
+                setEditPopupVisible(false);
+            }
+        } catch (error) {
+            console.error("Error editing data: ", error);
+            // Handle the error, show an error message, etc.
         }
     };
+
 
     const getEditedFieldValue = (rowId, fieldName) => {
         return editedDataForSelectedRows[rowId] ? editedDataForSelectedRows[rowId][fieldName] : '';
@@ -301,8 +353,11 @@ export default function Produk() {
                                         <input type="text" id="nama" value={name} onChange={(e) => setName(e.target.value)} />
                                     </span>
                                     <span>
-                                        <p>Gambar</p>
-                                        <input type="file" id="nama" value={gambar} onChange={(e) => setGambar(e.target.value)} />
+                                        <p>Gambar bangke</p>
+                                        <input
+                                            type="file"
+                                            onChange={(e) => setGambar(e.target.files)}
+                                        />
                                     </span>
                                     <span>
                                         <p>Kode Produk</p>
@@ -318,7 +373,7 @@ export default function Produk() {
                                     </span>
                                 </section>
                                 <section>
-                                    <button type="submit" onClick={handleSimpan}>UPLOAD</button>
+                                    <button type="submit">UPLOAD</button>
                                 </section>
                             </form>
                         </div>
@@ -345,7 +400,7 @@ export default function Produk() {
                         <span>
                             <p>Gambar</p>
                             <input type="file" id="gambar"
-                                onChange={(e) => setEditedGambar(e.target.value)}
+                                onChange={(e) => setEditedGambar(e.target.files)}
                                 style={{ width: '53%' }}
                             />
                         </span>

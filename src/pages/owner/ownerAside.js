@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SignOut } from "../../../public/firebaseConfig";
 
 export default function OwnerAside({ harianAktive, bulananActive, tahunanActive, totalActive, adminActive, handleButtonClick }) {
     return (
@@ -34,7 +35,7 @@ export default function OwnerAside({ harianAktive, bulananActive, tahunanActive,
                         </Link>
                     </span>
                     <span style={{ width: '80%' }}>
-                        <button className='logout'>Logout</button>
+                        <button className='logout' onClick={SignOut}>Logout</button>
                     </span>
                 </section>
             </aside>

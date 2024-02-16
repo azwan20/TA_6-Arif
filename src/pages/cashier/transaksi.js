@@ -36,6 +36,7 @@ async function fetchData_ModelTransaksi2(id) {
     }
 }
 
+
 async function updateData_ModelTransaksi(id, updatedData) {
     try {
         const produkRef = doc(db, 'model_transaksi', id);

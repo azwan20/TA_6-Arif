@@ -42,7 +42,8 @@
   padding: 20px 20px 10px;
 }
 
-.login .card input {
+.login .card .email input,
+.login .card .passw {
   width: 100%;
   height: 40px;
   margin-top: 20px;
@@ -76,6 +77,14 @@
 
 .login .loginBgn {
   display: none;
+}
+
+.login .passw input,
+.login .passw button {
+  background: transparent;
+  border: none;
+  outline: none;
+  margin: 0;
 }
 
 .register {
@@ -538,11 +547,14 @@ aside a {
 
 .keranjang section button {
   width: 100%;
-  background-color: var(--primary-color);
+  /* background-color: var(--primary-color); */
   border-radius: 10px;
   border: none;
-  color: #fff;
+  /* color: #fff; */
   height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .keranjang .section {

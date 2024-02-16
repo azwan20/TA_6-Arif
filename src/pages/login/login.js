@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from "../../../public/user";
 import { useForm } from 'react-hook-form'
@@ -21,6 +21,7 @@ async function fetchData_ModelUser() {
 export default function Login() {
     const router = useRouter();
     const { email, uid, role } = useUser();
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         if (uid) {
@@ -72,21 +73,33 @@ export default function Login() {
                     <div className="cards d-flex">
                         <div className="card">
                             <span>
-                                <input placeholder="Email"
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    label="Email atau nomor telepon"
-                                    variant="filled"
-                                    {...register("email", { required: true })}
-                                />
-                                <input id="password"
-                                    name="password"
-                                    type={'password'}
-                                    label="Password"
-                                    variant="filled"
-                                    {...register("password", { required: true, minLength: 8 })}
-                                    placeholder="Password" />
+                                <div className="email">
+                                    <input placeholder="Email"
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        label="Email atau nomor telepon"
+                                        variant="filled"
+                                        {...register("email", { required: true })}
+                                    />
+                                </div>
+                                <div className="passw d-flex">
+                                    <input id="password"
+                                        name="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        label="Password"
+                                        variant="filled"
+                                        {...register("password", { required: true, minLength: 8 })}
+                                        style={{ width: '90%' }}
+                                        placeholder="Password" />
+                                    <button
+                                        type="button"
+                                        className="material-symbols-outlined"
+                                        style={{ width: '10%' }}
+                                        onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? 'visibility_off' : 'visibility'}
+                                    </button>
+                                </div>
                                 <Link href="login/lupa-password">Forget Password</Link>
                             </span>
                             <div className="loginBgn"></div>
