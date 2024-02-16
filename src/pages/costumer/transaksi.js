@@ -33,6 +33,7 @@ export default function Transaksi() {
     const [isProdukActive, setIsProdukActive] = useState(false);
     const [produkDataModelTransaksi, setProdukDataModelTransaksi] = useState([]);
     const [username, setUsername] = useState("");
+    const [profile, setProfile] = useState("");
 
     useEffect(() => {
         if (email) {
@@ -41,6 +42,7 @@ export default function Transaksi() {
                 const data = await fetchData_ModelUser();
                 const isEmailExist = data.find(user => user.email === email);
                 if (isEmailExist) {
+                    setProfile(isEmailExist.img_profil);
                     const targetUsername = "@" + isEmailExist.username;
                     setUsername(targetUsername);
                 }
@@ -63,6 +65,8 @@ export default function Transaksi() {
     const { email, uid, role } = useUser();
     const router = useRouter();
 
+    console.log("ini uid", email);
+
     useEffect(() => {
         if (uid) {
             // console.log("ini uid user: ", uid);
@@ -75,6 +79,8 @@ export default function Transaksi() {
             } else {
                 router.push('/owner');
             }
+        } else {
+            router.push('/');
         }
 
     }, [uid]);
@@ -101,14 +107,21 @@ export default function Transaksi() {
         }
     };
 
+
     useEffect(() => {
         async function fetchData() {
             const data = await fetchData_ModelTransaksi();
             setProdukDataModelTransaksi(data);
+
+            const produk = data.filter((item) => item.email_user === email);
+
+            setProdukEmail(produk);
         }
         fetchData();
     }, []);
+    const [produkEmail, setProdukEmail] = useState([]);
 
+    console.log("ini produk berdasarkan email", produkEmail)
     const handleDetailTransaksi = (id) => {
         // Redirect to /detail-transaksi/[id]
         router.push(`detail/${id}`);
@@ -118,9 +131,9 @@ export default function Transaksi() {
         <>
             <div>
                 <div className="transaksi d-flex">
-                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} handleButtonClick={handleButtonClick} />
+                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} profile={profile} handleButtonClick={handleButtonClick} />
                     <article style={{ maxHeight: '100vh', overflowY: 'auto' }}>
-                        {produkDataModelTransaksi.length === 0 ? (
+                        {produkEmail.length === 0 ? (
                             <div className="kosong d-flex">
                                 <h1>Belum ada transaksi</h1>
                             </div>
@@ -129,7 +142,7 @@ export default function Transaksi() {
                                 <div className="container">
                                     <div className="cards">
                                         <div className="row">
-                                            {produkDataModelTransaksi.map((produk, index) => (
+                                            {produkEmail.map((produk, index) => (
                                                 <div className="col-md-6 mb-3" key={produk}>
                                                     <div onClick={() => handleDetailTransaksi(produk.id)} className="card" style={{ border: 'none' }}>
                                                         <div className="card-body d-flex">

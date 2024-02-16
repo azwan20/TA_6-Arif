@@ -228,22 +228,32 @@ export default function Produk() {
 
     }
 
-    const handleEdit = async (id, updatedData) => {
-        try {
-            // Update the data in Firebase
-            const edited = await updateDataInFirebase(id, updatedData);
+    const handleEdit = async (id) => {
+        if (typeof editedGambar !== 'string') {
+            const fileName = editedGambar[0].name;
+            const fileref = ref(storage, `imgProduk/${fileName}`);
+            console.log(fileName)
 
-            if (edited) {
-                // If the data is successfully edited, update the state with the new data
-                const newData = await fetchDataFromFirestore();
-                setProdukData(newData);
+            try {
+                const snapshot = await uploadBytes(fileref, editedGambar[0]);
+                const url = await getDownloadURL(snapshot.ref);
 
-                // Optionally, close the edit popup or show a success message
-                setEditPopupVisible(false);
+                console.log(url);
+
+                const added = await updateDataInFirebase(
+                    id,
+                    { name: editedName, gambar: url, kode: editedKode, harga: editedHarga, jml_produk: editedJml_produk }
+                );
+
+                if (added) {
+                    alert("Data berhasil di upload");
+                    location.reload();
+                } else {
+                    console.error("Data gagal di upload");
+                }
+            } catch (error) {
+                console.error("gagal upload image:", error);
             }
-        } catch (error) {
-            console.error("Error editing data: ", error);
-            // Handle the error, show an error message, etc.
         }
     };
 
@@ -424,7 +434,8 @@ export default function Produk() {
                                 onChange={(e) => setEditedJml_produk(e.target.value)} />
                         </span>
                         {/* <button onClick={handleSaveClick}>Save</button> */}
-                        <button onClick={() => handleEdit(idSementara, { name: editedName, gambar: editedGambar, kode: editedKode, harga: editedHarga, jml_produk: editedJml_produk })}>Save</button>
+                        <button onClick={() => handleEdit(idSementara)}
+                        >Save</button>
                         <button onClick={handlePopupClose}>Close</button>
                     </div>
                 </div>

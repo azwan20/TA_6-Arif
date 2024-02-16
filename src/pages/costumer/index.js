@@ -31,20 +31,24 @@ function Home() {
     const { email, uid, role } = useUser();
     const router = useRouter();
     const [username, setUsername] = useState("");
+    const [profile, setProfile] = useState("");
     const [loading, setLoading] = useState(true); // Add loading state
     console.log("username ni", email);
 
     useEffect(() => {
         if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
             if (role === 'admin') {
                 router.push('/cashier');
             } else if (role === 'user') {
-                router.push('/costumer');
-            } else if (role === 'owner') {
-                router.push('/owner');
+                // router.push('/costumer');
             } else {
-                router.push('/');
+                router.push('/owner');
             }
+        } else {
+            router.push('/');
         }
 
     }, [uid]);
@@ -57,6 +61,7 @@ function Home() {
                 const data = await fetchData_ModelUser();
                 const isEmailExist = data.find(user => user.email === email);
                 if (isEmailExist) {
+                    setProfile(isEmailExist.img_profil);
                     const targetUsername = "@" + isEmailExist.username;
                     setUsername(targetUsername);
                 }
@@ -116,7 +121,7 @@ function Home() {
                 'harga': e.harga,
                 'username': username,
                 'jml_produk': e.jml_produk,
-                'email' : email,
+                'email': email,
             });
         });
     };
@@ -140,7 +145,7 @@ function Home() {
         <>
             <div>
                 <div className="costumer d-flex">
-                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} handleButtonClick={handleButtonClick} />
+                    <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} profile={profile} handleButtonClick={handleButtonClick} />
                     <article className="d-flex" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <section>
                             <nav class="navbar" style={{ marginBottom: '20px' }}>
