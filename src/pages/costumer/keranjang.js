@@ -131,6 +131,7 @@ export default function Keranjang() {
 
         try {
             const firstItem = newData[0];
+            const itemUsername = newData[0];
             const menuPesanan = newData.map((item, index) => ({
                 id: item.id,
                 name: item.name,
@@ -157,7 +158,7 @@ export default function Keranjang() {
                 "Pesanan Diterima",
                 noKamar,
                 "nama_admin",
-                firstItem.username,
+                itemUsername.username,
                 firstItem.email,
                 "date_terima_pesanan",
                 "",
@@ -166,7 +167,7 @@ export default function Keranjang() {
                 "telah_diterima",
                 metodePengambilan,
                 menuPesanan, // Pass the menuPesanan array
-                "metode_pembayaran",
+                "Tunai",
                 itemCounts.reduce((acc, count) => acc + count, 0),
                 totalHarga,
                 timeString

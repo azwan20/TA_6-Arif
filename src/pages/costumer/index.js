@@ -33,22 +33,21 @@ function Home() {
     const [username, setUsername] = useState("");
     const [profile, setProfile] = useState("");
     const [loading, setLoading] = useState(true); // Add loading state
-    console.log("username ni", email);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // New state to track login status
+    console.log("username ni", username);
 
     useEffect(() => {
         if (uid) {
-            // console.log("ini uid user: ", uid);
-            // console.log("ini email user: ", email);
-            // console.log("ini role user: ", role);
             if (role === 'admin') {
                 router.push('/cashier');
             } else if (role === 'user') {
+                setIsLoggedIn(true); // User is logged in
                 // router.push('/costumer');
             } else {
                 router.push('/owner');
             }
         } else {
-            router.push('/');
+            isLoggedIn && router.push('/');
         }
 
     }, [uid]);
@@ -119,8 +118,8 @@ function Home() {
                 'gambar': e.gambar,
                 'name': e.name,
                 'harga': e.harga,
-                'username': username,
                 'jml_produk': e.jml_produk,
+                'username': username,
                 'email': email,
             });
         });
@@ -141,8 +140,13 @@ function Home() {
     //     return <div>Loading...</div>;
     // }
 
+    // if (!isLoggedIn) {
+    //     return <div>Loading...</div>;
+    // }
+
     return (
         <>
+            {/* {!isLoggedIn && <p>Loading</p> } */}
             <div>
                 <div className="costumer d-flex">
                     <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} profile={profile} handleButtonClick={handleButtonClick} />
