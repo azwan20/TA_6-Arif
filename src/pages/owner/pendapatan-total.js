@@ -1,10 +1,10 @@
-// pages/index.js
-
 import React, { useEffect, useState } from 'react';
 import PieChart from './pieChart';
 import OwnerAside from './ownerAside';
 import { db } from "../../../public/firebaseConfig";
 import { collection, addDoc, getDocs } from "firebase/firestore";
+import { useRouter } from 'next/router';
+import { useUser } from '../../../public/user';
 
 // ... (kode sebelumnya)
 
@@ -32,6 +32,15 @@ async function fetchDataFromFirestore() {
     return { data, totalProduk, jumlah };
 }
 
+async function fetchData_ModelUser() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
+
 // Menambahkan fungsi untuk menghitung jumlah transaksi pada masing-masing label
 function calculateTransactionsByLabel(data) {
     const transactionsByLabel = {
@@ -53,6 +62,44 @@ function calculateTransactionsByLabel(data) {
 const IndexPage = () => {
     const [produkData, setProdukData] = useState([]);
     const [totalProduk, setTotalProduk] = useState(0);
+    const { email, uid, role } = useUser();
+    const [username, setUsername] = useState("");
+    const [profile, setProfile] = useState("");
+    const router = useRouter();
+
+    useEffect(() => {
+        if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
+            if (role === 'admin') {
+                router.push('/cashier');
+            } else if (role === 'user') {
+                router.push('/costumer');
+            } else {
+                // router.push('/owner');
+            }
+        } else {
+            router.push('/');
+        }
+
+    }, [uid]);
+    //fungsi baca data user
+    useEffect(() => {
+        if (email) {
+            // alert(email)
+            async function fetchData() {
+                const data = await fetchData_ModelUser();
+                const isEmailExist = data.find(user => user.email === email);
+                if (isEmailExist) {
+                    setProfile(isEmailExist.img_profil);
+                    const targetUsername = "@" + isEmailExist.username;
+                    setUsername(targetUsername);
+                }
+            }
+            fetchData();
+        }
+    }, []);
 
     useEffect(() => {
         async function fetchData() {
@@ -111,7 +158,16 @@ const IndexPage = () => {
     };
     return (
         <div className="owner d-flex">
-            <OwnerAside harianAktive={harianAktive} bulananActive={bulananActive} tahunanActive={tahunanActive} totalActive={totalActive} adminActive={adminActive} handleButtonClick={handleButtonClick} />
+<OwnerAside
+                harianAktive={harianAktive}
+                bulananActive={bulananActive}
+                tahunanActive={tahunanActive}
+                totalActive={totalActive}
+                adminActive={adminActive}
+                handleButtonClick={handleButtonClick}
+                username={username}
+                profile={profile}
+            />
             <article className="d-flex" style={{ display: 'flex', height: '100vh', padding: '20px' }}>
                 <section className="d-flex justify-content-center" style={{ height: '100%' }}>
                     <div className='pieCharts'>

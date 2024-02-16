@@ -6,6 +6,8 @@ import ChartComponent from './chart';
 import { db } from "../../../public/firebaseConfig";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import OwnerAside from './ownerAside';
+import { useRouter } from 'next/router';
+import { useUser } from '../../../public/user';
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "model_transaksi"));
@@ -16,8 +18,22 @@ async function fetchDataFromFirestore() {
     return data;
 }
 
+async function fetchData_ModelUser() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
+
 
 const Home = () => {
+    const router = useRouter();
+    const { email, uid, role } = useUser();
+    const [username, setUsername] = useState("");
+    const [profile, setProfile] = useState("");
+
     function convertTimestampToDay(jsonTimestamp) {
         const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         const fireBaseTime = new Date(
@@ -28,6 +44,41 @@ const Home = () => {
 
         return days[dayIndex];
     }
+
+    useEffect(() => {
+        if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
+            if (role === 'admin') {
+                router.push('/cashier');
+            } else if (role === 'user') {
+                router.push('/costumer');
+            } else {
+                // router.push('/owner');
+            }
+        } else {
+            router.push('/');
+        }
+
+    }, [uid]);
+    //fungsi baca data user
+    useEffect(() => {
+        if (email) {
+            // alert(email)
+            async function fetchData() {
+                const data = await fetchData_ModelUser();
+                const isEmailExist = data.find(user => user.email === email);
+                if (isEmailExist) {
+                    setProfile(isEmailExist.img_profil);
+                    const targetUsername = "@" + isEmailExist.username;
+                    setUsername(targetUsername);
+                }
+            }
+            fetchData();
+        }
+    }, []);
+
     function groupDataByDay(data) {
         const daysData = {
             Senin: { total: 0, count: 0 },
@@ -43,15 +94,15 @@ const Home = () => {
         data.forEach(item => {
             const dayName = convertTimestampToDay(item.date_selesai);
             const hargaTotal = item.harga_total || 0;
-        
+
             if (!daysData[dayName]) {
                 // Jika objek hari belum dibuat, buat objek baru dengan properti total dan count
                 daysData[dayName] = { total: 0, count: 0 };
             }
-        
+
             daysData[dayName].total += hargaTotal;
             daysData[dayName].count += 1;
-        
+
             if (daysData[dayName].total > daysData.MaxData) {
                 daysData.MaxData = daysData[dayName].total;
             }
@@ -144,7 +195,16 @@ const Home = () => {
     };
     return (
         <div className="owner d-flex">
-            <OwnerAside harianAktive={harianAktive} bulananActive={bulananActive} tahunanActive={tahunanActive} totalActive={totalActive} adminActive={adminActive} handleButtonClick={handleButtonClick} />
+<OwnerAside
+                harianAktive={harianAktive}
+                bulananActive={bulananActive}
+                tahunanActive={tahunanActive}
+                totalActive={totalActive}
+                adminActive={adminActive}
+                handleButtonClick={handleButtonClick}
+                username={username}
+                profile={profile}
+            />
             <article className="d-flex" style={{ display: 'flex', height: '100vh', padding: '20px' }}>
                 <section className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
                     <div className='chart'>

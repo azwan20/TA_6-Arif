@@ -17,6 +17,8 @@ async function AddData_ModelUser(img_profil, email, username) {
             role: "admin",
         });
     } catch (error) {
+        console.error("Error adding user document: ", error);
+        // Handle the error, e.g., show an error message to the user
     }
 }
 
@@ -34,10 +36,61 @@ async function fetchData_ModelUser() {
     return data;
 }
 
+async function fetchData_ModelUser2() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
+
 
 export default function DataAdmin() {
     const [showProdukInput, setShowProdukInput] = useState(false);
-    const [modelUser, setModelUser] = useState([])
+    const [modelUser, setModelUser] = useState([]);
+    const { email, uid, role } = useUser();
+    const [usernames, setUsernames] = useState("");
+    const [profile, setProfile] = useState("");
+    const router = useRouter();
+    const [username, setUsername] = useState("");
+    const [img_profil, setImg_profil] = useState("");
+    const { register, handleSubmit, formState: { errors } } = useForm()
+
+    // console.log("ini username", username);
+    useEffect(() => {
+        if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
+            if (role === 'admin') {
+                router.push('/cashier');
+            } else if (role === 'user') {
+                router.push('/costumer');
+            } else {
+                // router.push('/owner');
+            }
+        } else {
+            router.push('/');
+        }
+
+    }, [uid]);
+    //fungsi baca data user
+    useEffect(() => {
+        if (email) {
+            // alert(email)
+            async function fetchData() {
+                const data = await fetchData_ModelUser2();
+                const isEmailExist = data.find(user => user.email === email);
+                if (isEmailExist) {
+                    setProfile(isEmailExist.img_profil);
+                    const targetUsername = "@" + isEmailExist.username;
+                    setUsernames(targetUsername);
+                }
+            }
+            fetchData();
+        }
+    }, []);
 
     const handleCardClick = () => {
         setShowProdukInput(!showProdukInput);
@@ -83,31 +136,30 @@ export default function DataAdmin() {
         }
     }
 
-    const [username, setUsername] = useState("");
-    const [img_profil, setImg_profil] = useState("");
-    const router = useRouter();
-    const { register, handleSubmit, formState: { errors } } = useForm()
-    const { email, uid } = useUser();
-
     // useEffect(() => {
     //     if (uid) {
     //         router.push('/costumer');
     //     }
     // }, [uid]);
 
-    const onSubmit = async (values) => {
-        const { email, password } = values
+    const onSubmit = async (values, event) => {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        const { email, password } = values;
 
         try {
             await AddData_ModelUser(img_profil, email, username);
-            await SignUpToFirebase(email, password)
-            await SignOut()
-            alert("Register berhasil")
+            await SignUpToFirebase(email, password);
+            await SignOut();
+            alert("Register berhasil");
         } catch (error) {
-            const message = GetSignUpErrorMessage(error.code)
-            console.log(message)
+            const message = GetSignUpErrorMessage(error.code);
+            console.error("Registration error: ", message);
+            // Handle the error, e.g., show an error message to the user
         }
-    }
+        location.reload(); // Reload the page after successful form submission
+    };
+
 
     useEffect(() => {
         async function fetchData() {
@@ -122,7 +174,16 @@ export default function DataAdmin() {
     return (
         <>
             <div className="dataAdmin d-flex">
-                <OwnerAside harianAktive={harianAktive} bulananActive={bulananActive} tahunanActive={tahunanActive} totalActive={totalActive} adminActive={adminActive} handleButtonClick={handleButtonClick} />
+                <OwnerAside
+                    harianAktive={harianAktive}
+                    bulananActive={bulananActive}
+                    tahunanActive={tahunanActive}
+                    totalActive={totalActive}
+                    adminActive={adminActive}
+                    handleButtonClick={handleButtonClick}
+                    username={usernames}
+                    profile={profile}
+                />
                 <article className={`${showProdukInput ? 'article' : ''}`} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                     <div className="addProduc">
                         <button type="button" onClick={() => handleCardClick()}>

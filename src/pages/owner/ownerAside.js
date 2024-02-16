@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { SignOut } from "../../../public/firebaseConfig";
 
-export default function OwnerAside({ harianAktive, bulananActive, tahunanActive, totalActive, adminActive, handleButtonClick }) {
+export default function OwnerAside({ harianAktive, bulananActive, tahunanActive, totalActive, adminActive, handleButtonClick, username, profile }) {
     return (
         <>
             <aside>
                 <section style={{ height: '20%' }}>
-                    <img src="" alt="Profile" />
-                    <h5>Fulan al Fulana</h5>
+                    <img src={profile} alt="Profile" />
+                    <h5>{username}</h5>
                     <div />
                 </section>
                 <section style={{ height: '80%' }}>
