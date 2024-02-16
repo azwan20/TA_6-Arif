@@ -49,6 +49,16 @@ async function addDataToFirebase(name, gambar, kode, harga, jml_produk) {
     }
 }
 
+async function fetchData_ModelUser() {
+    const querySnapshot = await getDocs(collection(db, "model_user"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
+
+
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "produk"));
@@ -78,6 +88,8 @@ export default function Produk() {
 
     const router = useRouter();
     const { email, uid, role } = useUser();
+    const [username, setUsername] = useState("");
+    const [profile, setProfile] = useState("");
 
     useEffect(() => {
         if (uid) {
@@ -145,6 +157,22 @@ export default function Produk() {
             alert("Pilih gambar");
         }
     };
+
+    useEffect(() => {
+        if (email) {
+            // alert(email)
+            async function fetchData() {
+                const data = await fetchData_ModelUser();
+                const isEmailExist = data.find(user => user.email === email);
+                if (isEmailExist) {
+                    setProfile(isEmailExist.img_profil);
+                    const targetUsername = "@" + isEmailExist.username;
+                    setUsername(targetUsername);
+                }
+            }
+            fetchData();
+        }
+    }, []);
 
 
     // // fungsi hapus, digunakan untuk menghapus data di Firebase
@@ -290,7 +318,7 @@ export default function Produk() {
         <>
             <div>
                 <div className="produk d-flex">
-                    <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
+                    <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} email={username} profile={profile} />
                     <article className={`${showProdukInput ? 'article' : ''}`} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <div className="addProduc">
                             <button type="button" onClick={() => handleCardClick()}>
@@ -320,7 +348,7 @@ export default function Produk() {
                                             <td scope="row">{value + 1}</td>
                                             <td style={{ display: 'none' }}>{produks.id}</td>
                                             <td>{produks.name}</td>
-                                            <td>{produks.gambar}</td>
+                                            <td><img src={produks.gambar} width={80} height={50} /></td>
                                             <td>{produks.kode}</td>
                                             <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(produks.harga).replace(/\,00$/, '')}</td>
                                             <td>
@@ -397,8 +425,8 @@ export default function Produk() {
                         <h2 className="p-2">Edit Data</h2>
                         {/* <h2>Edit ID: {getEditedFieldValue(editPopupRow, 'id')}</h2> */}
                         <span>
-                            <p>id</p>
-                            <input type="text" id="id" value={idSementara} readOnly />
+                            <p style={{ display: 'none' }}>id</p>
+                            <input type="text" id="id" style={{ display: 'none' }} value={idSementara} readOnly />
                         </span>
                         <span>
                             <p>Nama Produk</p>

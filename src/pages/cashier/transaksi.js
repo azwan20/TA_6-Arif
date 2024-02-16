@@ -67,6 +67,8 @@ export default function Transaksi() {
 
     const router = useRouter();
     const { email, uid, role } = useUser();
+    const [username, setUsername] = useState("");
+    const [profile, setProfile] = useState("");
 
     useEffect(() => {
         if (uid) {
@@ -121,8 +123,6 @@ export default function Transaksi() {
                     data.menu_pesanan.forEach(e => {
                         tempHarga += e.totalHarga;
                     });
-
-
                 }
                 setDetailData(data);
                 setTotalHarga(tempHarga);
@@ -131,10 +131,21 @@ export default function Transaksi() {
         fetchData();
     }, [isDetailTransaksi]);
 
-
-
-
-    // console.log("ini id", detailData);
+    useEffect(() => {
+        if (email) {
+            // alert(email)
+            async function fetchData() {
+                const data = await fetchData_ModelUser();
+                const isEmailExist = data.find(user => user.email === email);
+                if (isEmailExist) {
+                    setProfile(isEmailExist.img_profil);
+                    const targetUsername = "@" + isEmailExist.username;
+                    setUsername(targetUsername);
+                }
+            }
+            fetchData();
+        }
+    }, []);
 
     const handleEdit_ModelTransaksi = async (id, updatedData) => {
         if (updatedData.status_pemesanan === "Proses Packing") {
@@ -151,9 +162,7 @@ export default function Transaksi() {
             const currentTime = `${hours}:${minutes}`;
 
             updatedData.date_pengantaran = currentTime;
-
         }
-
 
         const edited = await updateData_ModelTransaksi(id, updatedData);
         if (edited) {
@@ -177,16 +186,11 @@ export default function Transaksi() {
         }
     };
 
-
-
-
-
-
     return (
         <>
             <div>
                 <div className="kasir d-flex">
-                    <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
+                    <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} email={username} profile={profile} />
                     <article className={` ${selectedCard !== null ? 'article' : ''} `} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <div className="container">
                             <h4>Transaksi Costumer</h4>
@@ -239,7 +243,7 @@ export default function Transaksi() {
                                                     Status
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#">Batal</a></li>
+                                                    {/* <li><a class="dropdown-item" href="#">Batal</a></li> */}
                                                     <li><a class="dropdown-item" onClick={() => handleEdit_ModelTransaksi(detailData.id, { status_pemesanan: "Proses Packing" })} href="#">Prosess packing</a></li>
                                                     <li><a class="dropdown-item" onClick={() => handleEdit_ModelTransaksi(detailData.id, { status_pemesanan: "Proses Pengantaran" })} href="#">Siap diambil</a></li>
                                                     <li><a class="dropdown-item" onClick={() => handleEdit_ModelTransaksi(detailData.id, { status_pemesanan: "Proses Selesai" })} href="#">Selesai</a></li>
@@ -256,7 +260,7 @@ export default function Transaksi() {
                                             <p>Tanggal</p>
                                         </section>
                                         <section>
-                                            <p><b>: 1</b></p>
+                                            <p><b>: {produkDataModelTransaksi.findIndex(item => item.id === detailData.id) + 1}</b></p>
                                             <p><b>: {detailData.nama_user}</b></p>
                                             <p><b>: {detailData.nama_admin}</b></p>
                                             <p><b>: {detailData.metode_pembayaran}</b></p>
