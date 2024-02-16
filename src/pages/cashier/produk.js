@@ -81,9 +81,6 @@ export default function Produk() {
     const [harga, setHarga] = useState('');
     const [jml_produk, setJml_produk] = useState('');
     const [produkData, setProdukData] = useState([]);
-    const [isPopupVisible, setPopupVisible] = useState(false);
-    const [editPopupRow, setEditPopupRow] = useState(null);
-    const [editedDataForSelectedRows, setEditedDataForSelectedRows] = useState({});
 
 
     const router = useRouter();
@@ -200,36 +197,6 @@ export default function Produk() {
         setShowProdukInput(!showProdukInput);
     };
 
-    const [selectedProductId, setSelectedProductId] = useState('');
-    const [selectedProductName, setSelectedProductName] = useState('');
-    const [selectedProductKode, setSelectedProductKode] = useState('');
-    const [selectedProductHarga, setSelectedProductHarga] = useState('');
-
-    const handleSimpanClick = (id) => {
-        const selectedRow = produkData.find((produks) => produks.id === id);
-
-        setEditPopupRow(id);
-
-        // Set the initial edited data for the selected row
-        setEditedDataForSelectedRows((prevData) => ({
-            ...prevData,
-            [id]: {
-                name: selectedRow.name,
-                kode: selectedRow.kode,
-                harga: selectedRow.harga,
-            },
-        }));
-
-        // Show the popup
-        setPopupVisible(true);
-    };
-
-
-    const handleSimpan = async () => {
-        // Refresh the data or update state without reloading the page
-        const data = await fetchDataFromFirestore();
-        setProdukData(data);
-    };
 
     // const [produkData, setProdukData] = useState([]);
     const [idSementara, setIdSementara] = useState('');
@@ -257,49 +224,62 @@ export default function Produk() {
     }
 
     const handleEdit = async (id) => {
-        if (typeof editedGambar !== 'string') {
-            const fileName = editedGambar[0].name;
-            const fileref = ref(storage, `imgProduk/${fileName}`);
-            console.log(fileName)
-
-            try {
+        try {
+            let updatedData;
+    
+            if (typeof editedGambar !== 'string') {
+                const fileName = editedGambar[0].name;
+                const fileref = ref(storage, `imgProduk/${fileName}`);
+    
                 const snapshot = await uploadBytes(fileref, editedGambar[0]);
                 const url = await getDownloadURL(snapshot.ref);
-
-                console.log(url);
-
-                const added = await updateDataInFirebase(
-                    id,
-                    { name: editedName, gambar: url, kode: editedKode, harga: editedHarga, jml_produk: editedJml_produk }
-                );
-
-                if (added) {
-                    alert("Data berhasil di upload");
-                    location.reload();
-                } else {
-                    console.error("Data gagal di upload");
-                }
-            } catch (error) {
-                console.error("gagal upload image:", error);
+    
+                updatedData = {
+                    name: editedName,
+                    gambar: url,
+                    kode: editedKode,
+                    harga: editedHarga,
+                    jml_produk: editedJml_produk,
+                };
+            } else {
+                updatedData = {
+                    name: editedName,
+                    kode: editedKode,
+                    harga: editedHarga,
+                    jml_produk: editedJml_produk,
+                };
             }
+    
+            // Update the data in Firebase
+            const isUpdated = await updateDataInFirebase(id, updatedData);
+    
+            if (isUpdated) {
+                // If the data is successfully updated, update the state
+                setProdukData((prevData) =>
+                    prevData.map((item) =>
+                        item.id === id
+                            ? {
+                                ...item,
+                                ...updatedData,
+                            }
+                            : item
+                    )
+                );
+    
+                // Optionally, close the edit popup
+                setEditPopupVisible(false);
+    
+                alert("Data berhasil diupdate");
+            } else {
+                console.error("Data gagal diupdate");
+            }
+        } catch (error) {
+            console.error("Error updating data: ", error);
+            // Handle the error, show an error message, etc.
         }
     };
+    
 
-
-    const getEditedFieldValue = (rowId, fieldName) => {
-        return editedDataForSelectedRows[rowId] ? editedDataForSelectedRows[rowId][fieldName] : '';
-    };
-
-    // Helper function to handle changes in field values
-    const handleFieldChange = (rowId, fieldName, value) => {
-        setEditedDataForSelectedRows((prevData) => ({
-            ...prevData,
-            [rowId]: {
-                ...prevData[rowId],
-                [fieldName]: value,
-            },
-        }));
-    };
 
     const [isTransaksiActive, setIsTransaksiActive] = useState(false);
     const [isProdukActive, setIsProdukActive] = useState(true);
@@ -339,6 +319,7 @@ export default function Produk() {
                                         <th scope="col">Gambar</th>
                                         <th scope="col">Kode Produk</th>
                                         <th scope="col">Harga</th>
+                                        <th scope="col">Jumlah Produk</th>
                                         <th scope="col">Edit | Delete</th>
                                     </tr>
                                 </thead>
@@ -351,6 +332,7 @@ export default function Produk() {
                                             <td><img src={produks.gambar} width={80} height={50} /></td>
                                             <td>{produks.kode}</td>
                                             <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(produks.harga).replace(/\,00$/, '')}</td>
+                                            <td>{produks.jml_produk}</td>
                                             <td>
                                                 <button
                                                     // onClick={() => handleSimpanClick(produks.id)}
