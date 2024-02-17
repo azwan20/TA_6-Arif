@@ -3,6 +3,7 @@ import { Authentication } from './firebaseConfig'
 import { InitialUserState, useUser } from './user'
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from './firebaseConfig';
+import { CircularProgress } from '@mui/material';
 
 
 async function fetchData_ModelUser() {
@@ -15,6 +16,8 @@ async function fetchData_ModelUser() {
 }
 
 const AuthStateChangeProvider = ({ children }) => {
+    const [isLoading, setLoading] = useState(true)
+
     const user = useUser()
     const { SetUser } = user
     const InitiateAuthStateChange = () => {
@@ -30,12 +33,26 @@ const AuthStateChangeProvider = ({ children }) => {
                 console.log('ini Anda Belum Login')
                 SetUser(InitialUserState)
             }
+            setLoading(false)
         })
     }
 
     useEffect(() => {
         InitiateAuthStateChange()
     }, [])
+
+    if (isLoading) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh', // Sesuaikan dengan tinggi yang diinginkan
+            }}>
+                <CircularProgress />
+            </div>
+        );
+    }
 
     return children
 }
