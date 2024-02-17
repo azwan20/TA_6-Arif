@@ -409,9 +409,9 @@ aside a {
   outline: none;
 }
 
-/* .costumer .card{
-  height: 270px;
-} */
+.costumer .card {
+  height: 250px;
+}
 
 .costumer .card-body {
   padding: 10px 5px;
@@ -426,6 +426,11 @@ aside a {
 
 .costumer .card-body p {
   margin: auto 0;
+}
+
+.costumer .card-body b {
+  margin-bottom: 0;
+
 }
 
 .costumer .card-body .card-text {

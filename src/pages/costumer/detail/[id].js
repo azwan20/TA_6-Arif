@@ -260,7 +260,8 @@ export default function DetailTransaksi({ cartItems }) {
                     </section>
                     {(showTerimaButton) && (
                         <section className="section">
-                            <button onClick={() => handleEdit_ModelTransaksi(detailData?.[0]?.id, { status_pemesanan: "Proses Selesai" })}>Barang telah diterima</button>
+                            <button onClick={() => 
+                            handleEdit_ModelTransaksi(detailData?.[0]?.id, { status_pemesanan: "Proses Selesai" })}>Barang telah diterima</button>
                         </section>
                     )}
                 </div>

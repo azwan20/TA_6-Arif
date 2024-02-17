@@ -139,7 +139,7 @@ export default function Transaksi() {
                 const isEmailExist = data.find(user => user.email === email);
                 if (isEmailExist) {
                     setProfile(isEmailExist.img_profil);
-                    const targetUsername = "@" + isEmailExist.username;
+                    const targetUsername = isEmailExist.username;
                     setUsername(targetUsername);
                 }
             }

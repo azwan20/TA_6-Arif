@@ -32,6 +32,23 @@ async function fetchDataFromFirestore() {
     return { data, totalProduk, jumlah };
 }
 
+async function fetchDataFromFirestoreProduk() {
+    const querySnapshot = await getDocs(collection(db, "produk"));
+    const data = [];
+    let totalProduk = 0;
+
+    querySnapshot.forEach((doc) => {
+        const transactionData = { id: doc.id, ...doc.data() };
+        data.push(transactionData);
+
+        totalProduk = totalProduk + transactionData.jml_produk;
+    });
+
+    // Mengembalikan data dan total produk
+    return { data, totalProduk };
+}
+
+
 async function fetchData_ModelUser() {
     const querySnapshot = await getDocs(collection(db, "model_user"));
     const data = [];
@@ -58,20 +75,36 @@ function calculateTransactionsByLabel(data) {
     return transactionsByLabel;
 }
 
+function calculateTotalJmlProduk(data) {
+    const totalJmlProduk = {
+        totalProduk: 0,
+        jumlah_produk: 0,
+    };
+
+    data.forEach(item => {
+        // Accumulate totalJmlProduk from each transaction
+        totalJmlProduk.jumlah_produk += item.jml_produk || 0;
+        // Add more properties here if needed
+    });
+
+    return totalJmlProduk;
+}
+
+
 
 const IndexPage = () => {
     const [produkData, setProdukData] = useState([]);
+    const [produkData2, setProdukData2] = useState([]);
     const [totalProduk, setTotalProduk] = useState(0);
     const { email, uid, role } = useUser();
     const [username, setUsername] = useState("");
     const [profile, setProfile] = useState("");
     const router = useRouter();
 
+    // console.log("ini produk data", produkData2[0].jml_produk)
+
     useEffect(() => {
         if (uid) {
-            // console.log("ini uid user: ", uid);
-            // console.log("ini email user: ", email);
-            // console.log("ini role user: ", role);
             if (role === 'admin') {
                 router.push('/cashier');
             } else if (role === 'user') {
@@ -105,16 +138,28 @@ const IndexPage = () => {
         async function fetchData() {
             const { data, totalProduk } = await fetchDataFromFirestore();
             setProdukData(data);
+        }
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        async function fetchData() {
+            const { data, totalProduk } = await fetchDataFromFirestoreProduk();
+            setProdukData2(data);
             setTotalProduk(totalProduk);
         }
         fetchData();
     }, []);
 
+
     // Menghitung jumlah transaksi pada masing-masing label
     const transactionsByLabel = calculateTransactionsByLabel(produkData);
 
+    const totalJmlProduk = calculateTotalJmlProduk(produkData2);
+    console.log("ini total produk", totalJmlProduk.jumlah_produk);
+
     // Menghasilkan data dan label untuk diagram pie
-    const chartData = [totalProduk, transactionsByLabel.jumlah];
+    const chartData = [totalJmlProduk.jumlah_produk, transactionsByLabel.jumlah];
     const chartLabels = ['Total Produk', 'Produk Terjual'];
 
     const [harianAktive, setHarianActive] = useState(false);
@@ -158,7 +203,7 @@ const IndexPage = () => {
     };
     return (
         <div className="owner d-flex">
-<OwnerAside
+            <OwnerAside
                 harianAktive={harianAktive}
                 bulananActive={bulananActive}
                 tahunanActive={tahunanActive}

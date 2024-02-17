@@ -140,6 +140,7 @@ export default function Keranjang() {
                 jumlah: itemCounts[index],
                 totalHarga: itemCounts[index] * item.harga,
                 tanggal: formattedDate,
+                jumlahProduk: item.jml_produk,
             }));
 
 

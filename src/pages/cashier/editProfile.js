@@ -9,7 +9,7 @@ async function updateData_DataUser(id, updatedData) {
     try {
         const produkRef = doc(db, 'model_user', id);
         await updateDoc(produkRef, updatedData);
-        location.reload();
+        // location.reload();
         return true;
     } catch (error) {
         console.error("Error updating document: ", error);
@@ -57,8 +57,10 @@ export default function editProfile() {
                 console.error("gagal upload image:", error);
             }
         } else {
-            alert("Pilih gambar");
+            const added = await updateData_DataUser(DataUser.id, { username: username });
+            added ? console.error("Data berhasil di upload") : console.error("Data gagal di upload");
         }
+        router.push('/cashier');
     };
 
 

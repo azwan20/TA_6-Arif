@@ -33,13 +33,16 @@ async function deleteDataFromFirebase(id) {
 }
 
 async function addDataToFirebase(name, gambar, kode, harga, jml_produk) {
+
+    const jumlahProduk = parseInt(jml_produk, 10);
+
     try {
         const docRef = await addDoc(collection(db, "produk"), {
             name: name,
             gambar: gambar,
             kode: kode,
             harga: harga,
-            jml_produk: jml_produk,
+            jml_produk: jumlahProduk,
         });
         // console.log("Document input document ID : ", docRef.id);
         return true;
@@ -79,7 +82,7 @@ export default function Produk() {
     // const [url_gambar, setUrlGambar] = useState();
     const [kode, setKode] = useState('');
     const [harga, setHarga] = useState('');
-    const [jml_produk, setJml_produk] = useState('');
+    const [jml_produk, setJml_produk] = useState(0);
     const [produkData, setProdukData] = useState([]);
 
 
@@ -139,7 +142,7 @@ export default function Produk() {
                     setGambar("");
                     setKode("");
                     setHarga("");
-                    setJml_produk("");
+                    setJml_produk(0);
 
                     // Optionally, show a success message
                     alert("Data berhasil di upload");
@@ -204,7 +207,7 @@ export default function Produk() {
     const [editedGambar, setEditedGambar] = useState('');
     const [editedHarga, setEditedHarga] = useState('');
     const [editedKode, setEditedKode] = useState('');
-    const [editedJml_produk, setEditedJml_produk] = useState('');
+    const [editedJml_produk, setEditedJml_produk] = useState(0);
 
     const [editPopupVisible, setEditPopupVisible] = useState(false);
 
@@ -226,14 +229,14 @@ export default function Produk() {
     const handleEdit = async (id) => {
         try {
             let updatedData;
-    
+
             if (typeof editedGambar !== 'string') {
                 const fileName = editedGambar[0].name;
                 const fileref = ref(storage, `imgProduk/${fileName}`);
-    
+
                 const snapshot = await uploadBytes(fileref, editedGambar[0]);
                 const url = await getDownloadURL(snapshot.ref);
-    
+
                 updatedData = {
                     name: editedName,
                     gambar: url,
@@ -249,10 +252,10 @@ export default function Produk() {
                     jml_produk: editedJml_produk,
                 };
             }
-    
+
             // Update the data in Firebase
             const isUpdated = await updateDataInFirebase(id, updatedData);
-    
+
             if (isUpdated) {
                 // If the data is successfully updated, update the state
                 setProdukData((prevData) =>
@@ -265,10 +268,10 @@ export default function Produk() {
                             : item
                     )
                 );
-    
+
                 // Optionally, close the edit popup
                 setEditPopupVisible(false);
-    
+
                 alert("Data berhasil diupdate");
             } else {
                 console.error("Data gagal diupdate");
@@ -278,7 +281,7 @@ export default function Produk() {
             // Handle the error, show an error message, etc.
         }
     };
-    
+
 
 
     const [isTransaksiActive, setIsTransaksiActive] = useState(false);
@@ -329,7 +332,13 @@ export default function Produk() {
                                             <td scope="row">{value + 1}</td>
                                             <td style={{ display: 'none' }}>{produks.id}</td>
                                             <td>{produks.name}</td>
-                                            <td><img src={produks.gambar} width={80} height={50} /></td>
+                                            <td>
+                                                <img
+                                                    src={produks.gambar}
+                                                    style={{ objectFit: 'cover' }}
+                                                    width={80} height={80}
+                                                />
+                                            </td>
                                             <td>{produks.kode}</td>
                                             <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(produks.harga).replace(/\,00$/, '')}</td>
                                             <td>{produks.jml_produk}</td>
@@ -373,7 +382,7 @@ export default function Produk() {
                                         <input type="text" id="nama" value={name} onChange={(e) => setName(e.target.value)} />
                                     </span>
                                     <span>
-                                        <p>Gambar bangke</p>
+                                        <p>Gambar</p>
                                         <input
                                             type="file"
                                             onChange={(e) => setGambar(e.target.files)}
@@ -389,7 +398,7 @@ export default function Produk() {
                                     </span>
                                     <span>
                                         <p>Jumlah Produk</p>
-                                        <input type="text" id="harga" value={jml_produk} onChange={(e) => setJml_produk(e.target.value)} />
+                                        <input type="number" id="harga" value={jml_produk} onChange={(e) => setJml_produk(e.target.value)} />
                                     </span>
                                 </section>
                                 <section>
@@ -439,7 +448,7 @@ export default function Produk() {
                         </span>
                         <span>
                             <p>Jumlah Produk</p>
-                            <input type="text" id="jml_produk"
+                            <input type="number" id="jml_produk"
                                 value={editedJml_produk}
                                 onChange={(e) => setEditedJml_produk(e.target.value)} />
                         </span>

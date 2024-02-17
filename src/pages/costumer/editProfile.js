@@ -9,7 +9,7 @@ async function updateData_DataUser(id, updatedData) {
     try {
         const produkRef = doc(db, 'model_user', id);
         await updateDoc(produkRef, updatedData);
-        location.reload();
+        // location.reload();
         return true;
     } catch (error) {
         console.error("Error updating document: ", error);
@@ -57,8 +57,10 @@ export default function editProfile() {
                 console.error("gagal upload image:", error);
             }
         } else {
-            alert("Pilih gambar");
+            const added = await updateData_DataUser(DataUser.id, { username: username });
+            added ? console.error("Data berhasil di upload") : console.error("Data gagal di upload");
         }
+        router.push('/costumer');
     };
 
 
@@ -105,12 +107,16 @@ export default function editProfile() {
                             onChange={(e) => setUsername(e.target.value)}
                         />
                     </span>
-                    <span>
-                        <input
-                            type="file"
-                            placeholder="profile"
-                            onChange={(e) => setGambar(e.target.files)}
-                        />
+                    <span className="">
+                        <div className="d-flex align-items-center justify-content-center">
+                            <b style={{ margin: 'auto 20px auto 0' }}>profile </b>
+                            <input
+                                type="file"
+                                placeholder="profile"
+                                onChange={(e) => setGambar(e.target.files)}
+                                style={{ background: 'transparent', alignItems: 'center' }}
+                            />
+                        </div>
                     </span>
                     <span>
                         <button

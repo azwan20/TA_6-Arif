@@ -25,10 +25,6 @@ export default function Login() {
 
     useEffect(() => {
         if (uid) {
-            // console.log("ini uid user: ", uid);
-            // console.log("ini email user: ", email);
-            // console.log("ini role user: ", role);
-
             if (role === 'admin') {
                 router.push('/cashier');
             } else if (role === 'user') {

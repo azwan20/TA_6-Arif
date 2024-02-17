@@ -47,7 +47,7 @@ function Home() {
                 router.push('/owner');
             }
         } else {
-            isLoggedIn && router.push('/');
+            router.push('/');
         }
 
     }, [uid]);
@@ -61,7 +61,7 @@ function Home() {
                 const isEmailExist = data.find(user => user.email === email);
                 if (isEmailExist) {
                     setProfile(isEmailExist.img_profil);
-                    const targetUsername = "@" + isEmailExist.username;
+                    const targetUsername = isEmailExist.username;
                     setUsername(targetUsername);
                 }
                 setLoading(false); // Set loading to false once data is fetched
@@ -135,15 +135,6 @@ function Home() {
         product.name.toLowerCase().includes(searchInput.toLowerCase())
     );
 
-    // if (loading) {
-    //     // Render loading indicator
-    //     return <div>Loading...</div>;
-    // }
-
-    // if (!isLoggedIn) {
-    //     return <div>Loading...</div>;
-    // }
-
     return (
         <>
             {/* {!isLoggedIn && <p>Loading</p> } */}
@@ -175,10 +166,11 @@ function Home() {
                                                     src={cardNumber.gambar}
                                                     className="card-img-top"
                                                     alt={`Card ${cardNumber}`}
+                                                    style={{ objectFit: 'cover' }}
                                                 />
                                                 <div className="card-body d-flex">
                                                     <span style={{ marginBottom: '10px' }}>
-                                                        <b className="card-title">{truncateText(cardNumber.name, 15)}</b>
+                                                        <b className="card-title">{truncateText(cardNumber.name, 20)}</b>
                                                         <button className="add" onClick={() => handleAddClick(cardNumber)}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
                                                                 <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
