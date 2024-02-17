@@ -2,6 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { db, SignOut } from "../../../public/firebaseConfig";
 import { useUser } from "../../../public/user";
+import Navbar from "./navbar";
+import { useState } from "react";
 
 export default function CashierAside({ isTransaksiActive, isProdukActive, handleButtonClick, email, profile }) {
     const router = useRouter();
@@ -9,10 +11,30 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
         router.push(page);
     };
 
+    const [isMenuProduk, setIsMenuProdukActive] = useState(false);
+    const [isTransaksiMobActive, setIsTransaksiMobActive] = useState(false);
+    const [isProfileMobActive, setIsProfileMobActive] = useState(true);
+
+    const handleButtonClickMobile = (buttonType) => {
+        if (buttonType === "menu_produk") {
+            setIsMenuProdukActive(true);
+            setIsTransaksiMobActive(false);
+            setIsProfileMobActive(false);
+        } else if (buttonType === "transaksi_mobile") {
+            setIsMenuProdukActive(false);
+            setIsTransaksiMobActive(true);
+            setIsProfileMobActive(false);
+        } else if (buttonType === "profile_mobile") {
+            setIsMenuProdukActive(false);
+            setIsTransaksiMobActive(false);
+            setIsProfileMobActive(true);
+        }
+    };
+
     console.log("ini profile", profile)
     return (
         <>
-            <aside>
+            <aside className="asideCostumer">
                 <section style={{ height: '35%' }}>
                     <img
                         src={profile}
@@ -42,6 +64,7 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
                     </span>
                 </section>
             </aside>
+            <Navbar isMenuProduk={isMenuProduk} isTransaksiMobActive={isTransaksiMobActive} isProfileMobActive={isProfileMobActive} handleButtonClickMobile={handleButtonClickMobile} />
             <style jsx>{`
                 button {
                     background-color: #ffffff;

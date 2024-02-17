@@ -35,6 +35,26 @@ export default function Transaksi() {
     const [username, setUsername] = useState("");
     const [profile, setProfile] = useState("");
 
+    const [isMenuProduk, setIsMenuProdukActive] = useState(false);
+    const [isTransaksiMobActive, setIsTransaksiMobActive] = useState(true);
+    const [isProfileMobActive, setIsProfileMobActive] = useState(false);
+
+    const handleButtonClickMobile = (buttonType) => {
+        if (buttonType === "menu_produk") {
+            setIsMenuProdukActive(true);
+            setIsTransaksiMobActive(false);
+            setIsProfileMobActive(false);
+        } else if (buttonType === "transaksi_mobile") {
+            setIsMenuProdukActive(false);
+            setIsTransaksiMobActive(true);
+            setIsProfileMobActive(false);
+        } else if (buttonType === "profile_mobile") {
+            setIsMenuProdukActive(false);
+            setIsTransaksiMobActive(false);
+            setIsProfileMobActive(true);
+        }
+    };
+
     useEffect(() => {
         if (email) {
             // alert(email)
@@ -184,7 +204,7 @@ export default function Transaksi() {
                         )}
                     </article>
                 </div>
-                <Navbar />
+                <Navbar isMenuProduk={isMenuProduk} isTransaksiMobActive={isTransaksiMobActive} isProfileMobActive={isProfileMobActive} handleButtonClickMobile={handleButtonClickMobile} />
             </div>
         </>
     )

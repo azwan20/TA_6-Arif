@@ -36,6 +36,26 @@ function Home() {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // New state to track login status
     console.log("username ni", username);
 
+    const [isMenuProduk, setIsMenuProdukActive] = useState(true);
+    const [isTransaksiMobActive, setIsTransaksiMobActive] = useState(false);
+    const [isProfileMobActive, setIsProfileMobActive] = useState(false);
+
+    const handleButtonClickMobile = (buttonType) => {
+        if (buttonType === "menu_produk") {
+            setIsMenuProdukActive(true);
+            setIsTransaksiMobActive(false);
+            setIsProfileMobActive(false);
+        } else if (buttonType === "transaksi_mobile") {
+            setIsMenuProdukActive(false);
+            setIsTransaksiMobActive(true);
+            setIsProfileMobActive(false);
+        } else if (buttonType === "profile_mobile") {
+            setIsMenuProdukActive(false);
+            setIsTransaksiMobActive(false);
+            setIsProfileMobActive(true);
+        }
+    };
+
     useEffect(() => {
         if (uid) {
             if (role === 'admin') {
@@ -209,7 +229,7 @@ function Home() {
                         </section>
                     </article>
                 </div>
-                <Navbar />
+                <Navbar isMenuProduk={isMenuProduk} isTransaksiMobActive={isTransaksiMobActive} isProfileMobActive={isProfileMobActive} handleButtonClickMobile={handleButtonClickMobile} />
             </div>
         </>
     )
