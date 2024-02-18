@@ -28,6 +28,12 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
         }
     };
 
+    const handleLogout = async () => {
+        await SignOut();
+        // Reload halaman setelah logout
+        window.location.reload();
+    };
+
     return (
         <>
             <aside className="asideCashier">
@@ -53,7 +59,7 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
                         </Link>
                     </span>
                     <span style={{ width: '80%' }}>
-                        <button className='logout' onClick={SignOut}>Logout</button>
+                        <button className='logout' onClick={handleLogout}>Logout</button>
                     </span>
                 </section>
             </aside>
