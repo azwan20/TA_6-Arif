@@ -28,7 +28,7 @@ export default function Register() {
 
     useEffect(() => {
         if (uid) {
-            router.push('/costumer');
+            router.push('/');
         }
     }, [uid]);
 
@@ -36,11 +36,13 @@ export default function Register() {
         const { email, password } = values
 
         try {
-            await AddData_ModelUser(img_profil, email, username);
             await SignUpToFirebase(email, password)
+            await AddData_ModelUser(img_profil, email, username);
             await SignOut()
             alert("Register berhasil")
-            router.push('/');
+            // router.push('/');
+            location.reload();
+
         } catch (error) {
             const message = GetSignUpErrorMessage(error.code)
             console.log(message)
