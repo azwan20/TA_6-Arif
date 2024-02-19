@@ -44,6 +44,9 @@ export default function Login() {
             const userData = data.find(user => user.email === email);
 
             await SignIn(email, password);
+            localStorage.setItem('email', email);
+            localStorage.setItem('password', password);
+            
             if (userData.role === 'admin') {
                 router.push('/cashier');
             } else if (userData.role === 'user') {

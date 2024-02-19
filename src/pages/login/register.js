@@ -21,7 +21,7 @@ async function AddData_ModelUser(img_profil, email, username) {
 
 export default function Register() {
     const [username, setUsername] = useState("");
-    const [img_profil, setImg_profil] = useState("");
+    const [img_profil, setImg_profil] = useState("https://icons.iconarchive.com/icons/graphicloads/flat-finance/256/person-icon.png");
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm()
     const { email, uid } = useUser();
