@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from "../../../public/user";
 import { useForm } from "react-hook-form";
-import { SignUp as SignUpToFirebase, GetSignUpErrorMessage, db, SignOut } from "../../../public/firebaseConfig";
+import { SignUp, GetSignUpErrorMessage, db, SignOut, SignIn } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath } from "firebase/firestore";
 
 async function AddData_ModelUser(img_profil, email, username) {
@@ -54,7 +54,7 @@ export default function DataAdmin() {
     const [profile, setProfile] = useState("");
     const router = useRouter();
     const [username, setUsername] = useState("");
-    const [img_profil, setImg_profil] = useState("");
+    const [img_profil, setImg_profil] = useState("https://icons.iconarchive.com/icons/graphicloads/flat-finance/256/person-icon.png");
     const { register, handleSubmit, formState: { errors } } = useForm()
 
     // console.log("ini username", username);
@@ -64,9 +64,9 @@ export default function DataAdmin() {
             // console.log("ini email user: ", email);
             // console.log("ini role user: ", role);
             if (role === 'admin') {
-                router.push('/cashier');
+                // router.push('/cashier');
             } else if (role === 'user') {
-                router.push('/costumer');
+                // router.push('/costumer');
             } else {
                 // router.push('/owner');
             }
@@ -78,6 +78,10 @@ export default function DataAdmin() {
     //fungsi baca data user
     useEffect(() => {
         if (email) {
+            const local_email = localStorage.getItem('email');
+            const local_password = localStorage.getItem('password');
+            console.log("email owner sekarang : ", local_email);
+            console.log("password owner sekarang : ", local_password);
             // alert(email)
             async function fetchData() {
                 const data = await fetchData_ModelUser2();
@@ -136,28 +140,31 @@ export default function DataAdmin() {
         }
     }
 
-    // useEffect(() => {
-    //     if (uid) {
-    //         router.push('/costumer');
-    //     }
-    // }, [uid]);
-
     const onSubmit = async (values, event) => {
         event.preventDefault(); // Prevent the default form submission behavior
-
         const { email, password } = values;
+        const local_email = localStorage.getItem('email');
+        const local_password = localStorage.getItem('password');
 
         try {
+
+            await SignUp(email, password);
             await AddData_ModelUser(img_profil, email, username);
-            await SignUpToFirebase(email, password);
-            await SignOut();
-            alert("Register berhasil");
+            // await SignOut()
+
+            await SignIn(local_email, local_password);
+            // if (loginLagi) {
+            //     console.log("login lagi")
+            // } else {
+            //     console.log("login lagi gagal")
+            //     await SignOut()
+            // }
+            location.reload(); // Reload the page after successful form submission
         } catch (error) {
             const message = GetSignUpErrorMessage(error.code);
             console.error("Registration error: ", message);
             // Handle the error, e.g., show an error message to the user
         }
-        location.reload(); // Reload the page after successful form submission
     };
 
 
@@ -169,7 +176,7 @@ export default function DataAdmin() {
         fetchData();
     }, []);
 
-    console.log("ini model user", modelUser)
+    // console.log("ini model user", modelUser)
 
     return (
         <>
