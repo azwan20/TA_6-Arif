@@ -534,6 +534,7 @@ aside a {
   display: flex;
   align-items: center;
   margin: 10px;
+  cursor: pointer;
 }
 
 .keranjang .card .plusMin div {
@@ -565,6 +566,12 @@ aside a {
 .keranjang .section {
   padding: 25px 30px 10px;
 }
+
+.keranjang .section button {
+  background-color: #3598D7;
+  color: #fff;
+}
+
 
 .keranjang .metode {
   background-color: #fff;
