@@ -54,13 +54,16 @@ async function AddData_ModelTransaksi(
 }
 
 export default function Keranjang() {
-    const newData = getNewData();
+    // const newData = getNewData();
+    const [newData, setNewData] = useState(getNewData());
     const [noKamar, setNoKamar] = useState('');
 
     console.log("ini passing", newData);
     const router = useRouter();
     const handleGoBack = () => {
         router.back();
+        // router.push("/costumer");
+        // location.reload();
     };
 
     // const [jumlah_produk, setJumalah_produk] = useState("");
@@ -98,14 +101,22 @@ export default function Keranjang() {
 
     const initialItemState = Array.from({ length: 2 }, () => 1);
     const [itemCounts, setItemCounts] = useState(Array(newData.length).fill(1));
+    const [cart, setCart] = useState([]);
 
     const handleTambahClick = (index) => {
         setItemCounts((prevCounts) => {
             const newCounts = [...prevCounts];
             newCounts[index] += 1;
+
+            // Tambahkan produk ke dalam keranjang jika belum ada
+            if (!cart.find((item) => item.id === newData[index].id)) {
+                setCart((prevCart) => [...prevCart, newData[index]]);
+            }
+
             return newCounts;
         });
     };
+
 
     const handleKurangClick = (index) => {
         if (itemCounts[index] > 1) {
@@ -114,8 +125,27 @@ export default function Keranjang() {
                 newCounts[index] -= 1;
                 return newCounts;
             });
+        } else {
+            // Hapus produk dari cart
+            setCart((prevCart) => prevCart.filter((item) => item.id !== newData[index].id));
+
+            // Hapus produk dari newData
+            setNewData((prevData) => {
+                const newDataCopy = [...prevData];
+                newDataCopy.splice(index, 1); // Hapus item yang jumlahnya mencapai 0
+                return newDataCopy;
+            });
+
+            // Pastikan itemCounts tetap selaras dengan newData
+            setItemCounts((prevCounts) => {
+                const newCounts = [...prevCounts];
+                newCounts.splice(index, 1); // Hapus jumlah yang sesuai dengan produk yang dihapus
+                return newCounts;
+            });
         }
     };
+
+
 
     const currentDate = new Date();
     const [keranjangMenu, setKeranjangMenu] = useState([]);
@@ -132,6 +162,16 @@ export default function Keranjang() {
         try {
             const firstItem = newData[0];
             const itemUsername = newData[0];
+
+            const updateOperations = newData.map((item, index) => {
+                // Capture the index in a variable
+                const currentIndex = index;
+
+                return updateDoc(doc(db, "produk", item.id), {
+                    jml_produk: item.jml_produk - itemCounts[currentIndex]
+                });
+            });
+
             const menuPesanan = newData.map((item, index) => ({
                 id: item.id,
                 name: item.name,
@@ -143,17 +183,10 @@ export default function Keranjang() {
                 jumlahProduk: item.jml_produk,
             }));
 
-
             const now = new Date();
             const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
             let metodePengambilan = visible ? 'Ambil Sendiri' : 'Diantarkan';
             console.log("Ini jam", timeString);
-
-            const updateOperations = newData.map((item, index) =>
-                updateDoc(doc(db, "produk", item.id), {
-                    jml_produk: item.jml_produk - itemCounts[index]
-                })
-            );
 
             const added = await AddData_ModelTransaksi(
                 "Pesanan Diterima",
@@ -167,7 +200,7 @@ export default function Keranjang() {
                 "date_selesai",
                 "telah_diterima",
                 metodePengambilan,
-                menuPesanan, // Pass the menuPesanan array
+                menuPesanan,
                 "Tunai",
                 itemCounts.reduce((acc, count) => acc + count, 0),
                 totalHarga,
@@ -175,6 +208,9 @@ export default function Keranjang() {
             );
 
             if (added) {
+                // Update stok produk di Firebase
+                await Promise.all(updateOperations);
+
                 router.push("/costumer/transaksi");
             } else {
                 console.error("Failed to add data to the database.");
@@ -184,7 +220,9 @@ export default function Keranjang() {
         }
     };
 
-    // console.log("jumlah produk", newData[0].jml_produk);
+
+    console.log("Cart", cart);
+    console.log("item cart", itemCounts);
 
     return (
         <>
@@ -307,7 +345,7 @@ export default function Keranjang() {
             `}</style>
         </>
     )
-}       
+}
 
 const dataKernajang = [
 
