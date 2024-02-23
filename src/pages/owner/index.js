@@ -1,13 +1,15 @@
 // pages/index.js
 // import Chart from '../components/Chart';
 // import Chart from './chart';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChartComponent from './chart';
 import { db } from "../../../public/firebaseConfig";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import OwnerAside from './ownerAside';
 import { useRouter } from 'next/router';
 import { useUser } from '../../../public/user';
+import { query, where } from "firebase/firestore";
+import { startOfWeek, endOfWeek, addDays } from 'date-fns';
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "model_transaksi"));
@@ -27,45 +29,38 @@ async function fetchData_ModelUser() {
     return data;
 }
 
+function convertTimestampToDay(jsonTimestamp) {
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const fireBaseTime = new Date(
+        jsonTimestamp.seconds * 1000 + jsonTimestamp.nanoseconds / 1000000,
+    );
+    const date = fireBaseTime;
+    const dayIndex = date.getDay();
+
+    return days[dayIndex];
+}
 
 const Home = () => {
     const router = useRouter();
     const { email, uid, role } = useUser();
     const [username, setUsername] = useState("");
     const [profile, setProfile] = useState("");
-
-    function convertTimestampToDay(jsonTimestamp) {
-        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        const fireBaseTime = new Date(
-            jsonTimestamp.seconds * 1000 + jsonTimestamp.nanoseconds / 1000000,
-        );
-        const date = fireBaseTime;
-        const dayIndex = date.getDay();
-
-        return days[dayIndex];
-    }
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
     useEffect(() => {
         if (uid) {
-            // console.log("ini uid user: ", uid);
-            // console.log("ini email user: ", email);
-            // console.log("ini role user: ", role);
             if (role === 'admin') {
                 router.push('/cashier');
             } else if (role === 'user') {
                 router.push('/costumer');
-            } else {
-                // router.push('/owner');
             }
         } else {
             router.push('/');
         }
-
     }, [uid]);
-    //fungsi baca data user
+
     useEffect(() => {
         if (email) {
-            // alert(email)
             async function fetchData() {
                 const data = await fetchData_ModelUser();
                 const isEmailExist = data.find(user => user.email === email);
@@ -77,7 +72,7 @@ const Home = () => {
             }
             fetchData();
         }
-    }, []);
+    }, [email]);
 
     function groupDataByDay(data) {
         const daysData = {
@@ -124,14 +119,48 @@ const Home = () => {
 
 
     const [produkData, setProdukData] = useState(initDayData);
+
+
     useEffect(() => {
-        async function fetchData() {
-            const data = await fetchDataFromFirestore();
-            const result = groupDataByDay(data);
-            setProdukData(result);
-        }
-        fetchData();
-    }, []);
+        const fetchDataForSelectedWeek = async () => {
+            try {
+                // Convert selected date to UTC format
+                const selectedDateUTC = new Date(selectedDate).toISOString();
+
+                // Find the start and end of the week in UTC format
+                const startOfWeekUTC = startOfWeek(new Date(selectedDateUTC), { weekStartsOn: 1 }); // Assuming Monday is the start of the week
+                const endOfWeekUTC = endOfWeek(new Date(selectedDateUTC), { weekStartsOn: 1 });
+
+                // Fetch data for the entire week
+                const querySnapshot = await getDocs(
+                    query(
+                        collection(db, "model_transaksi"),
+                        where("date_selesai", ">=", startOfWeekUTC),
+                        where("date_selesai", "<=", endOfWeekUTC)
+                    )
+                );
+
+                const data = [];
+                querySnapshot.forEach((doc) => {
+                    data.push({ id: doc.id, ...doc.data() });
+                });
+
+                console.log("Fetched Data for Selected Week:", data);
+
+                if (data.length === 0) {
+                    console.log("No data available for the selected week.");
+                }
+
+                // Update the chartData state based on the fetched data
+                const updatedChartData = groupDataByDay(data);
+                setProdukData(updatedChartData);
+            } catch (error) {
+                console.error("Error fetching data for selected week: ", error);
+            }
+        };
+
+        fetchDataForSelectedWeek();
+    }, [selectedDate]);
 
     const chartData = {
         dataset1: [
@@ -193,9 +222,14 @@ const Home = () => {
             setAdminActive(true);
         }
     };
+
+    const handleDateChange = (e) => {
+        setSelectedDate(e.target.value);
+    };
+
     return (
         <div className="owner d-flex">
-<OwnerAside
+            <OwnerAside
                 harianAktive={harianAktive}
                 bulananActive={bulananActive}
                 tahunanActive={tahunanActive}
@@ -206,7 +240,10 @@ const Home = () => {
                 profile={profile}
             />
             <article className="d-flex" style={{ display: 'flex', height: '100vh', padding: '20px' }}>
-                <section className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
+                <section className="d-flex justify-content-center align-items-center" style={{ height: '100%', flexDirection: 'column' }}>
+                    <div className='tanggalHarian'>
+                        <input type="date" onChange={handleDateChange} />
+                    </div>
                     <div className='chart'>
                         <h1>Pendapatan Harian</h1>
                         <ChartComponent data={chartData} />

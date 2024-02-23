@@ -1,8 +1,8 @@
 // Chart.js
 import { Bar } from 'react-chartjs-2';
-import { CategoryScale, LinearScale, Chart, BarElement, Title, Legend } from 'chart.js';
+import { CategoryScale, LinearScale, Chart, BarElement, Title, Legend, Tooltip} from 'chart.js';
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Legend);
+Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Title, Legend);
 
 const ChartComponent = ({ data = {} }) => {
     const chartData = {
@@ -30,7 +30,14 @@ const ChartComponent = ({ data = {} }) => {
             x: { stacked: true },
             y: { stacked: true },
         },
+        plugins: {
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+            },
+        },
     };
+
 
     return <Bar data={chartData} options={options} />;
 };

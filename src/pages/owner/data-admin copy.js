@@ -5,20 +5,20 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from "../../../public/user";
 import { useForm } from "react-hook-form";
-import { SignUp, GetSignUpErrorMessage, db, DeleteUser, SignIn, Authentication } from "../../../public/firebaseConfig";
+import { SignUp, GetSignUpErrorMessage, db, SignOut, SignIn } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath } from "firebase/firestore";
 
-async function AddData_ModelUser(img_profil, email, username, uid) {
+async function AddData_ModelUser(img_profil, email, username) {
     try {
-        await addDoc(collection(db, "model_user"), {
+        const docRef = await addDoc(collection(db, "model_user"), {
             img_profil: img_profil,
             email: email,
-            uid: uid,
             username: username,
             role: "admin",
         });
     } catch (error) {
         console.error("Error adding user document: ", error);
+        // Handle the error, e.g., show an error message to the user
     }
 }
 
@@ -45,10 +45,11 @@ async function fetchData_ModelUser2() {
     return data;
 }
 
-async function deleteDataFromFirebase(id, email) {
+async function deleteDataFromFirebase(id) {
     try {
         const produkRef = doc(db, "model_user", id);
         await deleteDoc(produkRef);
+        // console.log("Document successfully deleted!");
         return true;
     } catch (error) {
         console.error("Error deleting document: ", error);
@@ -68,12 +69,18 @@ export default function DataAdmin() {
     const [img_profil, setImg_profil] = useState("https://icons.iconarchive.com/icons/graphicloads/flat-finance/256/person-icon.png");
     const { register, handleSubmit, formState: { errors } } = useForm()
 
+    // console.log("ini username", username);
     useEffect(() => {
         if (uid) {
+            // console.log("ini uid user: ", uid);
+            // console.log("ini email user: ", email);
+            // console.log("ini role user: ", role);
             if (role === 'admin') {
+                // router.push('/cashier');
             } else if (role === 'user') {
-                router.push('/costumer');
+                // router.push('/costumer');
             } else {
+                // router.push('/owner');
             }
         } else {
             router.push('/');
@@ -83,12 +90,17 @@ export default function DataAdmin() {
     //fungsi baca data user
     useEffect(() => {
         if (email) {
+            const local_email = localStorage.getItem('email');
+            const local_password = localStorage.getItem('password');
+            console.log("email owner sekarang : ", local_email);
+            console.log("password owner sekarang : ", local_password);
+            // alert(email)
             async function fetchData() {
                 const data = await fetchData_ModelUser2();
                 const isEmailExist = data.find(user => user.email === email);
                 if (isEmailExist) {
                     setProfile(isEmailExist.img_profil);
-                    const targetUsername = isEmailExist.username;
+                    const targetUsername = "@" + isEmailExist.username;
                     setUsernames(targetUsername);
                 }
             }
@@ -147,12 +159,19 @@ export default function DataAdmin() {
         const local_password = localStorage.getItem('password');
 
         try {
-            await SignUp(email, password);
-            const user = Authentication().currentUser
 
-            await AddData_ModelUser(img_profil, email, username, user.uid);
+            await SignUp(email, password);
+            await AddData_ModelUser(img_profil, email, username);
+            // await SignOut()
+
             await SignIn(local_email, local_password);
-            location.reload();
+            // if (loginLagi) {
+            //     console.log("login lagi")
+            // } else {
+            //     console.log("login lagi gagal")
+            //     await SignOut()
+            // }
+            location.reload(); // Reload the page after successful form submission
         } catch (error) {
             const message = GetSignUpErrorMessage(error.code);
             console.error("Registration error: ", message);
@@ -169,12 +188,17 @@ export default function DataAdmin() {
         fetchData();
     }, []);
 
-    const handleDelete = async (id, email) => {
+    const handleDelete = async (id) => {
         try {
-            const deleted = await deleteDataFromFirebase(id, email);
+            // Delete the data from Firebase
+            const deleted = await deleteDataFromFirebase(id);
+
             if (deleted) {
+                // If the data is successfully deleted, update the state without reloading
                 const newData = await fetchData_ModelUser();
                 setModelUser(newData);
+
+                // Optionally, show a success message
                 alert("Data deleted from Firebase DB");
             }
         } catch (error) {
@@ -183,19 +207,10 @@ export default function DataAdmin() {
         }
     };
 
-    // const handleHapus = async () => {
-    //     try {
-    //         await DeleteUserByEmail();
-
-    //         alert("Data deleted from Firebase Auth");
-    //     } catch (error) {
-    //         console.error("Error deleting data: ", error);
-    //     }
-    // };
+    // console.log("ini model user", modelUser)
 
     return (
         <>
-            {/* <button onClick={handleHapus}>hapus</button> */}
             <div className="dataAdmin d-flex">
                 <OwnerAside
                     harianAktive={harianAktive}
@@ -237,15 +252,15 @@ export default function DataAdmin() {
                                         <td>{produks.email}</td>
                                         <td>{produks.username}</td>
                                         <td>
-                                            <img
-                                                src={produks.img_profil}
-                                                style={{ objectFit: 'cover' }}
-                                                width={80} height={80}
-                                            />
-                                        </td>
+                                                <img
+                                                    src={produks.img_profil}
+                                                    style={{ objectFit: 'cover' }}
+                                                    width={80} height={80}
+                                                />
+                                            </td>
                                         <td>
                                             <button
-                                                onClick={() => handleDelete(produks.id, produks.email)}
+                                            onClick={() => handleDelete(produks.id)}
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="39" viewBox="0 0 50 49" fill="none">
                                                     <path d="M20.4334 34.7083H22.5167V16.3333H20.4334V34.7083ZM27.4834 34.7083H29.5668V16.3333H27.4834V34.7083ZM12.5001 40.8333V12.25H10.4167V10.2083H18.7501V8.63623H31.2501V10.2083H39.5834V12.25H37.5001V40.8333H12.5001Z" fill="#163E71" />
