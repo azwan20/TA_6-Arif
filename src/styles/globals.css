@@ -248,6 +248,18 @@ aside a {
   height: fit-content;
 }
 
+.owner .tanggalHarian {
+  width: 100%;
+  text-align: right;
+}
+
+.owner .tanggalHarian input {
+  border-radius: 10px;
+  padding: 5px;
+  border: 1px solid #3598D7;
+  background-color: var(--secondary-color);
+}
+
 .kasir article .cards {
   margin: 20px;
 }
