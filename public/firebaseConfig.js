@@ -1,15 +1,17 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"
-import { getStorage } from "firebase/storage"
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
-    sendPasswordResetEmail
-} from 'firebase/auth'
+    sendPasswordResetEmail,
+    deleteUser,
+} from "firebase/auth";
+
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyCedPD-Rck8yVxRassdU5FJQhUv4boTJHo",
@@ -21,9 +23,8 @@ const firebaseConfig = {
     measurementId: "G-80RJKNYHNJ"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
+
 export const storage = getStorage(app);
 
 const db = getFirestore(app);
@@ -35,6 +36,13 @@ export const FirebaseAuth = getAuth()
 export const Authentication = () => {
     return FirebaseAuth
 }
+
+export const DeleteUser = async () => {
+    const user = FirebaseAuth.currentUser;
+    await deleteUser(user);
+};
+
+
 
 export const SignUp = async (email, password) => {
     await createUserWithEmailAndPassword(FirebaseAuth, email, password)
