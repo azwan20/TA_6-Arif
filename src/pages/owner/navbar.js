@@ -8,12 +8,12 @@ export default function Navbar({ isHarian, isBulanan, isTahunan, isTotal, isAdmi
                 <div className="container-fluid">
                     <Link href="/owner">
                         <span className={`mb-0 ${isHarian ? "active" : ""}`} onClick={() => handleButtonClickMobile("harian")}>
-                            <p>HARIAN</p>
+                            <p>Harian</p>
                         </span>
                     </Link>
                     <Link href="/owner/pendapatan-bulanan">
                         <span className={`mb-0 ${isBulanan ? "active" : ""}`} onClick={() => handleButtonClickMobile("bulanan")}>
-                            <p>BULANAN</p>
+                            <p>Bulanan</p>
                         </span>
                     </Link>
                     <Link href="/owner/pendapatan-tahunan">
