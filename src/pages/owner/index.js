@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useUser } from '../../../public/user';
 import { query, where } from "firebase/firestore";
 import { startOfWeek, endOfWeek, addDays } from 'date-fns';
+import Navbar from './navbar';
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "model_transaksi"));
@@ -223,6 +224,46 @@ const Home = () => {
         }
     };
 
+    const [isHarian, setIsHarian] = useState(true);
+    const [isBulanan, setIsBulanan] = useState(false);
+    const [isTahunan, setIsTahunan] = useState(false);
+    const [isTotal, setIsTotal] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const handleButtonClickMobile = (buttonType) => {
+        if (buttonType === "harian") {
+            setIsHarian(true);
+            setIsBulanan(false);
+            setIsTahunan(false);
+            setIsTotal(false);
+            setIsAdmin(false);
+        } else if (buttonType === "bulanan") {
+            setHarianActive(false);
+            setIsBulanan(true);
+            setIsTahunan(false);
+            setIsTotal(false);
+            setIsAdmin(false);
+        } else if (buttonType === "tahunan") {
+            setHarianActive(false);
+            setIsBulanan(false);
+            setIsTahunan(true);
+            setIsTotal(false);
+            setIsAdmin(false);
+        } else if (buttonType === "total") {
+            setHarianActive(false);
+            setIsBulanan(false);
+            setIsTahunan(false);
+            setIsTotal(true);
+            setIsAdmin(false);
+        } else if (buttonType === "admin") {
+            setHarianActive(false);
+            setIsBulanan(false);
+            setIsTahunan(false);
+            setIsTotal(false);
+            setIsAdmin(true);
+        }
+    };
+
     const handleDateChange = (e) => {
         setSelectedDate(e.target.value);
     };
@@ -250,6 +291,7 @@ const Home = () => {
                     </div>
                 </section>
             </article>
+            <Navbar isHarian={isHarian} isBulanan={isBulanan} isTahunan={isTahunan} isTotal={isTotal} isAdmin={isAdmin} handleButtonClickMobile={handleButtonClickMobile} />
         </div >
     );
 };
