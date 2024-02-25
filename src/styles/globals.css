@@ -402,6 +402,10 @@ aside a {
   background-color: transparent;
 }
 
+.dataAdmin .logoutAdmin{
+  display: none;
+}
+
 .costumer article {
   flex-direction: column;
   justify-content: space-between;
@@ -621,7 +625,7 @@ aside a {
 }
 
 .navbars a {
-  width: 33%;
+  width: 20%;
   display: flex;
   text-decoration: none;
   align-items: center;
@@ -784,6 +788,21 @@ aside a {
   .dataAdmin .article,
   .kasir .article {
     display: none;
+  }
+
+  .dataAdmin .logoutAdmin{
+    display: flex;
+    justify-content: end;
+    margin-bottom: 20px;
+  }
+
+  .dataAdmin .logoutOwner{
+    border: none;
+    background-color: #900000;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
   }
 
   .addProduk {
