@@ -4,6 +4,7 @@ import { InitialUserState, useUser } from './user'
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from './firebaseConfig';
 import { CircularProgress } from '@mui/material';
+import { DeleteUser } from './firebaseConfig';
 
 
 async function fetchData_ModelUser() {
@@ -23,14 +24,16 @@ const AuthStateChangeProvider = ({ children }) => {
     const InitiateAuthStateChange = () => {
         Authentication().onAuthStateChanged(async (user) => {
             if (user) {
-                console.log('ini Anda Sudah Login')
-
                 const data = await fetchData_ModelUser();
+                const isUserData = data.some(DbUser => DbUser.email === user.email);
                 const userData = data.find(DbUser => DbUser.email === user.email);
-
-                SetUser({ email: user.email, uid: user.uid, role: userData.role })
+                if (isUserData) {
+                    SetUser({ email: user.email, uid: user.uid, role: userData.role })
+                }
+                else {
+                    await DeleteUser()
+                }
             } else {
-                console.log('ini Anda Belum Login')
                 SetUser(InitialUserState)
             }
             setLoading(false)
@@ -47,7 +50,7 @@ const AuthStateChangeProvider = ({ children }) => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: '100vh', // Sesuaikan dengan tinggi yang diinginkan
+                height: '100vh',
             }}>
                 <CircularProgress />
             </div>
