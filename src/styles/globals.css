@@ -279,7 +279,7 @@ aside a {
   width: 40%;
 }
 
-.kasir .article a,
+/* .kasir .article a, */
 .kasir .detailCos thead th,
 .dataAdmin thead th,
 .produk thead th {
@@ -823,6 +823,10 @@ aside a {
   .costumer .navbar form {
     width: 100%;
   }
+
+  /* .navbar .ownersNavbar span{
+    padding: 0 !important;
+  } */
 
   .costumer .keranjangs {
     margin-bottom: 50px;
