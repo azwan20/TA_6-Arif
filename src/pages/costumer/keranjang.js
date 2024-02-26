@@ -179,6 +179,7 @@ export default function Keranjang() {
                 harga: item.harga,
                 jumlah: itemCounts[index],
                 totalHarga: itemCounts[index] * item.harga,
+                kode : item.kode,
                 tanggal: formattedDate,
                 jumlahProduk: item.jml_produk,
             }));

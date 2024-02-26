@@ -139,6 +139,7 @@ function Home() {
                 'name': e.name,
                 'harga': e.harga,
                 'jml_produk': e.jml_produk,
+                'kode' : e.kode,
                 'username': username,
                 'email': email,
             });
