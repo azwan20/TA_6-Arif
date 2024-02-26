@@ -211,7 +211,7 @@ export default function Transaksi() {
                                                             <p className="card-text">Nama costumer</p>
                                                             <h5 className="card-title">{item.nama_user}</h5>
                                                         </span>
-                                                        <Link href="#" className={`btn ${item.status_pemesanan === 'Proses Selesai' ? 'btn-success' : 'btn-primary', item.status_pemesanan === 'Pesanan Diterima' ? 'btn-secondary' : 'btn-primary'}`} style={{ fontSize: '14px', width: 'fitContent', padding: '10px' }}>
+                                                        <Link href="#" className={`btn ${item.status_pemesanan === 'Proses Selesai' ? 'btn-success' : 'btn-primary'}`} style={{ fontSize: '14px', width: 'fitContent', padding: '10px' }}>
                                                             {item.status_pemesanan}
                                                         </Link>
                                                     </section>
