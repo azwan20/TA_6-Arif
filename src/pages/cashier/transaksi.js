@@ -70,6 +70,7 @@ export default function Transaksi() {
     const [username, setUsername] = useState("");
     const [profile, setProfile] = useState("");
 
+    console.log("ini username admin", username);
     useEffect(() => {
         if (uid) {
             // console.log("ini uid user: ", uid);
@@ -164,10 +165,15 @@ export default function Transaksi() {
             updatedData.date_pengantaran = currentTime;
         }
 
+        try {
+            updatedData.nama_admin = username;
+        } catch (error) {
+            console.error("Error updating nama_admin:", error);
+        }
+
         const edited = await updateData_ModelTransaksi(id, updatedData);
         if (edited) {
             alert("Data edited in Firebase DB");
-            // Refresh the detailData after updating
             const updatedDetailData = await fetchData_ModelTransaksi2(id);
             setDetailData(updatedDetailData);
         }
@@ -198,14 +204,14 @@ export default function Transaksi() {
                                 <div className="row">
                                     {produkDataModelTransaksi.map((item, index) => (
                                         <div className={`col-md-${selectedCard !== null ? '12' : '4'} mb-3`} key={index}>
-                                            <div className={`card ${selectedCard === index ? 'bg-primary' : ''}`} onClick={() => handleCardClick(index)}>
+                                            <div className="card" style={{ backgroundColor: selectedCard === index ? '#3598D7' : '', color: selectedCard === index ? "#fff" : '' }} onClick={() => handleCardClick(index)}>
                                                 <div onClick={() => handleDetailTransaksi(item.id)} className="card-body">
                                                     <section style={{ marginBottom: '20px' }}>
-                                                        <span>
+                                                        <span style={{ width: '50%' }}>
                                                             <p className="card-text">Nama costumer</p>
                                                             <h5 className="card-title">{item.nama_user}</h5>
                                                         </span>
-                                                        <Link href="#" className={`btn ${item.status_pemesanan === 'Proses Selesai' ? 'btn-success' : 'btn-primary'}`}>
+                                                        <Link href="#" className={`btn ${item.status_pemesanan === 'Proses Selesai' ? 'btn-success' : 'btn-primary', item.status_pemesanan === 'Pesanan Diterima' ? 'btn-secondary' : 'btn-primary'}`} style={{ fontSize: '14px', width: 'fitContent', padding: '10px' }}>
                                                             {item.status_pemesanan}
                                                         </Link>
                                                     </section>
@@ -282,14 +288,14 @@ export default function Transaksi() {
                                                 {detailData.menu_pesanan.map((menu, index) => (
                                                     <tr key={index}>
                                                         <th scope="row">{menu.name}</th>
-                                                        <td>02034012</td>
+                                                        <td>{menu.kode}</td>
                                                         <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(menu.harga).replace(/\,00$/, '')}</td>
                                                         <td>{menu.jumlah}</td>
                                                         <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(menu.totalHarga).replace(/\,00$/, '')}</td>
                                                     </tr>
                                                 ))}
                                                 <tr className="table-primary">
-                                                    <th colspan="4">Total Harga</th>
+                                                    <th colspan="4" style={{ textAlign: 'center' }}>Total Harga</th>
                                                     <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalHarga).replace(/\,00$/, '')}</td>
                                                 </tr>
                                             </tbody>
