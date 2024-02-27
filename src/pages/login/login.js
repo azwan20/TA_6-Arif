@@ -1,4 +1,5 @@
 import Link from "next/link";
+import FormError from "./error";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from "../../../public/user";
@@ -46,7 +47,7 @@ export default function Login() {
             await SignIn(email, password);
             localStorage.setItem('email', email);
             localStorage.setItem('password', password);
-            
+
             if (userData.role === 'admin') {
                 router.push('/cashier');
             } else if (userData.role === 'user') {
@@ -81,6 +82,7 @@ export default function Login() {
                                         variant="filled"
                                         {...register("email", { required: true })}
                                     />
+                                    <FormError error={errors.email} />
                                 </div>
                                 <div className="passw d-flex">
                                     <input id="password"
@@ -99,6 +101,7 @@ export default function Login() {
                                         {showPassword ? 'visibility_off' : 'visibility'}
                                     </button>
                                 </div>
+                                <FormError error={errors.password} />
                                 <Link href="login/lupa-password">Forget Password</Link>
                             </span>
                             <div className="loginBgn"></div>
