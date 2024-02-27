@@ -6,7 +6,7 @@ const GetErrorMessage = (type) => {
             return 'Jumlah karakter tidak memenuhi minimum.'
         case 'required':
         default:
-            return 'Mohon mengisi field.'
+            return 'Mohon mengisi Email.'
     }
 }
 
