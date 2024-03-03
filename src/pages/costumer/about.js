@@ -31,6 +31,9 @@ export default function About() {
                     </span>
                 </section>
                 <section className="imgAbout" style={{ width: '60%' }}></section>
+                <section className="buttonLanjut" style={{ marginTop: '30px' }}>
+                    <button>Lanjutan</button>
+                </section>
             </div>
         </>
     )
