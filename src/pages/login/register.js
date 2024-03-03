@@ -92,8 +92,7 @@ export default function Register() {
                         <FormError error={errors.password} />
                     </span>
                     <span>
-                        <button style={{ backgroundColor: '#3598D7', color: '#fff' }} onClick={handleSubmit(onSubmit)}>Register</button>
-                        {/* <button style={{ backgroundColor: '#3598D7', color: '#fff' }} onClick={handleSubmit_ModelUser}>Register</button> */}
+                        <button style={{ backgroundColor: '#E09200', color: '#fff' }} onClick={handleSubmit(onSubmit)}>Register</button>
                         <Link href="/login/login"><button>Login</button></Link>
                     </span>
                 </div>

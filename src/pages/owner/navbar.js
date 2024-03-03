@@ -5,7 +5,7 @@ export default function Navbar({ isHarian, isBulanan, isTahunan, isTotal, isAdmi
     return (
         <>
             <nav className="navbar navbars">
-                <div className="container-fluid">
+                <div className="container-fluid navOwners">
                     <Link href="/owner">
                         <span className={`mb-0 ${isHarian ? "active" : ""}`} onClick={() => handleButtonClickMobile("harian")}>
                             <p>Harian</p>
@@ -42,7 +42,7 @@ export default function Navbar({ isHarian, isBulanan, isTahunan, isTotal, isAdmi
                 }
 
                 span.active {
-                    background-color: #3598D7;
+                    background-color: #E09200;
                     color: #ffffff;
                 }
 

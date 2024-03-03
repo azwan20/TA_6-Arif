@@ -37,10 +37,9 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
         window.location.reload();
     };
 
-    console.log("ini profile", profile)
     return (
         <>
-            <aside className="asideCostumer">
+            <aside className="asideCostumer" style={{backgroundColor: '#fff', boxShadow: '3px 0px 5px 0px rgba(0,0,0,0.1)', zIndex : '999'}}>
                 <section style={{ height: '35%' }}>
                     <img
                         src={profile}
@@ -74,13 +73,13 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
             <style jsx>{`
                 button {
                     background-color: #ffffff;
-                    border: none;
+                    border: 1px solid #E09200;
                     padding: 10px;
                     cursor: pointer;
                 }
 
                 button.active {
-                    background-color: #3598D7;
+                    background-color: #E09200;
                     color: #ffffff;
                 }
 

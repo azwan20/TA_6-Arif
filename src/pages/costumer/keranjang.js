@@ -1,11 +1,22 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getNewData } from ".";
 import CartNavbar from "./cartNavbar";
 import NavbarButton from "./navbarButton";
 import Link from "next/link";
 import { db } from "../../../public/firebaseConfig";
-import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPath } from "firebase/firestore";
+import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPat, query, where } from "firebase/firestore";
+
+async function deleteDataFromFirebase(id) {
+    try {
+        const produkRef = doc(db, "keranjang", id);
+        await deleteDoc(produkRef);
+        return true;
+    } catch (error) {
+        console.error("Error deleting document: ", error);
+        return false;
+    }
+}
 
 async function AddData_ModelTransaksi(
     status_pemesanan,
@@ -53,26 +64,48 @@ async function AddData_ModelTransaksi(
     }
 }
 
+async function fetchData_keranjang(email) {
+    const querySnapshot = await getDocs(query(collection(db, "keranjang"), where("email", "==", email)));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    })
+    return data;
+}
+
+async function updateData_keranjang(newData, count) {
+    try {
+        const keranjangRef = doc(db, "keranjang", newData.id);
+        await updateDoc(keranjangRef, {
+            name: newData.name,
+            gambar: newData.gambar,
+            kode: newData.kode,
+            harga: newData.harga,
+            jml_produk: newData.jml_produk,
+            username: newData.username,
+            email: newData.email,
+            count: count,
+        });
+        console.log("Document successfully updated!");
+        return true;
+    } catch (error) {
+        console.error("Error updating document: ", error);
+        return false;
+    }
+}
+
 export default function Keranjang() {
     // const newData = getNewData();
-    const [newData, setNewData] = useState(getNewData());
+    const [email, setEmail] = useState(getNewData());
+    const [newData, setData] = useState([]);
+
     const [noKamar, setNoKamar] = useState('');
 
-    console.log("ini passing", newData);
+    console.log("ini passing", email);
     const router = useRouter();
     const handleGoBack = () => {
         router.back();
-        // router.push("/costumer");
-        // location.reload();
     };
-
-    // const [jumlah_produk, setJumalah_produk] = useState("");
-
-    // newData.map((item) => {
-    //     setJumalah_produk(item.jml_produk);
-    // })
-
-    // console.log(jumlah_produk);
 
     const hargaPerItem = 45000;
 
@@ -92,60 +125,85 @@ export default function Keranjang() {
         }
     };
 
-
-    // const handleButtonVisible = () => {
-    // }
-
-    // const handleButtonNoVisible = () => {
-    // }
-
     const initialItemState = Array.from({ length: 2 }, () => 1);
-    const [itemCounts, setItemCounts] = useState(Array(newData.length).fill(1));
+    const [itemCounts, setItemCounts] = useState(0);
+
     const [cart, setCart] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
 
-    const handleTambahClick = (index) => {
-        setItemCounts((prevCounts) => {
-            const newCounts = [...prevCounts];
-            newCounts[index] += 1;
+    console.log(cartItems);
 
-            // Tambahkan produk ke dalam keranjang jika belum ada
-            if (!cart.find((item) => item.id === newData[index].id)) {
-                setCart((prevCart) => [...prevCart, newData[index]]);
+    const handleDelete = async (id) => {
+        try {
+            const deleted = await deleteDataFromFirebase(id);
+            if (deleted) {
+                alert("Data deleted from Firebase DB");
             }
-
-            return newCounts;
-        });
-    };
-
-
-    const handleKurangClick = (index) => {
-        if (itemCounts[index] > 1) {
-            setItemCounts((prevCounts) => {
-                const newCounts = [...prevCounts];
-                newCounts[index] -= 1;
-                return newCounts;
-            });
-        } else {
-            // Hapus produk dari cart
-            setCart((prevCart) => prevCart.filter((item) => item.id !== newData[index].id));
-
-            // Hapus produk dari newData
-            setNewData((prevData) => {
-                const newDataCopy = [...prevData];
-                newDataCopy.splice(index, 1); // Hapus item yang jumlahnya mencapai 0
-                return newDataCopy;
-            });
-
-            // Pastikan itemCounts tetap selaras dengan newData
-            setItemCounts((prevCounts) => {
-                const newCounts = [...prevCounts];
-                newCounts.splice(index, 1); // Hapus jumlah yang sesuai dengan produk yang dihapus
-                return newCounts;
-            });
+        } catch (error) {
+            console.error("Error deleting data: ", error);
         }
     };
 
+    const handleTambahClick = async (index) => {
+        console.log("ini id: ", index);
+        let tCount = index.count + 1;
+        await updateData_keranjang(index, tCount);
+        const data = await fetchData_keranjang(email);
+        setDataKeranjangs(data);
+        let tTotals = 0;
+        let tItem = 0;
+        data.map((value) => {
+            tTotals += value.harga * value.count;
+            tItem += value.count;
+        })
+        setTotalsHarga(tTotals);
+        setTotalItems(tItem);
+    };
 
+
+    // Function to decrement the item count
+    const handleKurangClick = async (id) => {
+        const produkRef = doc(db, "keranjang", id);
+        await deleteDoc(produkRef);
+
+        console.log("ini id: ", id);
+        let tCount = id.count - 1;
+        await updateData_keranjang(id, tCount);
+        const data = await fetchData_keranjang(email);
+        setDataKeranjangs(data);
+        let tTotals = 0;
+        let tItem = 0;
+        data.map((value) => {
+            tTotals += value.harga * value.count;
+            tItem += value.count;
+        })
+        setTotalsHarga(tTotals);
+        setTotalItems(tItem);
+
+        return true;
+    };
+
+
+    const [dataKernajangs, setDataKeranjangs] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+
+            const data = await fetchData_keranjang(email);
+            setDataKeranjangs(data);
+            let tTotals = 0;
+            let tItem = 0;
+            data.map((value) => {
+                tTotals += value.harga * value.count;
+                tItem += value.count;
+            })
+            setTotalsHarga(tTotals);
+            setTotalItems(tItem);
+        }
+        fetchData();
+    }, []);
+
+    // console.log("data keranjang", dataKernajangs);
 
     const currentDate = new Date();
     const [keranjangMenu, setKeranjangMenu] = useState([]);
@@ -153,33 +211,28 @@ export default function Keranjang() {
     const totalHarga = newData.reduce((acc, item, index) => acc + itemCounts[index] * item.harga, 0);
     const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
 
-    // const handleTambahKeranjang = () => {
-    // };
-
     const handleSubmit_ModelTransaksi = async (event) => {
         event.preventDefault();
 
         try {
-            const firstItem = newData[0];
-            const itemUsername = newData[0];
+            const firstItem = dataKernajangs[0];
+            const itemUsername = dataKernajangs[0];
+            // const updateOperations = dataKernajangs.map((item, index) => {
+            //     // Capture the index in a variable
+            //     const currentIndex = index;
+            //     return updateDoc(doc(db, "produk", item.id), {
+            //         jml_produk: item.jml_produk - totalItems[currentIndex]
+            //     });
+            // });
 
-            const updateOperations = newData.map((item, index) => {
-                // Capture the index in a variable
-                const currentIndex = index;
-
-                return updateDoc(doc(db, "produk", item.id), {
-                    jml_produk: item.jml_produk - itemCounts[currentIndex]
-                });
-            });
-
-            const menuPesanan = newData.map((item, index) => ({
+            const menuPesanan = dataKernajangs.map((item, index) => ({
                 id: item.id,
                 name: item.name,
                 gambar: item.gambar,
                 harga: item.harga,
-                jumlah: itemCounts[index],
-                totalHarga: itemCounts[index] * item.harga,
-                kode : item.kode,
+                jumlah: item.count,
+                totalHarga: item.harga * item.count,
+                kode: item.kode,
                 tanggal: formattedDate,
                 jumlahProduk: item.jml_produk,
             }));
@@ -203,15 +256,22 @@ export default function Keranjang() {
                 metodePengambilan,
                 menuPesanan,
                 "Tunai",
-                itemCounts.reduce((acc, count) => acc + count, 0),
-                totalHarga,
+                totalItems,
+                totalsHarga,
                 timeString
             );
 
             if (added) {
                 // Update stok produk di Firebase
-                await Promise.all(updateOperations);
-
+                // await Promise.all(updateOperations);
+                dataKernajangs.forEach(async (item) => {
+                    await deleteDoc(doc(db, 'keranjang', item.id));
+                });
+                for (let index = dataKernajangs.length; index < dataKernajangs.length; index++) {
+                    const produkRef = doc(db, "keranjang", data[index].id);
+                    await deleteDoc(produkRef);
+                    return true;
+                }
                 router.push("/costumer/transaksi");
             } else {
                 console.error("Failed to add data to the database.");
@@ -221,20 +281,24 @@ export default function Keranjang() {
         }
     };
 
+    const [totalsHarga, setTotalsHarga] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
+
+    console.log("total harga: ", totalsHarga)
+
 
     console.log("Cart", cart);
     console.log("item cart", itemCounts);
-
     return (
         <>
             <div className="keranjang d-flex">
                 <div className="cart" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                     <section>
                         <svg onClick={handleGoBack} style={{ cursor: 'pointer', marginBottom: '20px' }} xmlns="http://www.w3.org/2000/svg" width="32" height="23" viewBox="0 0 32 23" fill="none">
-                            <rect x="0.0808105" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 0.0808105 11.3643)" fill="#3598D7" />
-                            <rect x="11.4458" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 11.4458 22.8916)" fill="#3598D7" />
-                            <rect x="9.05811" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 9.05811 11.3643)" fill="#3598D7" />
-                            <rect x="20.4231" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 20.4231 22.8916)" fill="#3598D7" />
+                            <rect x="0.0808105" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 0.0808105 11.3643)" fill="#E09200" />
+                            <rect x="11.4458" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 11.4458 22.8916)" fill="#E09200" />
+                            <rect x="9.05811" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 9.05811 11.3643)" fill="#E09200" />
+                            <rect x="20.4231" y="22.8916" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-135 20.4231 22.8916)" fill="#E09200" />
                         </svg>
                         <div className="navbarButton">
                             <button className={ambilActive ? "active" : ""} onClick={() => handleButtonClick2("ambil")}>Ambil sendiri</button>
@@ -245,8 +309,8 @@ export default function Keranjang() {
                                 <div className="container">
                                     <div className="cards">
                                         <div className="row">
-                                            {newData.map((item, index) => (
-                                                <div className="col-md-12 mb-3" key={item}>
+                                            {dataKernajangs.map((item, index) => (
+                                                <div className="col-md-12 mb-3" key={item.id}>
                                                     <div className="card" style={{ border: 'none' }}>
                                                         <div className="card-body d-flex justify-content-between">
                                                             <section>
@@ -268,7 +332,7 @@ export default function Keranjang() {
                                                             </section>
                                                             <section className="plusMin lign-items-center p-1 d-flex">
                                                                 <span>
-                                                                    <svg onClick={() => handleKurangClick(index)} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                                                                    <svg onClick={() => handleKurangClick(item.id)} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
                                                                         <circle cx="15" cy="15" r="15" fill="#BD0000" />
                                                                         <rect x="6" y="13" width="19" height="3.06452" rx="1.53226" fill="white" />
                                                                         Kurang
@@ -276,11 +340,11 @@ export default function Keranjang() {
                                                                 </span>
                                                                 <span>
                                                                     <div>
-                                                                        <p className="m-auto">{itemCounts[index]}</p>
+                                                                        <p className="m-auto">{item.count}</p>
                                                                     </div>
                                                                 </span>
                                                                 <span>
-                                                                    <svg onClick={() => handleTambahClick(index)} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                                                                    <svg onClick={() => handleTambahClick(item)} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
                                                                         <circle cx="14.9995" cy="15" r="15" fill="#0EAC00" />
                                                                         <rect x="5.99951" y="13.9688" width="19" height="3.06452" rx="1.53226" fill="white" />
                                                                         <rect x="13.9675" y="25" width="19" height="3.06452" rx="1.53226" transform="rotate(-90 13.9675 25)" fill="white" />
@@ -315,14 +379,14 @@ export default function Keranjang() {
                                 </span>
                                 <span style={{ textAlign: "right" }}>
                                     {/* <p>3pcs</p> */}
-                                    <p>{itemCounts.reduce((acc, count) => acc + count, 0)}</p>
-                                    <p><b>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalHarga).replace(/\,00$/, '')}</b></p>
+                                    <p>{totalItems}</p>
+                                    <p><b>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalsHarga).replace(/\,00$/, '')}</b></p>
                                 </span>
                             </div>
                         </div>
                     </section>
                     <section className="section">
-                        <button onClick={handleSubmit_ModelTransaksi} style={{ backgroundColor: '#3598D7', color: '#fff' }}>Beli Sekarang</button>
+                        <button onClick={handleSubmit_ModelTransaksi} style={{ backgroundColor: '#E09200', color: '#fff' }}>Beli Sekarang</button>
                     </section>
                 </div>
             </div>
@@ -336,7 +400,7 @@ export default function Keranjang() {
                 }
 
                 button.active {
-                    background-color: #3598D7;
+                    background-color: #E09200;
                     color: #ffffff;
                 }
 

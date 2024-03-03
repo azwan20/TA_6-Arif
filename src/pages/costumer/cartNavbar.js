@@ -57,7 +57,7 @@ export default function CartNavbar({ timeTerima, timePacking, timeAntar, timeSel
                 }
 
                 button.active {
-                    background-color: #3598D7;
+                    background-color: #E09200;
                     color: #ffffff;
                 }
 

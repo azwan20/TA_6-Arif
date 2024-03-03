@@ -102,12 +102,12 @@ export default function Login() {
                                     </button>
                                 </div>
                                 <FormError error={errors.password} />
-                                <Link href="login/lupa-password">Forget Password</Link>
+                                <Link href="login/lupa-password"><b>Forget Password</b></Link>
                             </span>
                             <div className="loginBgn"></div>
                             <span>
-                                <button>Login With Google</button>
-                                <button type="button" onClick={handleSubmit(onSubmit)} style={{ backgroundColor: '#3598D7' }}>Login</button>
+                                <button style={{ color: '#E09200' }}>Login With Google</button>
+                                <button type="button" onClick={handleSubmit(onSubmit)} style={{ backgroundColor: '#E09200' }}>Login</button>
                                 <p style={{ textAlign: 'center' }}>Don't have an account? <Link href="/login/register">Register</Link></p>
                             </span>
                         </div>
