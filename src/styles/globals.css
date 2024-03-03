@@ -865,6 +865,7 @@ aside a {
   background-position: center center;
 }
 
+.about .buttonLanjut button,
 .about .buttonLanjut {
   display: none;
 }
