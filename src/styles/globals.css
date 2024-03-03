@@ -230,6 +230,9 @@ aside section button {
   background: #FFF;
   border: none;
   height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 aside .logout {
@@ -242,6 +245,7 @@ aside .logout {
 aside a {
   width: 100%;
   padding: 0 10px;
+  text-decoration: none;
 }
 
 .owner article,
@@ -505,7 +509,10 @@ aside a {
 
 .costumer .card-body b {
   margin-bottom: 0;
+}
 
+.asideCostumer a {
+  text-decoration: none;
 }
 
 .costumer .card-body .card-text {
