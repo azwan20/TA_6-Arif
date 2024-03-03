@@ -1100,6 +1100,10 @@ aside a {
     display: none;
   }
 
+  .about .buttonLanjut button{
+    display: block;
+  }
+
   .about .buttonLanjut {
     display: block;
     width: 100%;
