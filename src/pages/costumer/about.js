@@ -27,12 +27,12 @@ export default function About() {
                             electronic typesetting, remaining essentially unchanged</p>
                     </span>
                     <span style={{ marginTop: '30px' }}>
-                        <button>Lanjutan</button>
+                        <button onClick={handleGoBack}>Lanjutan</button>
                     </span>
                 </section>
                 <section className="imgAbout" style={{ width: '60%' }}></section>
                 <section className="buttonLanjut" style={{ marginTop: '30px' }}>
-                    <button>Lanjutan</button>
+                    <button onClick={handleGoBack}>Lanjutan</button>
                 </section>
             </div>
         </>
