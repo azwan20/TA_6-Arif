@@ -1,6 +1,8 @@
 :root {
   --primary-color: #3598D7;
   --secondary-color: #E9F6FF;
+  --two-primary: #E09200;
+
 }
 
 .login {
@@ -57,20 +59,20 @@
   width: 100%;
   height: 40px;
   margin-top: 20px;
-  border: 1px solid var(--primary-color);
+  border: 1px solid var(--two-primary);
   border-radius: 10px;
 }
 
 .login .card a {
   text-align: end;
   text-decoration: none;
-  color: var(--primary-color);
+  color: var(--two-primary);
 }
 
 .login .loginBg {
   width: 60%;
-  background: url('/login.svg');
-  background-size: cover;
+  background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
+  background-size: contain;
   background-repeat: no-repeat no-repeat;
   background-position: center center;
 }
@@ -87,25 +89,57 @@
   margin: 0;
 }
 
-.register {
-  background: url(/register.svg);
+/* .register {
+  background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
   width: 100%;
   height: 100vh;
-  justify-content: center;
   align-items: center;
+  background-position: center center;
+  background-repeat: no-repeat no-repeat;
+  background-size: cover;
+  filter: blur(10px);
+} */
+
+.register {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+}
+
+.register::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
+  filter: blur(10px);
   background-position: center center;
   background-repeat: no-repeat no-repeat;
   background-size: cover;
 }
 
 .register .registerFill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 30%;
   height: 80%;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.80);
+  background: rgba(255, 255, 255, 0.90);
   flex-direction: column;
   justify-content: space-between;
   padding: 20px;
+  z-index: 9;
 }
 
 .registerFill span {
@@ -130,7 +164,7 @@
   margin-top: 20px;
   background-color: transparent;
   color: #000;
-  border: 1px solid var(--primary-color);
+  border: 1px solid var(--two-primary);
   border-radius: 10px;
   height: 40px;
   padding-left: 15px;
@@ -402,7 +436,7 @@ aside a {
   background-color: transparent;
 }
 
-.dataAdmin .logoutAdmin{
+.dataAdmin .logoutAdmin {
   display: none;
 }
 
@@ -412,14 +446,37 @@ aside a {
   padding: 20px 0px;
 }
 
-.costumer .navbar form {
+.costumer .navb {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.costumer .navb div {
+  width: fit-content;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  margin: 0;
+}
+
+.costumer .navb div button {
+  border: 1px solid #E09200;
+  margin-right: 10px;
+  border-radius: 20px;
+  background-color: transparent;
+  color: var(--two-primary);
+  padding: 7px 20px;
+}
+
+.costumer .navb form {
   border-radius: 25.5px;
   background: #FFF;
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
   align-items: center;
 }
 
-.costumer .navbar input {
+.costumer .navb input {
   border: none;
   background-color: transparent;
   outline: none;
@@ -427,6 +484,8 @@ aside a {
 
 .costumer .card {
   height: 250px;
+  box-shadow: 0px 6px 5px 0px rgba(0, 0, 0, 0.1);
+  z-index: 999;
 }
 
 .costumer .card-body {
@@ -470,7 +529,7 @@ aside a {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--primary-color);
+  background-color: var(--two-primary);
 }
 
 .transaksi .kosong {
@@ -478,7 +537,7 @@ aside a {
   height: 100%;
   justify-content: center;
   align-items: center;
-  color: var(--primary-color);
+  color: var(--two-primary)
 }
 
 .transaksi .card-body {
@@ -486,12 +545,16 @@ aside a {
   justify-content: space-between;
   border-radius: 10px;
   background: #FFF;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  height: fit-content;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 .transaksi .card img {
   width: 150px;
-  border-radius: 10px;
+  border-radius: 10px 0px 0px 10px;
+  object-fit: cover;
+  height: 100px;
+  margin: auto 0;
 }
 
 .transaksi .card-body div p {
@@ -532,7 +595,6 @@ aside a {
   width: 45%;
   height: 100%;
   padding: 10px 20px 20px;
-  background-color: var(--secondary-color);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -540,10 +602,17 @@ aside a {
 
 .keranjang .card-body {
   padding: 0;
+  background-color: #fff;
+  box-shadow: 0px 0px 4px 0px rgb(0, 0, 0, 0.2);
+  height: 80px;
+  border-radius: 10px;
 }
 
 .keranjang .card img {
+  border-radius: 10px 0px 0px 10px;
   width: 100px;
+  object-fit: cover;
+  height: 80px;
 }
 
 .keranjang .card .plusMin span {
@@ -554,7 +623,7 @@ aside a {
 }
 
 .keranjang .card .plusMin div {
-  background-color: var(--secondary-color);
+  /* background-color: var(--secondary-color); */
   width: 40px;
   display: flex;
   justify-content: center;
@@ -565,6 +634,11 @@ aside a {
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.keranjang .navbarButton button {
+  border-radius: 5px;
+  border: 2px solid #E09200;
 }
 
 .keranjang section button {
@@ -584,7 +658,7 @@ aside a {
 }
 
 .keranjang .section button {
-  background-color: #3598D7;
+  background-color: var(--two-primary);
   color: #fff;
 }
 
@@ -596,7 +670,9 @@ aside a {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  box-shadow: 0px 0px 4px 0px rgb(0, 0, 0, 0.2);
   padding: 0 20px;
+  border-radius: 5px;
   margin: 20px 0;
 }
 
@@ -618,6 +694,7 @@ aside a {
   width: 100%;
   position: fixed;
   bottom: 0;
+  z-index: 9999;
   color: #fff;
   display: none;
   background: #FFF;
@@ -625,10 +702,14 @@ aside a {
 }
 
 .navbars a {
-  width: 20%;
+  width: 33%;
   display: flex;
   text-decoration: none;
   align-items: center;
+}
+
+.navOwners a {
+  width: 20%;
 }
 
 .navbars span {
@@ -637,7 +718,7 @@ aside a {
   width: 100%;
   height: 35px;
   border-radius: 5px;
-  background-color: var(--primary-color);
+  background-color: var(--two-primary);
 }
 
 .navbars p {
@@ -745,6 +826,38 @@ aside a {
   justify-content: space-between;
 }
 
+.about {
+  width: 100%;
+  height: 100vh;
+  background-color: #FBCE01;
+}
+
+.about .contentAb {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0px 50px 70px;
+  color: var(--secondary-color);
+}
+
+.about .contentAb button {
+  width: 100%;
+  height: 40px;
+  background-color: var(--secondary-color);
+  color: #000;
+  border: none;
+  border-radius: 5px;
+}
+
+.about .imgAbout {
+  background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/about.jpeg?alt=media&token=71a85c60-a079-45e0-88fe-a3797c9ff702');
+  width: 90%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat no-repeat;
+  background-position: center center;
+}
+
 
 @media screen and (min-width: 321px) and (max-width: 480px) {
 
@@ -790,13 +903,13 @@ aside a {
     display: none;
   }
 
-  .dataAdmin .logoutAdmin{
+  .dataAdmin .logoutAdmin {
     display: flex;
     justify-content: end;
     margin-bottom: 20px;
   }
 
-  .dataAdmin .logoutOwner{
+  .dataAdmin .logoutOwner {
     border: none;
     background-color: #900000;
     display: flex;
@@ -820,8 +933,14 @@ aside a {
     justify-content: space-between;
   }
 
+  .costumer .navb {
+    /* width: 100%;
+    display: flex; */
+    justify-content: center;
+  }
+
   .costumer .navbar form {
-    width: 100%;
+    width: 70%;
   }
 
   /* .navbar .ownersNavbar span{
@@ -830,6 +949,7 @@ aside a {
 
   .costumer .keranjangs {
     margin-bottom: 50px;
+    z-index: 9999;
   }
 
   .transaksi article,
