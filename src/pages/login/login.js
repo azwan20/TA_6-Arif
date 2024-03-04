@@ -107,7 +107,7 @@ export default function Login() {
                             <div className="loginBgn"></div>
                             <span>
                                 <button style={{ color: '#E09200' }}>Login With Google</button>
-                                <button type="button" onClick={handleSubmit(onSubmit)} style={{ backgroundColor: '#E09200' }}>Login</button>
+                                <button type="button" onClick={handleSubmit(onSubmit)} style={{ backgroundColor: '#E09200', color: '#fff' }}>Login</button>
                                 <p style={{ textAlign: 'center' }}>Don't have an account? <Link href="/login/register">Register</Link></p>
                             </span>
                         </div>

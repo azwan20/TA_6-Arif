@@ -93,7 +93,7 @@ export default function Register() {
                     </span>
                     <span>
                         <button style={{ backgroundColor: '#E09200', color: '#fff' }} onClick={handleSubmit(onSubmit)}>Register</button>
-                        <Link href="/login/login"><button>Login</button></Link>
+                        <Link href="/login/login"><button style={{color: '#E09200'}}>Login</button></Link>
                     </span>
                 </div>
             </div>
