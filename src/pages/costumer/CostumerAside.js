@@ -39,7 +39,7 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
 
     return (
         <>
-            <aside className="asideCostumer" style={{backgroundColor: '#fff', boxShadow: '3px 0px 5px 0px rgba(0,0,0,0.1)', zIndex : '999'}}>
+            <aside className="asideCostumer" style={{ backgroundColor: '#fff', boxShadow: '3px 0px 5px 0px rgba(0,0,0,0.1)', zIndex: '999' }}>
                 <section style={{ height: '35%' }}>
                     <img
                         src={profile}
@@ -76,6 +76,13 @@ export default function CashierAside({ isTransaksiActive, isProdukActive, handle
                     border: 1px solid #E09200;
                     padding: 10px;
                     cursor: pointer;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                a{
+                    text-decoration: none;
                 }
 
                 button.active {

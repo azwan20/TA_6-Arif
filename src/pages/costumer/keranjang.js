@@ -6,6 +6,7 @@ import NavbarButton from "./navbarButton";
 import Link from "next/link";
 import { db } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc, orderBy, FieldPat, query, where } from "firebase/firestore";
+import { useUser } from "../../../public/user";
 
 async function deleteDataFromFirebase(id) {
     try {
@@ -13,7 +14,6 @@ async function deleteDataFromFirebase(id) {
         await deleteDoc(produkRef);
         return true;
     } catch (error) {
-        console.error("Error deleting document: ", error);
         return false;
     }
 }
@@ -56,10 +56,8 @@ async function AddData_ModelTransaksi(
             created_at: created_at,
         });
 
-        console.log("Input Berhasil", docRef.id);
         return true;
     } catch (error) {
-        console.error("Input gagal", error);
         return false;
     }
 }
@@ -86,42 +84,42 @@ async function updateData_keranjang(newData, count) {
             email: newData.email,
             count: count,
         });
-        console.log("Document successfully updated!");
         return true;
     } catch (error) {
-        console.error("Error updating document: ", error);
         return false;
     }
 }
 
 export default function Keranjang() {
-    // const newData = getNewData();
-    const [email, setEmail] = useState(getNewData());
+    const { email, uid, role } = useUser();
     const [newData, setData] = useState([]);
 
     const [noKamar, setNoKamar] = useState('');
 
-    console.log("ini passing", email);
     const router = useRouter();
     const handleGoBack = () => {
         router.back();
     };
 
-    const hargaPerItem = 45000;
-
     const [ambilActive, setAmbilActive] = useState(true);
     const [diantarActive, setAntarActive] = useState(false);
     const [visible, setVisible] = useState(true);
+    const [minBelanja, setMinBelanja] = useState(false);
 
     const handleButtonClick2 = (buttonType) => {
         if (buttonType === "ambil") {
             setAmbilActive(true);
             setAntarActive(false);
             setVisible(true);
-        } else if (buttonType === "antar") {
+            setMinBelanja(false);
+        } else if (buttonType === "antar" && totalsHarga >= 50000) {
             setAmbilActive(false);
             setAntarActive(true);
             setVisible(false);
+        } else if (buttonType === "antar" && totalsHarga <= 50000) {
+            setMinBelanja(true);
+        } else if (buttonType === "tutup") {
+            setMinBelanja(false);
         }
     };
 
@@ -131,21 +129,7 @@ export default function Keranjang() {
     const [cart, setCart] = useState([]);
     const [cartItems, setCartItems] = useState([]);
 
-    console.log(cartItems);
-
-    const handleDelete = async (id) => {
-        try {
-            const deleted = await deleteDataFromFirebase(id);
-            if (deleted) {
-                alert("Data deleted from Firebase DB");
-            }
-        } catch (error) {
-            console.error("Error deleting data: ", error);
-        }
-    };
-
     const handleTambahClick = async (index) => {
-        console.log("ini id: ", index);
         let tCount = index.count + 1;
         await updateData_keranjang(index, tCount);
         const data = await fetchData_keranjang(email);
@@ -163,10 +147,15 @@ export default function Keranjang() {
 
     // Function to decrement the item count
     const handleKurangClick = async (id) => {
-        const produkRef = doc(db, "keranjang", id);
-        await deleteDoc(produkRef);
+        const produkExist = dataKernajangs.find(p => p.id === id);
+        if (produkExist.count === 1) {
+            const produkRef = doc(db, "keranjang", produkExist.id);
+            await deleteDoc(produkRef);
+        } else {
+            const keranjangRef = doc(db, "keranjang", id);
+            await updateDoc(keranjangRef, { count: (produkExist.count - 1) });
+        }
 
-        console.log("ini id: ", id);
         let tCount = id.count - 1;
         await updateData_keranjang(id, tCount);
         const data = await fetchData_keranjang(email);
@@ -179,10 +168,8 @@ export default function Keranjang() {
         })
         setTotalsHarga(tTotals);
         setTotalItems(tItem);
-
         return true;
     };
-
 
     const [dataKernajangs, setDataKeranjangs] = useState([]);
 
@@ -203,13 +190,15 @@ export default function Keranjang() {
         fetchData();
     }, []);
 
-    // console.log("data keranjang", dataKernajangs);
+    console.log("data keranjang", dataKernajangs);
 
     const currentDate = new Date();
     const [keranjangMenu, setKeranjangMenu] = useState([]);
 
     const totalHarga = newData.reduce((acc, item, index) => acc + itemCounts[index] * item.harga, 0);
     const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+
+
 
     const handleSubmit_ModelTransaksi = async (event) => {
         event.preventDefault();
@@ -240,7 +229,6 @@ export default function Keranjang() {
             const now = new Date();
             const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
             let metodePengambilan = visible ? 'Ambil Sendiri' : 'Diantarkan';
-            console.log("Ini jam", timeString);
 
             const added = await AddData_ModelTransaksi(
                 "Pesanan Diterima",
@@ -274,21 +262,14 @@ export default function Keranjang() {
                 }
                 router.push("/costumer/transaksi");
             } else {
-                console.error("Failed to add data to the database.");
             }
         } catch (error) {
-            console.error("Error in submitting data: ", error);
         }
     };
 
     const [totalsHarga, setTotalsHarga] = useState(0);
     const [totalItems, setTotalItems] = useState(0);
 
-    console.log("total harga: ", totalsHarga)
-
-
-    console.log("Cart", cart);
-    console.log("item cart", itemCounts);
     return (
         <>
             <div className="keranjang d-flex">
@@ -302,7 +283,7 @@ export default function Keranjang() {
                         </svg>
                         <div className="navbarButton">
                             <button className={ambilActive ? "active" : ""} onClick={() => handleButtonClick2("ambil")}>Ambil sendiri</button>
-                            <button className={diantarActive ? "active" : ""} onClick={() => handleButtonClick2("antar")}>Diantarkan</button>
+                            <button className={diantarActive && totalsHarga >= 50000 ? "active" : ""} onClick={() => handleButtonClick2("antar")}>Diantarkan</button>
                         </div>
                         <div className="section">
                             <div>
@@ -378,7 +359,6 @@ export default function Keranjang() {
                                     <p>Harga Total</p>
                                 </span>
                                 <span style={{ textAlign: "right" }}>
-                                    {/* <p>3pcs</p> */}
                                     <p>{totalItems}</p>
                                     <p><b>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalsHarga).replace(/\,00$/, '')}</b></p>
                                 </span>
@@ -389,6 +369,16 @@ export default function Keranjang() {
                         <button onClick={handleSubmit_ModelTransaksi} style={{ backgroundColor: '#E09200', color: '#fff' }}>Beli Sekarang</button>
                     </section>
                 </div>
+                {minBelanja && (
+                    <div className="minBelanja">
+                        <div>
+                            <span><p>Opsi diantarkan hanya bisa dilakukan jika <br />minimal pembelanjaan anda Rp 30.000 rupiah</p></span>
+                            <span>
+                                <button onClick={() => handleButtonClick2("tutup")}>Tutup</button>
+                            </span>
+                        </div>
+                    </div>
+                )}
             </div>
             <style jsx>{`
                 button {
@@ -415,8 +405,6 @@ export default function Keranjang() {
 const dataKernajang = [
 
 ];
-
-console.log("new Kernajang", dataKernajang);
 
 export const getDataKernajnag = () => {
     return dataKernajang;

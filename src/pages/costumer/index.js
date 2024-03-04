@@ -3,11 +3,18 @@ import CostumerAside from "./CostumerAside";
 import { useEffect, useState } from "react";
 import Navbar from "./navbar";
 import { db } from "../../../public/firebaseConfig";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import withProtected from "../../../public/withProtected";
+import { collection, addDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
 import { useUser } from "../../../public/user";
 import { useRouter } from "next/router";
 
+async function fetchData_keranjang(email) {
+    const querySnapshot = await getDocs(query(collection(db, "keranjang"), where("email", "==", email)));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    })
+    return data;
+}
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "produk"));
@@ -27,12 +34,13 @@ async function fetchData_ModelUser() {
     return data;
 }
 
-async function addDataToFirebase(id, name, gambar, kode, harga, jml_produk, username, email) {
+async function addDataToFirebase(id_produk, name, gambar, kode, harga, jml_produk, username, email) {
 
     const jumlahProduk = parseInt(jml_produk, 10);
 
     try {
         const docRef = await addDoc(collection(db, "keranjang"), {
+            id_produk: id_produk,
             name: name,
             gambar: gambar,
             kode: kode,
@@ -42,10 +50,8 @@ async function addDataToFirebase(id, name, gambar, kode, harga, jml_produk, user
             email: email,
             count: 1,
         });
-        // console.log("Document input document ID : ", docRef.id);
         return true;
     } catch (error) {
-        console.error("Error adding document: ", error);
         return false;
     }
 }
@@ -58,7 +64,7 @@ function Home() {
     const [profile, setProfile] = useState("");
     const [loading, setLoading] = useState(true); // Add loading state
     const [isLoggedIn, setIsLoggedIn] = useState(false); // New state to track login status
-    console.log("username ni", username);
+    const [dataKernajangs, setDataKeranjangs] = useState([]);
 
     const [isMenuProduk, setIsMenuProdukActive] = useState(true);
     const [isTransaksiMobActive, setIsTransaksiMobActive] = useState(false);
@@ -96,11 +102,17 @@ function Home() {
 
     }, [uid]);
 
-    //fungsi baca data user
     useEffect(() => {
         if (email) {
-            // alert(email)
-            async function fetchData() {
+            async function fetchDataProduk() {
+                const data = await fetchData_keranjang(email);
+                setDataKeranjangs(data);
+            }
+            async function fetchDataKeranjang() {
+                const data = await fetchDataFromFirestore();
+                setProdukData(data);
+            }
+            async function fetchDataUser() {
                 const data = await fetchData_ModelUser();
                 const isEmailExist = data.find(user => user.email === email);
                 if (isEmailExist) {
@@ -110,7 +122,10 @@ function Home() {
                 }
                 setLoading(false); // Set loading to false once data is fetched
             }
-            fetchData();
+
+            fetchDataUser();
+            fetchDataProduk();
+            fetchDataKeranjang();
         }
     }, []);
 
@@ -128,50 +143,27 @@ function Home() {
     };
 
     const [produkData, setProdukData] = useState([]);
-    const cards = Array.from({ length: 10 }, (_, index) => index + 1);
-    const [clickCount, setClickCount] = useState(0);
-    const [cartItems, setCartItems] = useState([]);
+    const [isAnimationActive, setIsAnimationActive] = useState(false);
 
-    // console.log("ini produk", produkData);
+    const handleAddClick = async (items) => {
+        const keranjangExist = dataKernajangs.find(k => k.id_produk === items.id);
+        if (keranjangExist) {
+            const keranjangRef = doc(db, "keranjang", keranjangExist.id);
+            await updateDoc(keranjangRef, { count: (keranjangExist.count + 1) });
 
-    let listCart = [];
-
-
-    const handleAddClick = (id) => {
-        setCartItems((prevItems) => [...prevItems, id]);
-        setClickCount((prevCount) => prevCount + 1);
-    };
-
-    useEffect(() => {
-        async function fetchData() {
-            const data = await fetchDataFromFirestore();
-            setProdukData(data);
+        } else {
+            await addDataToFirebase(items.id, items.name, items.gambar, items.kode, items.harga, items.jml_produkr, username, email);
         }
-        fetchData();
-    }, []);
+        setIsAnimationActive(true);
+        
+        const updatedData = await fetchData_keranjang(email);
+        setDataKeranjangs(updatedData);
 
-    const truncateText = (text, maxLength) => {
-        return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
-    };
-
-    const handleTambahKeranjang = (items) => {
-        // Mungkin Anda ingin menyimpan data ke variabel newData di sini
-        items.forEach((e, index) => {
-            addDataToFirebase(e.id, e.name, e.gambar, e.kode, e.harga, e.jml_produkr, username, email);
-            // newData.push({
-            //     id: e.id,
-            //     'gambar': e.gambar,
-            //     'name': e.name,
-            //     'harga': e.harga,
-            //     'jml_produk': e.jml_produk,
-            //     'kode': e.kode,
-            //     'username': username,
-            //     'email': email,
-
-            // });
-        });
-        newData = email;
-        // console.log(newData);
+        // Menghentikan efek denyut setelah beberapa detik (sesuai kebutuhan)
+        const timeoutId = setTimeout(() => {
+            setIsAnimationActive(false);
+        }, 200); // 2000 milliseconds (2 detik)
+        // router.reload();
     };
 
     const [searchInput, setSearchInput] = useState("");
@@ -245,8 +237,8 @@ function Home() {
                             </div>
                         </section>
                         <section className="d-flex ms-auto" style={{ margin: '20px 20px 0px' }}>
-                            <Link href={`/costumer/keranjang`} onClick={() => handleTambahKeranjang(cartItems)} className="keranjangs d-flex" style={{ textDecoration: 'none', position: 'fixed', bottom: 0, right: 20, padding: '10px', color: '#3598D7' }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 80 80" fill="none">
+                            <Link href={`/costumer/keranjang`} className="keranjangs d-flex" style={{ textDecoration: 'none', position: 'fixed', bottom: 0, right: 20, padding: '10px', color: '#3598D7' }}>
+                                <svg className={`${isAnimationActive ? 'animate-section' : ''}`} xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 80 80" fill="none">
                                     <rect width="79.0103" height="79.0103" rx="39.5051" fill="#fff" />
                                     <path d="M23.5913 30.3232H63.6671L56.3234 46.2696H30.935L23.5913 30.3232Z" fill="#E09200" />
                                     <rect x="29.7808" y="41.4434" width="3.56696" height="11.2254" rx="1.78348" fill="#E09200" />
@@ -256,8 +248,8 @@ function Home() {
                                     <rect x="51.4971" y="53.5088" width="3.9866" height="3.9866" rx="1.9933" fill="#E09200" />
                                     <rect x="30.8301" y="53.5088" width="3.9866" height="3.9866" rx="1.9933" fill="#E09200" />
                                 </svg>
-                                <p style={{ color: '#E09200' }}><b>{clickCount}</b></p>
-                                {/* {console.log("ini passing", cartItems)} */}
+                                <p style={{ color: '#E09200' }}><b>{dataKernajangs.length}</b></p>
+
                             </Link>
                         </section>
                     </article>
@@ -269,8 +261,6 @@ function Home() {
 }
 
 let newData = '';
-
-console.log("new data", newData);
 
 export const getNewData = () => {
     return newData;
