@@ -59,6 +59,8 @@ export default function CartNavbar({ timeTerima, timePacking, timeAntar, timeSel
                 button.active {
                     background-color: #E09200;
                     color: #ffffff;
+                    transform: scale(1.2);
+                    box-shadow: 0px 0px 16px 5px rgba(224, 146, 0, 0.9);
                 }
 
                 .logout {
