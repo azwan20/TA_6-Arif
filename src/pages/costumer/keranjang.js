@@ -372,7 +372,7 @@ export default function Keranjang() {
                 {minBelanja && (
                     <div className="minBelanja">
                         <div>
-                            <span><p>Opsi diantarkan hanya bisa dilakukan jika <br />minimal pembelanjaan anda Rp 30.000 rupiah</p></span>
+                            <span><p>Opsi diantarkan hanya bisa dilakukan jika <br />minimal pembelanjaan anda Rp 50.000 rupiah</p></span>
                             <span>
                                 <button onClick={() => handleButtonClick2("tutup")}>Tutup</button>
                             </span>
