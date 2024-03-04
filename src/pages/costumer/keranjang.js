@@ -90,6 +90,35 @@ async function updateData_keranjang(newData, count) {
     }
 }
 
+async function updateJmlProdukInProdukCollection(keranjangData) {
+    try {
+        // Fetch the produk data
+        const produkSnapshot = await getDocs(collection(db, "produk"));
+        const produkData = [];
+        produkSnapshot.forEach((doc) => {
+            produkData.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Update the jml_produk in the produk collection based on the keranjang data
+        keranjangData.forEach(async (item) => {
+            const correspondingProduk = produkData.find((produk) => produk.id === item.id_produk);
+
+            if (correspondingProduk) {
+                const updatedJmlProduk = correspondingProduk.jml_produk - item.count;
+
+                // Update the jml_produk in the produk collection
+                const produkRef = doc(db, "produk", correspondingProduk.id);
+                await updateDoc(produkRef, { jml_produk: updatedJmlProduk });
+            }
+        });
+
+        return true;
+    } catch (error) {
+        console.error("Error updating jml_produk in produk collection: ", error);
+        return false;
+    }
+}
+
 export default function Keranjang() {
     const { email, uid, role } = useUser();
     const [newData, setData] = useState([]);
@@ -209,11 +238,12 @@ export default function Keranjang() {
             // const updateOperations = dataKernajangs.map((item, index) => {
             //     // Capture the index in a variable
             //     const currentIndex = index;
-            //     return updateDoc(doc(db, "produk", item.id), {
-            //         jml_produk: item.jml_produk - totalItems[currentIndex]
-            //     });
+        
+            //     // Use setDoc with merge: true to handle the case where the document might not exist
+            //     return setDoc(doc(db, "produk", item.id_produk), {
+            //         jml_produk: Number(item.jml_produk) - Number(item.count)
+            //     }, { merge: true });
             // });
-
             const menuPesanan = dataKernajangs.map((item, index) => ({
                 id: item.id,
                 name: item.name,
@@ -252,6 +282,8 @@ export default function Keranjang() {
             if (added) {
                 // Update stok produk di Firebase
                 // await Promise.all(updateOperations);
+                await updateJmlProdukInProdukCollection(dataKernajangs);
+
                 dataKernajangs.forEach(async (item) => {
                     await deleteDoc(doc(db, 'keranjang', item.id));
                 });

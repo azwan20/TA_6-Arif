@@ -152,10 +152,10 @@ function Home() {
             await updateDoc(keranjangRef, { count: (keranjangExist.count + 1) });
 
         } else {
-            await addDataToFirebase(items.id, items.name, items.gambar, items.kode, items.harga, items.jml_produkr, username, email);
+            await addDataToFirebase(items.id, items.name, items.gambar, items.kode, items.harga, items.jml_produk, username, email);
         }
         setIsAnimationActive(true);
-        
+
         const updatedData = await fetchData_keranjang(email);
         setDataKeranjangs(updatedData);
 
