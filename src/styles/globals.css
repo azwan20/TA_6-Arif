@@ -539,9 +539,10 @@ aside a {
   background-color: var(--two-primary);
 }
 
-.transaksi .kosong {
+.transaksi .kosong,
+.rekap .kosong {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   justify-content: center;
   align-items: center;
   color: var(--two-primary)
@@ -717,6 +718,23 @@ aside a {
 
 .navOwners a {
   width: 20%;
+}
+
+.owner .totals {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.owner .totals button {
+  border-radius: 10px;
+  border: 2px solid var(--primary-color);
+  background-color: transparent;
+  box-shadow: 0px 0px 31px 7px rgba(0, 0, 0, 0.1);
+}
+
+.owner .totals button:hover {
+  scale: 1.1;
 }
 
 .navbars span {
@@ -934,6 +952,67 @@ aside a {
   }
 }
 
+.rekap table thead th {
+  text-align: center;
+}
+
+@media print {
+  .rekap {
+    margin: 0;
+    width: 8.5in;
+    height: 12in;
+    margin: auto;
+    /* padding: 1in; */
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .print-button {
+    display: none;
+  }
+
+  .pilihBulan {
+    display: none;
+  }
+}
+
+.rekap {
+  width: 100%;
+}
+
+.rekap .print-button {
+  border: none;
+  margin: 0 10px;
+  font-weight: 500;
+  padding: 5px 15px;
+  border-radius: 5px;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  right: 3%;
+  background-color: rgb(101, 208, 101);
+}
+
+.rekap .pilihBulan select {
+  background-color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding-left: 5px;
+  margin-left: 5px;
+}
+
+.rekap .pilihBulan span {
+  border: none;
+  margin: 0 10px;
+  font-weight: 500;
+  padding: 5px 15px;
+  border-radius: 5px;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  right: 10%;
+  background-color: var(--two-primary);
+}
 
 
 
@@ -1078,6 +1157,10 @@ aside a {
 
   .keranjang .plusMin {
     width: 40%;
+  }
+
+  .keranjang .plusMin span{
+    margin: 8px !important;
   }
 
   .keranjang .plusMin svg,
