@@ -221,6 +221,7 @@ export default function Transaksi() {
                                 <input ref={inputDateRef} type='date' onChange={handleDateChange} />
                             </div>
                             <div className="cards">
+                            {sortedFilteredData.length > 0 ? (
                                 <div className="row">
                                     {sortedFilteredData.map((item, index) => (
                                         <div className={`col-md-${selectedCard !== null ? '12' : '4'} mb-3`} key={index}>
@@ -251,6 +252,11 @@ export default function Transaksi() {
                                         </div>
                                     ))}
                                 </div>
+                            ) : (
+                                <div className="d-flex align-items-center justify-content-center">
+                                    <h1>Tidak ada data pertanggal {selectedDate}</h1>
+                                </div>
+                            )}
                             </div>
                         </div>
                     </article>
