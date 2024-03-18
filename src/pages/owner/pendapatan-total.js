@@ -6,6 +6,7 @@ import { collection, addDoc, getDocs } from "firebase/firestore";
 import { useRouter } from 'next/router';
 import { useUser } from '../../../public/user';
 import Navbar from './navbar';
+import Link from 'next/link';
 
 // ... (kode sebelumnya)
 
@@ -258,8 +259,15 @@ const IndexPage = () => {
                 <section className="d-flex justify-content-center" style={{ height: '100%' }}>
                     <div className='pieCharts'>
                         <h1>Pendapatan Total</h1>
-                        <p>Total Produk: {totalProduk}</p>
-                        <p>Produk Terjual: {transactionsByLabel.jumlah}</p>
+                        <section className='totals'>
+                            <span>
+                                <p>Total Produk: {totalProduk}</p>
+                                <p>Produk Terjual: {transactionsByLabel.jumlah}</p>
+                            </span>
+                            <span>
+                                <Link href="/owner/rekap-penjualan"><button>Cetak Rekap Penjualan</button></Link>
+                            </span>
+                        </section>
                         <PieChart data={chartData} labels={chartLabels} />
                     </div>
                 </section>

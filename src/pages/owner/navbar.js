@@ -37,8 +37,10 @@ export default function Navbar({ isHarian, isBulanan, isTahunan, isTotal, isAdmi
                 span {
                     background-color: #ffffff;
                     border: none;
-                    padding: 0px;
+                    padding: 10px;
                     cursor: pointer;
+                    width: 100%;
+                    color : #E09200;
                 }
 
                 span.active {

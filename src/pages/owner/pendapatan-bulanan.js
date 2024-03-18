@@ -6,6 +6,7 @@ import OwnerAside from './ownerAside';
 import { useRouter } from 'next/router';
 import { useUser } from '../../../public/user';
 import Navbar from './navbar';
+import RekapPenjualan from './rekap-penjualan';
 
 async function fetchDataFromFirestore() {
     const querySnapshot = await getDocs(collection(db, "model_transaksi"));
@@ -280,6 +281,7 @@ const Home = () => {
                     <div className='chart'>
                         <h1>Pendapatan Bulanan</h1>
                         <ChartComponentBulanan data={chartData} />
+                        {/* <RekapPenjualan produkData={produkData} /> */}
                     </div>
                 </section>
             </article>
