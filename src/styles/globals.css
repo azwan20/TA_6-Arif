@@ -291,7 +291,8 @@ aside a {
   text-align: right;
 }
 
-.owner .tanggalHarian input {
+.owner .tanggalHarian input,
+.kasir .inputKasir input {
   border-radius: 10px;
   padding: 5px;
   border: 1px solid #3598D7;
