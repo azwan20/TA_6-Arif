@@ -9,7 +9,7 @@ export default function About() {
     return (
         <>
             <div className="about d-flex">
-                <section className="contentAb" style={{ width: '40%' }}>
+                <section className="contentAb" style={{ width: '50%' }}>
                     <span style={{ marginBottom: '30px' }}>
                         <svg onClick={handleGoBack} style={{ cursor: 'pointer', marginBottom: '20px' }} xmlns="http://www.w3.org/2000/svg" width="32" height="23" viewBox="0 0 32 23" fill="none">
                             <rect x="0.0808105" y="11.3643" width="16.0724" height="2.59233" rx="1.29616" transform="rotate(-45 0.0808105 11.3643)" fill="#fff" />
@@ -35,7 +35,7 @@ export default function About() {
                         <button onClick={handleGoBack}>Lanjutan</button>
                     </span>
                 </section>
-                <section className="imgAbout" style={{ width: '60%' }}></section>
+                <section className="imgAbout" style={{ width: '50%' }}></section>
                 <section className="buttonLanjut" style={{ marginTop: '30px' }}>
                     <button onClick={handleGoBack}>Lanjutan</button>
                 </section>
