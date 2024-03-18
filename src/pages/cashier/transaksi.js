@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CashierAside from "./cashierAside";
 import Navar from "./navbar";
 import { db } from "../../../public/firebaseConfig";
@@ -64,13 +64,14 @@ export default function Transaksi() {
     const [selectedCard, setSelectedCard] = useState(null);
     const [produkDataModelTransaksi, setProdukDataModelTransaksi] = useState([]);
     const [isDetailTransaksi, setDetailTransaksi] = useState([]);
+    const [selectedDate, setSelectedDate] = useState('');
+    const inputDateRef = useRef(null);
 
     const router = useRouter();
     const { email, uid, role } = useUser();
     const [username, setUsername] = useState("");
     const [profile, setProfile] = useState("");
 
-    console.log("ini username admin", username);
     useEffect(() => {
         if (uid) {
             // console.log("ini uid user: ", uid);
@@ -107,6 +108,22 @@ export default function Transaksi() {
         setDetailTransaksi(id);
     };
 
+    const handleDateChange = () => {
+        const selectedDate = inputDateRef.current.value;
+        setSelectedDate(selectedDate);
+    };
+
+    const filteredData = produkDataModelTransaksi.filter(item => {
+        if (!selectedDate) return true; // Jika tidak ada tanggal yang dipilih, tampilkan semua data
+        // Jika tanggal pada item.menu_pesanan[0].tanggal sama dengan tanggal yang dipilih, tampilkan data
+        return item.menu_pesanan[0].tanggal === selectedDate;
+    });
+
+    const sortedFilteredData = filteredData.slice().sort((a, b) => {
+        const dateA = new Date(a.menu_pesanan[0].tanggal);
+        const dateB = new Date(b.menu_pesanan[0].tanggal);
+        return dateB - dateA;
+    });
 
     // console.log("ini id", isDetailTransaksi);
 
@@ -199,10 +216,13 @@ export default function Transaksi() {
                     <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} email={username} profile={profile} />
                     <article className={` ${selectedCard !== null ? 'article' : ''} `} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <div className="container">
-                            <h4>Transaksi Costumer</h4>
+                            <div className="inputKasir d-flex justify-content-between">
+                                <h4>Transaksi Costumer</h4>
+                                <input ref={inputDateRef} type='date' onChange={handleDateChange} />
+                            </div>
                             <div className="cards">
                                 <div className="row">
-                                    {produkDataModelTransaksi.map((item, index) => (
+                                    {sortedFilteredData.map((item, index) => (
                                         <div className={`col-md-${selectedCard !== null ? '12' : '4'} mb-3`} key={index}>
                                             <div className="card" style={{ backgroundColor: selectedCard === index ? '#3598D7' : '', color: selectedCard === index ? "#fff" : '' }} onClick={() => handleCardClick(index)}>
                                                 <div onClick={() => handleDetailTransaksi(item.id)} className="card-body">

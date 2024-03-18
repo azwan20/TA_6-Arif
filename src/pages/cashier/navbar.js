@@ -49,10 +49,12 @@ export default function Navbar({isTransaksiActive, isProdukActive, isProfileActi
                     border: none;
                     padding: 10px;
                     cursor: pointer;
+                    width: 100%;
+                    color : #E09200;
                 }
 
                 span.active {
-                    background-color: #3598D7;
+                    background-color: #E09200;
                     color: #ffffff;
                 }
 
