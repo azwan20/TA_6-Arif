@@ -73,7 +73,7 @@ export const GetSignInErrorMessage = (code) => {
 export const GetSignUpErrorMessage = (code) => {
     switch (code) {
         case 'auth/email-already-in-use':
-            return 'Email telah terdaftar.'
+            return alert('Email telah terdaftar.');
         default:
             return 'Terjadi kesalahan saat proses sign up.'
     }
