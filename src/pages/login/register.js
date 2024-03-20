@@ -15,6 +15,7 @@ async function AddData_ModelUser(img_profil, email, username) {
             username: username,
             role: "user",
         });
+        alert("Registrasi Anda Berhasil, Silkan Login");
     } catch (error) {
     }
 }
@@ -38,8 +39,8 @@ export default function Register() {
         try {
             await SignUpToFirebase(email, password)
             await AddData_ModelUser(img_profil, email, username);
-            await SignOut()
-            alert("Register berhasil")
+            await SignOut();
+            // alert("Register berhasil");
             // router.push('/');
             location.reload();
 
@@ -77,7 +78,6 @@ export default function Register() {
                                     setUsername(trimmedUsername);
                                 }
                             }}
-
                         />
                         <FormError error={errors.email} />
                         <input
