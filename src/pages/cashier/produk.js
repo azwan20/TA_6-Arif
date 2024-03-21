@@ -32,7 +32,7 @@ async function deleteDataFromFirebase(id) {
     }
 }
 
-async function addDataToFirebase(name, gambar, kode, harga, jml_produk) {
+async function addDataToFirebase(name, gambar, kode, harga, jml_produk, kategori) {
 
     const jumlahProduk = parseInt(jml_produk, 10);
 
@@ -43,6 +43,7 @@ async function addDataToFirebase(name, gambar, kode, harga, jml_produk) {
             kode: kode,
             harga: harga,
             jml_produk: jumlahProduk,
+            kategori: kategori,
         });
         // console.log("Document input document ID : ", docRef.id);
         return true;
@@ -83,6 +84,7 @@ export default function Produk() {
     const [kode, setKode] = useState('');
     const [harga, setHarga] = useState('');
     const [jml_produk, setJml_produk] = useState(0);
+    const [kategori, setKategori] = useState("");
     const [produkData, setProdukData] = useState([]);
 
 
@@ -130,7 +132,7 @@ export default function Produk() {
                 const url = await getDownloadURL(snapshot.ref);
 
                 // Add new data to Firebase
-                const added = await addDataToFirebase(name, url, kode, harga, jml_produk);
+                const added = await addDataToFirebase(name, url, kode, harga, jml_produk, kategori);
 
                 if (added) {
                     // If data is successfully added, fetch the updated data
@@ -143,6 +145,7 @@ export default function Produk() {
                     setKode("");
                     setHarga("");
                     setJml_produk(0);
+                    setKategori("")
 
                     // Optionally, show a success message
                     alert("Data berhasil di upload");
@@ -208,16 +211,18 @@ export default function Produk() {
     const [editedHarga, setEditedHarga] = useState('');
     const [editedKode, setEditedKode] = useState('');
     const [editedJml_produk, setEditedJml_produk] = useState(0);
+    const [editedKategori, setEditedKategori] = useState('');
 
     const [editPopupVisible, setEditPopupVisible] = useState(false);
 
-    const popups = (id, name, gambar, kode, harga, jml_produk) => {
+    const popups = (id, name, gambar, kode, harga, jml_produk, kategori) => {
         setIdSementara(id);
         setEditedName(name);
         setEditedGambar(gambar);
         setEditedKode(kode);
         setEditedHarga(harga);
         setEditedJml_produk(jml_produk);
+        setEditedKategori(kategori)
         setEditPopupVisible(true);
     };
 
@@ -243,6 +248,7 @@ export default function Produk() {
                     kode: editedKode,
                     harga: editedHarga,
                     jml_produk: editedJml_produk,
+                    kategori: editedKategori,
                 };
             } else {
                 updatedData = {
@@ -250,6 +256,7 @@ export default function Produk() {
                     kode: editedKode,
                     harga: editedHarga,
                     jml_produk: editedJml_produk,
+                    kategori: editedKategori,
                 };
             }
 
@@ -323,6 +330,7 @@ export default function Produk() {
                                         <th scope="col">Kode Produk</th>
                                         <th scope="col">Harga</th>
                                         <th scope="col">Jumlah Produk</th>
+                                        <th scope="col">Kategori Produk</th>
                                         <th scope="col">Edit | Delete</th>
                                     </tr>
                                 </thead>
@@ -342,6 +350,7 @@ export default function Produk() {
                                             <td>{produks.kode}</td>
                                             <td>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(produks.harga).replace(/\,00$/, '')}</td>
                                             <td>{produks.jml_produk}</td>
+                                            <td>{produks.kategori}</td>
                                             <td>
                                                 <button
                                                     // onClick={() => handleSimpanClick(produks.id)}
@@ -399,6 +408,17 @@ export default function Produk() {
                                     <span>
                                         <p>Jumlah Produk</p>
                                         <input type="number" id="harga" value={jml_produk} onChange={(e) => setJml_produk(e.target.value)} />
+                                    </span>
+                                    <span>
+                                        <p>Pilih Category</p>
+                                        <select value={kategori} onChange={(e) => setKategori(e.target.value)}>
+                                            <option disabled>Pilih Category</option>
+                                            <option value="Makanan">Makanan</option>
+                                            <option value="Minuman">Minuman</option>
+                                            <option value="Alat Kebersihan">Alat Kebersihan</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                        {/* <input type="number" id="harga" value={jml_produk} onChange={(e) => setJml_produk(e.target.value)} /> */}
                                     </span>
                                 </section>
                                 <section>
