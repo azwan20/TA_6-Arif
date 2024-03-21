@@ -426,7 +426,8 @@ aside a {
 }
 
 .dataAdmin .produkInput input,
-.produk .produkInput input {
+.produk .produkInput input,
+.produk .produkInput select {
   margin: 10px;
   border-radius: 10px;
   background: #FFF;
@@ -538,6 +539,26 @@ aside a {
   justify-content: center;
   align-items: center;
   background-color: var(--two-primary);
+}
+
+.costumer .kategoriButton button{
+  border: 2px solid var(--two-primary);
+  background: transparent;
+  padding: 5px 10px;
+  margin: 0 20px 20px 0;
+  border-radius: 10px;
+}
+
+.costumer button.disactive {
+  background-color: transparent;
+  color: #000;
+}
+
+.costumer button.active {
+  background-color: var(--two-primary);
+  color: #fff;
+  padding: 5px 15px;
+  border: none;
 }
 
 .transaksi .kosong,
