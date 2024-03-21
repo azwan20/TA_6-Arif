@@ -354,7 +354,7 @@ export default function Produk() {
                                             <td>
                                                 <button
                                                     // onClick={() => handleSimpanClick(produks.id)}
-                                                    onClick={() => popups(produks.id, produks.name, produks.gambar, produks.kode, produks.harga, produks.jml_produk)}
+                                                    onClick={() => popups(produks.id, produks.name, produks.gambar, produks.kode, produks.harga, produks.jml_produk, produks.kategori)}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 50 50" fill="none">
                                                         <path d="M34.3271 6.25838C34.675 6.28963 34.8271 6.71463 34.5771 6.96255L17.2438 24.2959C17.048 24.4918 16.9078 24.7363 16.8375 25.0042L14.7542 32.9834C14.6854 33.2471 14.6868 33.5242 14.7582 33.7871C14.8296 34.0501 14.9686 34.2899 15.1613 34.4826C15.354 34.6753 15.5937 34.8142 15.8567 34.8856C16.1197 34.957 16.3968 34.9584 16.6605 34.8896L24.6375 32.8063C24.9057 32.7354 25.1501 32.5944 25.3459 32.398L42.925 14.8188C42.98 14.7623 43.0501 14.7228 43.1268 14.7049C43.2036 14.687 43.2839 14.6915 43.3582 14.7178C43.4325 14.7441 43.4977 14.7911 43.5461 14.8533C43.5945 14.9155 43.6241 14.9903 43.6313 15.0688C44.3626 22.0472 44.3207 29.085 43.5063 36.0542C43.0417 40.023 39.8521 43.1375 35.898 43.5813C28.6556 44.3842 21.3466 44.3842 14.1042 43.5813C10.148 43.1375 6.95837 40.023 6.49378 36.0542C5.63488 28.7105 5.63488 21.2917 6.49378 13.948C6.95837 9.97713 10.148 6.86255 14.1042 6.42088C20.8219 5.67641 27.5983 5.62196 34.3271 6.25838Z" fill="#163E71" />
@@ -465,6 +465,16 @@ export default function Produk() {
                             <input type="text" id="harga"
                                 value={editedHarga}
                                 onChange={(e) => setEditedHarga(e.target.value)} />
+                        </span>
+                        <span>
+                            <p>Kateogri</p>
+                            <select value={editedKategori} onChange={(e) => setEditedKategori(e.target.value)} style={{ width: '53%' }}>
+                                <option disabled>Pilih Category</option>
+                                <option value="Makanan">Makanan</option>
+                                <option value="Minuman">Minuman</option>
+                                <option value="Alat Kebersihan">Alat Kebersihan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
                         </span>
                         <span>
                             <p>Jumlah Produk</p>
