@@ -126,7 +126,7 @@ export default function editProfile() {
                     </span>
                     <span>
                         <button
-                            style={{ backgroundColor: '#3598D7', color: '#fff' }}
+                            style={{ backgroundColor: '#E09200', color: '#fff' }}
                             onClick={handleSubmit}
                         >Submit</button>
                     </span>

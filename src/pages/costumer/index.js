@@ -176,6 +176,62 @@ function Home() {
         product.name.toLowerCase().includes(searchInput.toLowerCase())
     );
 
+    // console.log("kategori : ", filteredProdukData.filter((product) => product.kategori === 'Alat Kebersihan'));
+
+    const [isAllActive, setIsAllActive] = useState(true);
+    const [isMakananActive, setIsMakananActive] = useState(false);
+    const [isMinumanActive, setIsMinumanActive] = useState(false);
+    const [isAlatKebersihanActive, setIsAlatKebersihanActive] = useState(false);
+    const [isLainnyaActive, setIsLainnyaActive] = useState(false);
+
+    const handleCategory = (buttonType) => {
+        if (buttonType === "makanan") {
+            setIsAllActive(false);
+            setIsMakananActive(true);
+            setIsMinumanActive(false);
+            setIsAlatKebersihanActive(false);
+            setIsLainnyaActive(false);
+        } else if (buttonType === "minuman") {
+            setIsAllActive(false);
+            setIsMakananActive(false);
+            setIsMinumanActive(true);
+            setIsAlatKebersihanActive(false);
+            setIsLainnyaActive(false);
+        } else if (buttonType === "alat kebersihan") {
+            setIsAllActive(false);
+            setIsMakananActive(false);
+            setIsMinumanActive(false);
+            setIsAlatKebersihanActive(true);
+            setIsLainnyaActive(false);
+        } else if (buttonType === "lainnya") {
+            setIsAllActive(false);
+            setIsMakananActive(false);
+            setIsMinumanActive(false);
+            setIsAlatKebersihanActive(false);
+            setIsLainnyaActive(true);
+        } else {
+            setIsAllActive(true);
+            setIsMakananActive(false);
+            setIsMinumanActive(false);
+            setIsAlatKebersihanActive(false);
+            setIsLainnyaActive(false);
+        }
+    };
+
+    let filteredCategory = [];
+
+    if (isMakananActive) {
+        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Makanan');
+    } else if (isMinumanActive) {
+        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Minuman');
+    } else if (isAlatKebersihanActive) {
+        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Alat Kebersihan');
+    } else if (isLainnyaActive) {
+        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Lainnya');
+    } else {
+        filteredCategory = filteredProdukData;
+    }
+
     return (
         <>
             {/* {!isLoggedIn && <p>Loading</p> } */}
@@ -202,8 +258,15 @@ function Home() {
                                 </div>
                             </nav>
                             <div className="container">
+                                <div className="kategoriButton">
+                                    <button className={isAllActive ? "active" : "disactive"} onClick={() => handleCategory("all")}>All</button>
+                                    <button className={isMinumanActive ? "active" : "disactive"} onClick={() => handleCategory("minuman")}>Minuman</button>
+                                    <button className={isMakananActive ? "active" : "disactive"} onClick={() => handleCategory("makanan")}>Makanan</button>
+                                    <button className={isAlatKebersihanActive ? "active" : "disactive"} onClick={() => handleCategory("alat kebersihan")}>Alat Kebersihan</button>
+                                    <button className={isLainnyaActive ? "active" : "disactive"} onClick={() => handleCategory("lainnya")}>Lainnnya</button>
+                                </div>
                                 <div className="row row-cols-2 row-cols-md-5 g-4">
-                                    {filteredProdukData.map((cardNumber) => (
+                                    {filteredCategory.map((cardNumber) => (
                                         <div key={cardNumber} className="col">
                                             <div className="card">
                                                 <img
