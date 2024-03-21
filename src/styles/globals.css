@@ -541,7 +541,7 @@ aside a {
   background-color: var(--two-primary);
 }
 
-.costumer .kategoriButton button{
+.costumer .kategoriButton button {
   border: 2px solid var(--two-primary);
   background: transparent;
   padding: 5px 10px;
@@ -1203,10 +1203,10 @@ aside a {
     display: block;
     width: 90%;
     height: 150px;
-    background: url('/login.svg');
+    background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
     background-size: cover;
     background-repeat: no-repeat no-repeat;
-    background-position: center center;
+    background-position: top center;
   }
 
   .login .loginBg {
@@ -1242,6 +1242,18 @@ aside a {
     margin-bottom: 80px;
     background-color: #900000;
     color: #fff;
+  }
+
+  .costumer .kategoriButton {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .costumer .kategoriButton button {
+    font-size: 12px;
+    margin: 5px;
+    padding: 5px;
   }
 
   .about {
