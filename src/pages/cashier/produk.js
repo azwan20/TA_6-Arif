@@ -6,6 +6,7 @@ import { useUser } from "../../../public/user";
 import { db, storage } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import AddCategory from "./addCategory";
 
 
 async function updateDataInFirebase(id, updatedData) {
@@ -53,6 +54,16 @@ async function addDataToFirebase(name, gambar, kode, harga, jml_produk, kategori
     }
 }
 
+async function addDataKategori(nama) {
+    try {
+        const docRef = await addDoc(collection(db, "kategori"), { nama: nama });
+        return true;
+    } catch (error) {
+        console.error("Error adding document: ", error);
+        return false;
+    }
+}
+
 async function fetchData_ModelUser() {
     const querySnapshot = await getDocs(collection(db, "model_user"));
     const data = [];
@@ -62,9 +73,16 @@ async function fetchData_ModelUser() {
     return data;
 }
 
+async function fetchData_ModelKategori() {
+    const querySnapshot = await getDocs(collection(db, "kategori"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
 
-
-async function fetchDataFromFirestore() {
+async function fetchData_ModelProduk() {
     const querySnapshot = await getDocs(collection(db, "produk"));
 
     const data = [];
@@ -77,6 +95,7 @@ async function fetchDataFromFirestore() {
 
 export default function Produk() {
     const [showProdukInput, setShowProdukInput] = useState(false);
+    const [showKategori, setShowKategori] = useState(false);
     const [id, setID] = useState('');
     const [name, setName] = useState('');
     const [gambar, setGambar] = useState(null);
@@ -86,6 +105,7 @@ export default function Produk() {
     const [jml_produk, setJml_produk] = useState(0);
     const [kategori, setKategori] = useState("");
     const [produkData, setProdukData] = useState([]);
+    const [modelKategori, setModelKategori] = useState([]);
 
 
     const router = useRouter();
@@ -95,9 +115,7 @@ export default function Produk() {
 
     useEffect(() => {
         if (uid) {
-            // console.log("ini uid user: ", uid);
-            // console.log("ini email user: ", email);
-            // console.log("ini role user: ", role);
+            // console.log('ini kategori', modelKategori);
 
             if (role === 'admin') {
                 // router.push('/cashier');
@@ -113,8 +131,10 @@ export default function Produk() {
 
     useEffect(() => {
         async function fetchData() {
-            const data = await fetchDataFromFirestore();
-            setProdukData(data);
+            const dataProduk = await fetchData_ModelProduk();
+            const kategori = await fetchData_ModelKategori();
+            setProdukData(dataProduk);
+            setModelKategori(kategori);
         }
         fetchData();
     }, []);
@@ -136,7 +156,7 @@ export default function Produk() {
 
                 if (added) {
                     // If data is successfully added, fetch the updated data
-                    const newData = await fetchDataFromFirestore();
+                    const newData = await fetchData_ModelProduk();
                     setProdukData(newData);
 
                     // Reset form fields
@@ -186,7 +206,7 @@ export default function Produk() {
 
             if (deleted) {
                 // If the data is successfully deleted, update the state without reloading
-                const newData = await fetchDataFromFirestore();
+                const newData = await fetchData_ModelProduk();
                 setProdukData(newData);
 
                 // Optionally, show a success message
@@ -203,6 +223,18 @@ export default function Produk() {
         setShowProdukInput(!showProdukInput);
     };
 
+    const handleShowCategory = () => {
+        setShowKategori(!showKategori);
+    };
+
+    const handleAddKategori = async () => {
+        const isAdd = await addDataKategori(addKategori);
+        if (isAdd) {
+            router.reload();
+            setShowKategori(!showKategori);
+        }
+    };
+
 
     // const [produkData, setProdukData] = useState([]);
     const [idSementara, setIdSementara] = useState('');
@@ -214,6 +246,8 @@ export default function Produk() {
     const [editedKategori, setEditedKategori] = useState('');
 
     const [editPopupVisible, setEditPopupVisible] = useState(false);
+
+    const [addKategori, setAddkategori] = useState('');
 
     const popups = (id, name, gambar, kode, harga, jml_produk, kategori) => {
         setIdSementara(id);
@@ -311,6 +345,7 @@ export default function Produk() {
                     <CashierAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} email={username} profile={profile} />
                     <article className={`${showProdukInput ? 'article' : ''}`} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                         <div className="addProduc">
+                            <button className="d-flex justify-content-center mx-3" onClick={() => handleShowCategory()}>Add Category</button>
                             <button type="button" onClick={() => handleCardClick()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
                                     <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
@@ -413,10 +448,9 @@ export default function Produk() {
                                         <p>Pilih Category</p>
                                         <select value={kategori} onChange={(e) => setKategori(e.target.value)}>
                                             <option disabled>Pilih Category</option>
-                                            <option value="Makanan">Makanan</option>
-                                            <option value="Minuman">Minuman</option>
-                                            <option value="Alat Kebersihan">Alat Kebersihan</option>
-                                            <option value="Lainnya">Lainnya</option>
+                                            {modelKategori.map((kategori, value) => (
+                                                <option value={kategori.nama}>{kategori.nama}</option>
+                                            ))}
                                         </select>
                                         {/* <input type="number" id="harga" value={jml_produk} onChange={(e) => setJml_produk(e.target.value)} /> */}
                                     </span>
@@ -430,62 +464,101 @@ export default function Produk() {
                 </div>
                 <Navar isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} handleButtonClick={handleButtonClick} />
             </div>
-            {editPopupVisible && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <h2 className="p-2">Edit Data</h2>
-                        {/* <h2>Edit ID: {getEditedFieldValue(editPopupRow, 'id')}</h2> */}
-                        <span>
-                            <p style={{ display: 'none' }}>id</p>
-                            <input type="text" id="id" style={{ display: 'none' }} value={idSementara} readOnly />
-                        </span>
-                        <span>
-                            <p>Nama Produk</p>
-                            <input type="text" id="nama"
-                                value={editedName}
-                                onChange={(e) => setEditedName(e.target.value)}
-                            />
-                        </span>
-                        <span>
-                            <p>Gambar</p>
-                            <input type="file" id="gambar"
-                                onChange={(e) => setEditedGambar(e.target.files)}
-                                style={{ width: '53%' }}
-                            />
-                        </span>
-                        <span>
-                            <p>Kode Produk</p>
-                            <input type="text" id="kode"
-                                value={editedKode}
-                                onChange={(e) => setEditedKode(e.target.value)}
-                            />
-                        </span>
-                        <span>
-                            <p>Harga</p>
-                            <input type="text" id="harga"
-                                value={editedHarga}
-                                onChange={(e) => setEditedHarga(e.target.value)} />
-                        </span>
-                        <span>
-                            <p>Kateogri</p>
-                            <select value={editedKategori} onChange={(e) => setEditedKategori(e.target.value)} style={{ width: '53%' }}>
-                                <option disabled>Pilih Category</option>
-                                <option value="Makanan">Makanan</option>
-                                <option value="Minuman">Minuman</option>
-                                <option value="Alat Kebersihan">Alat Kebersihan</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                        </span>
-                        <span>
-                            <p>Jumlah Produk</p>
-                            <input type="number" id="jml_produk"
-                                value={editedJml_produk}
-                                onChange={(e) => setEditedJml_produk(e.target.value)} />
-                        </span>
-                        {/* <button onClick={handleSaveClick}>Save</button> */}
-                        <button onClick={() => handleEdit(idSementara)}
-                        >Save</button>
-                        <button onClick={handlePopupClose}>Close</button>
+            <div>
+                {editPopupVisible && (
+                    <div className="popup">
+                        <div className="popup-content">
+                            <h2 className="p-2">Edit Data</h2>
+                            {/* <h2>Edit ID: {getEditedFieldValue(editPopupRow, 'id')}</h2> */}
+                            <span>
+                                <p style={{ display: 'none' }}>id</p>
+                                <input type="text" id="id" style={{ display: 'none' }} value={idSementara} readOnly />
+                            </span>
+                            <span>
+                                <p>Nama Produk</p>
+                                <input type="text" id="nama"
+                                    value={editedName}
+                                    onChange={(e) => setEditedName(e.target.value)}
+                                />
+                            </span>
+                            <span>
+                                <p>Gambar</p>
+                                <input type="file" id="gambar"
+                                    onChange={(e) => setEditedGambar(e.target.files)}
+                                    style={{ width: '53%' }}
+                                />
+                            </span>
+                            <span>
+                                <p>Kode Produk</p>
+                                <input type="text" id="kode"
+                                    value={editedKode}
+                                    onChange={(e) => setEditedKode(e.target.value)}
+                                />
+                            </span>
+                            <span>
+                                <p>Harga</p>
+                                <input type="text" id="harga"
+                                    value={editedHarga}
+                                    onChange={(e) => setEditedHarga(e.target.value)} />
+                            </span>
+                            <span>
+                                <p>Kateogri</p>
+                                <select value={editedKategori} onChange={(e) => setEditedKategori(e.target.value)} style={{ width: '53%' }}>
+                                    <option disabled>Pilih Category</option>
+                                    {modelKategori.map((kategori, value) => (
+                                        <option value={kategori.nama}>{kategori.nama}</option>
+
+                                    ))}
+                                    {/* <option value="Makanan">Makanan</option>
+                                    <option value="Minuman">Minuman</option>
+                                    <option value="Alat Kebersihan">Alat Kebersihan</option>
+                                    <option value="Lainnya">Lainnya</option> */}
+                                </select>
+                            </span>
+                            <span>
+                                <p>Jumlah Produk</p>
+                                <input type="number" id="jml_produk"
+                                    value={editedJml_produk}
+                                    onChange={(e) => setEditedJml_produk(e.target.value)} />
+                            </span>
+                            {/* <button onClick={handleSaveClick}>Save</button> */}
+                            <button onClick={() => handleEdit(idSementara)}
+                            >Save</button>
+                            <button onClick={handlePopupClose}>Close</button>
+                        </div>
+                    </div>
+                )}
+            </div>
+            {showKategori && (
+                <div className="popKategori">
+                    <div className="upKategori">
+                        <div>
+                            <section className="mb-2">
+                                <b>Edit Kategori</b>
+                                <div className="btn p-0" onClick={handleShowCategory}><b>Done</b></div>
+                            </section>
+                            {modelKategori.map((kategori, value) => (
+                                <section key={kategori.id} className="d-flex align-items-center">
+                                    <AddCategory id={kategori.id} />
+                                </section>
+                            ))}
+
+                            <section className="mt-2">
+                                <input
+                                    style={{ border: '1px solid black' }}
+                                    type="text"
+                                    className="w-100"
+                                    value={addKategori}
+                                    onChange={(e) => setAddkategori(e.target.value)}
+                                />
+                                <button className="ms-2" type="button" onClick={handleAddKategori} >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                                        <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="var(--primary-color)" />
+                                        <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="var(--primary-color)" />
+                                    </svg>
+                                </button>
+                            </section>
+                        </div>
                     </div>
                 </div>
             )}
