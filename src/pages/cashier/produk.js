@@ -6,7 +6,7 @@ import { useUser } from "../../../public/user";
 import { db, storage } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import AddCategory from "./addCategory";
+import AddCategory from "./AddCategory";
 
 
 async function updateDataInFirebase(id, updatedData) {
