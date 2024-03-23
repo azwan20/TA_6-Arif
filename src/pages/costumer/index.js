@@ -7,6 +7,14 @@ import { collection, addDoc, getDocs, query, where, doc, updateDoc } from "fireb
 import { useUser } from "../../../public/user";
 import { useRouter } from "next/router";
 
+async function fetchData_ModelKategori() {
+    const querySnapshot = await getDocs(collection(db, "kategori"));
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
+}
 async function fetchData_keranjang(email) {
     const querySnapshot = await getDocs(query(collection(db, "keranjang"), where("email", "==", email)));
     const data = [];
@@ -108,6 +116,10 @@ function Home() {
                 const data = await fetchData_keranjang(email);
                 setDataKeranjangs(data);
             }
+            async function fetchDataKetegori() {
+                const data = await fetchData_ModelKategori();
+                setModelKategori(data);
+            }
             async function fetchDataKeranjang() {
                 const data = await fetchDataFromFirestore();
                 setProdukData(data);
@@ -125,6 +137,7 @@ function Home() {
 
             fetchDataUser();
             fetchDataProduk();
+            fetchDataKetegori();
             fetchDataKeranjang();
         }
     }, []);
@@ -176,65 +189,24 @@ function Home() {
         product.name.toLowerCase().includes(searchInput.toLowerCase())
     );
 
-    // console.log("kategori : ", filteredProdukData.filter((product) => product.kategori === 'Alat Kebersihan'));
-
-    const [isAllActive, setIsAllActive] = useState(true);
-    const [isMakananActive, setIsMakananActive] = useState(false);
-    const [isMinumanActive, setIsMinumanActive] = useState(false);
-    const [isAlatKebersihanActive, setIsAlatKebersihanActive] = useState(false);
-    const [isLainnyaActive, setIsLainnyaActive] = useState(false);
-
-    const handleCategory = (buttonType) => {
-        if (buttonType === "makanan") {
-            setIsAllActive(false);
-            setIsMakananActive(true);
-            setIsMinumanActive(false);
-            setIsAlatKebersihanActive(false);
-            setIsLainnyaActive(false);
-        } else if (buttonType === "minuman") {
-            setIsAllActive(false);
-            setIsMakananActive(false);
-            setIsMinumanActive(true);
-            setIsAlatKebersihanActive(false);
-            setIsLainnyaActive(false);
-        } else if (buttonType === "alat kebersihan") {
-            setIsAllActive(false);
-            setIsMakananActive(false);
-            setIsMinumanActive(false);
-            setIsAlatKebersihanActive(true);
-            setIsLainnyaActive(false);
-        } else if (buttonType === "lainnya") {
-            setIsAllActive(false);
-            setIsMakananActive(false);
-            setIsMinumanActive(false);
-            setIsAlatKebersihanActive(false);
-            setIsLainnyaActive(true);
-        } else {
-            setIsAllActive(true);
-            setIsMakananActive(false);
-            setIsMinumanActive(false);
-            setIsAlatKebersihanActive(false);
-            setIsLainnyaActive(false);
-        }
+    const [isSelected, setIsSelected] = useState("All");
+    const [isFilter, setIsFilter] = useState("All");
+    const [modelKategori, setModelKategori] = useState([]);
+    let filteredCategory = filteredProdukData;
+    const handleCategory = (nama) => {
+        setIsSelected(nama);
+        setIsFilter(nama);
     };
 
-    let filteredCategory = [];
-
-    if (isMakananActive) {
-        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Makanan');
-    } else if (isMinumanActive) {
-        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Minuman');
-    } else if (isAlatKebersihanActive) {
-        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Alat Kebersihan');
-    } else if (isLainnyaActive) {
-        filteredCategory = filteredProdukData.filter((product) => product.kategori === 'Lainnya');
-    } else {
+    if (isSelected === "All") {
         filteredCategory = filteredProdukData;
+    }
+    else if (isSelected === isFilter) {
+        filteredCategory = filteredProdukData.filter((product) => product.kategori === isFilter);
     }
 
     return (
         <>
-            {/* {!isLoggedIn && <p>Loading</p> } */}
             <div>
                 <div className="costumer d-flex">
                     <CostumerAside isTransaksiActive={isTransaksiActive} isProdukActive={isProdukActive} email={username} profile={profile} handleButtonClick={handleButtonClick} />
@@ -259,44 +231,55 @@ function Home() {
                             </nav>
                             <div className="container">
                                 <div className="kategoriButton">
-                                    <button className={isAllActive ? "active" : "disactive"} onClick={() => handleCategory("all")}>All</button>
-                                    <button className={isMinumanActive ? "active" : "disactive"} onClick={() => handleCategory("minuman")}>Minuman</button>
-                                    <button className={isMakananActive ? "active" : "disactive"} onClick={() => handleCategory("makanan")}>Makanan</button>
-                                    <button className={isAlatKebersihanActive ? "active" : "disactive"} onClick={() => handleCategory("alat kebersihan")}>Alat Kebersihan</button>
-                                    <button className={isLainnyaActive ? "active" : "disactive"} onClick={() => handleCategory("lainnya")}>Lainnnya</button>
-                                </div>
-                                <div className="row row-cols-2 row-cols-md-5 g-4">
-                                    {filteredCategory.map((cardNumber) => (
-                                        <div key={cardNumber} className="col">
-                                            <div className="card">
-                                                <img
-                                                    src={cardNumber.gambar}
-                                                    className="card-img-top"
-                                                    alt={`Card ${cardNumber}`}
-                                                    style={{ objectFit: 'cover' }}
-                                                />
-                                                <div className="card-body d-flex">
-                                                    <span style={{ marginBottom: '10px' }}>
-                                                        {/* <b className="card-title">{truncateText(cardNumber.name, 20)}</b> */}
-                                                        <p className="">{cardNumber.name}</p>
-                                                        <button className="add" onClick={() => handleAddClick(cardNumber)}>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
-                                                                <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
-                                                                <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="white" />
-                                                            </svg>
-                                                        </button>
-                                                    </span>
-                                                    <span>
-                                                        <p >
-                                                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(cardNumber.harga).replace(/\,00$/, '')}
-                                                        </p>
-                                                        <p className="card-text">Tersisa : {cardNumber.jml_produk}</p>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <button className={isSelected == "All" ? "active" : "disactive"} onClick={() => handleCategory("All")}>All</button>
+                                    {modelKategori.map((kategori, value) => (
+                                        <button className={isSelected == kategori.nama ? "active" : "disactive"} onClick={() => handleCategory(kategori.nama)}>
+                                            {kategori.nama}
+                                        </button>
                                     ))}
                                 </div>
+                                {filteredCategory.length == 0 && (
+                                    <div className="card text-center">
+                                        <div className="card-header">Produk tidak ada</div>
+                                        <div class="card-body">
+                                            Empty
+                                        </div>
+                                    </div>
+                                )}
+                                {filteredCategory.length != 0 && (
+                                    <div className="row row-cols-2 row-cols-md-5 g-4">
+                                        {filteredCategory.map((cardNumber) => (
+                                            <div key={cardNumber} className="col">
+                                                <div className="card">
+                                                    <img
+                                                        src={cardNumber.gambar}
+                                                        className="card-img-top"
+                                                        alt={`Card ${cardNumber}`}
+                                                        style={{ objectFit: 'cover' }}
+                                                    />
+                                                    <div className="card-body d-flex">
+                                                        <span style={{ marginBottom: '10px' }}>
+                                                            <p className="">{cardNumber.name}</p>
+                                                            <button className="add" onClick={() => handleAddClick(cardNumber)}>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                                                                    <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
+                                                                    <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="white" />
+                                                                </svg>
+                                                            </button>
+                                                        </span>
+                                                        <span>
+                                                            <p >
+                                                                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(cardNumber.harga).replace(/\,00$/, '')}
+                                                            </p>
+                                                            <p className="card-text">Tersisa : {cardNumber.jml_produk}</p>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
                             </div>
                         </section>
                         <section className="d-flex ms-auto" style={{ margin: '20px 20px 0px' }}>
