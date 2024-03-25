@@ -221,42 +221,42 @@ export default function Transaksi() {
                                 <input ref={inputDateRef} type='date' onChange={handleDateChange} />
                             </div>
                             <div className="cards">
-                            {sortedFilteredData.length > 0 ? (
-                                <div className="row">
-                                    {sortedFilteredData.map((item, index) => (
-                                        <div className={`col-md-${selectedCard !== null ? '12' : '4'} mb-3`} key={index}>
-                                            <div className="card" style={{ backgroundColor: selectedCard === index ? '#3598D7' : '', color: selectedCard === index ? "#fff" : '' }} onClick={() => handleCardClick(index)}>
-                                                <div onClick={() => handleDetailTransaksi(item.id)} className="card-body">
-                                                    <section style={{ marginBottom: '20px' }}>
-                                                        <span style={{ width: '50%' }}>
-                                                            <p className="card-text">Nama costumer</p>
-                                                            <h5 className="card-title">{item.nama_user}</h5>
-                                                        </span>
-                                                        <Link href="#" className={`btn ${item.status_pemesanan === 'Proses Selesai' ? 'btn-success' :
-                                                            item.status_pemesanan === 'Pesanan Diterima' ? 'btn-secondary' : 'btn-primary'
-                                                            }`} style={{ fontSize: '14px', width: 'fitContent', padding: '10px' }}>
-                                                            {item.status_pemesanan}
-                                                        </Link>
-                                                    </section>
-                                                    <section>
-                                                        <span>
-                                                            <h4 className="card-title">{item.jumlah} Pesanan</h4>
-                                                        </span>
-                                                        <span>
-                                                            <p>Tanggal</p>
-                                                            <b>{item.menu_pesanan[0].tanggal}</b>
-                                                        </span>
-                                                    </section>
+                                {sortedFilteredData.length > 0 ? (
+                                    <div className="row">
+                                        {sortedFilteredData.map((item, index) => (
+                                            <div className={`col-md-${selectedCard !== null ? '12' : '4'} mb-3`} key={index}>
+                                                <div className="card" style={{ backgroundColor: selectedCard === index ? '#3598D7' : '', color: selectedCard === index ? "#fff" : '' }} onClick={() => handleCardClick(index)}>
+                                                    <div onClick={() => handleDetailTransaksi(item.id)} className="card-body">
+                                                        <section style={{ marginBottom: '20px' }}>
+                                                            <span style={{ width: '50%' }}>
+                                                                <p className="card-text">Nama costumer</p>
+                                                                <h5 className="card-title">{item.nama_user}</h5>
+                                                            </span>
+                                                            <Link href="#" className={`btn ${item.status_pemesanan === 'Proses Selesai' ? 'btn-success' :
+                                                                item.status_pemesanan === 'Pesanan Diterima' ? 'btn-secondary' : 'btn-primary'
+                                                                }`} style={{ fontSize: '14px', width: 'fitContent', padding: '10px' }}>
+                                                                {item.status_pemesanan}
+                                                            </Link>
+                                                        </section>
+                                                        <section>
+                                                            <span>
+                                                                <h4 className="card-title">{item.jumlah} Pesanan</h4>
+                                                            </span>
+                                                            <span>
+                                                                <p>Tanggal</p>
+                                                                <b>{item.menu_pesanan[0].tanggal}</b>
+                                                            </span>
+                                                        </section>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="d-flex align-items-center justify-content-center">
-                                    <h1>Tidak ada data pertanggal {selectedDate}</h1>
-                                </div>
-                            )}
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="d-flex align-items-center justify-content-center">
+                                        <h1>Tidak ada data pertanggal {selectedDate}</h1>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </article>
@@ -289,14 +289,18 @@ export default function Transaksi() {
                                         <section>
                                             <p>No</p>
                                             <p>Nama Costumer</p>
+                                            <p>No HP</p>
                                             <p>Nama Admin</p>
+                                            <p>Metode Pengambilan</p>
                                             <p>Jenis Pembayaran</p>
                                             <p>Tanggal</p>
                                         </section>
                                         <section>
                                             <p><b>: {produkDataModelTransaksi.findIndex(item => item.id === detailData.id) + 1}</b></p>
                                             <p><b>: {detailData.nama_user}</b></p>
+                                            <p><b>: {detailData.no_hp}</b></p>
                                             <p><b>: {detailData.nama_admin}</b></p>
+                                            <p><b>: {detailData.metode_pengambilan}</b></p>
                                             <p><b>: {detailData.metode_pembayaran}</b></p>
                                             <p><b>: {detailData.menu_pesanan[0].tanggal}</b></p>
                                         </section>
