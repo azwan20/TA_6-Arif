@@ -3,7 +3,18 @@ import { db, storage } from "../../../public/firebaseConfig";
 import { getDocs, collection, addDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 
-async function updateDataInFirebase(id, kategori) {
+async function deleteData_ModelKategori(id) {
+    try {
+        const produkRef = doc(db, "kategori", id);
+        await deleteDoc(produkRef);
+        return true;
+    } catch (error) {
+        console.error("Error deleting document: ", error);
+        return false;
+    }
+}
+
+async function updateData_ModelKategori(id, kategori) {
     try {
         const produkRef = doc(db, "kategori", id);
         await updateDoc(produkRef, kategori);
@@ -31,7 +42,6 @@ export default function AddCategory({ id }) {
     const [inputEdited, setInputEdited] = useState("");
 
     useEffect(() => {
-        // console.log('ini id', id);
         async function fetchData() {
             const data = await fetchData_ModelKategori();
             const findData = data.find(item => item.id === id);
@@ -47,24 +57,36 @@ export default function AddCategory({ id }) {
     }, []);
 
     const handleEdit = async (dataEdited) => {
-        const isUpdated = await updateDataInFirebase(id, { nama: dataEdited });
+        const isUpdated = await updateData_ModelKategori(id, { nama: dataEdited });
         // console.log('ini data edit', dataEdited);
         if (isUpdated) {
             setkategori({ nama: inputEdited });
             setShowEditInput(!showEditInput);
-            // router.reload();
         }
     }
     const onEdit = () => {
         setShowEditInput(!showEditInput);
     }
 
+
+    const handleDelete = async (id) => {
+        try {
+            const deleted = await deleteData_ModelKategori(id);
+            if (deleted) {
+                // alert("Data deleted");
+                router.reload();
+            }
+        } catch (error) {
+            console.error("Error deleting data: ", error);
+        }
+    };
+
     return (
         <>
             <span>
                 {showEditInput && (<div className="me-3 my-2 btn btn-sm" onClick={onEdit}>❌</div>)}
                 {!showEditInput && (
-                    <div className="me-3 my-2 btn btn-sm" >
+                    <div className="me-3 my-2 btn btn-sm" onClick={() => handleDelete(id)}>
                         <svg width="20" height="25" viewBox="0 0 20 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20 1.38889H15L13.5714 0H6.42857L5 1.38889H0V4.16667H20M1.42857 22.2222C1.42857 22.9589 1.72959 23.6655 2.26541 24.1864C2.80123 24.7073 3.52795 25 4.28571 25H15.7143C16.472 25 17.1988 24.7073 17.7346 24.1864C18.2704 23.6655 18.5714 22.9589 18.5714 22.2222V5.55556H1.42857V22.2222Z" fill="#A0A1A2" />
                         </svg>
