@@ -35,6 +35,7 @@ async function AddData_ModelTransaksi(
     jumlah,
     harga_total,
     created_at,
+    no_hp,
 ) {
     try {
         const docRef = await addDoc(collection(db, "model_transaksi"), {
@@ -54,6 +55,7 @@ async function AddData_ModelTransaksi(
             jumlah: jumlah,
             harga_total: harga_total,
             created_at: created_at,
+            no_hp: no_hp,
         });
 
         return true;
@@ -124,6 +126,7 @@ export default function Keranjang() {
     const [newData, setData] = useState([]);
 
     const [noKamar, setNoKamar] = useState('');
+    const [noHp, setNoHp] = useState('');
 
     const router = useRouter();
     const handleGoBack = () => {
@@ -238,7 +241,7 @@ export default function Keranjang() {
             // const updateOperations = dataKernajangs.map((item, index) => {
             //     // Capture the index in a variable
             //     const currentIndex = index;
-        
+
             //     // Use setDoc with merge: true to handle the case where the document might not exist
             //     return setDoc(doc(db, "produk", item.id_produk), {
             //         jml_produk: Number(item.jml_produk) - Number(item.count)
@@ -276,7 +279,8 @@ export default function Keranjang() {
                 "Tunai",
                 totalItems,
                 totalsHarga,
-                timeString
+                timeString,
+                noHp,
             );
 
             if (added) {
@@ -379,6 +383,13 @@ export default function Keranjang() {
                                 <input className={` ${visible ? 'visibles' : 'hidden'}`} type="text"
                                     placeholder="mis R. Lab Riset"
                                     id="noKamar" value={noKamar} onChange={(e) => setNoKamar(e.target.value)}
+                                />
+                            </span>
+                            <span className="inputan d-flex justify-content-between align-items-center mt-2">
+                                <p className={` ${visible ? 'visibles' : 'hidden'}`}>Masukkan No Hp</p>
+                                <input className={` ${visible ? 'visibles' : 'hidden'}`} type="text"
+                                    placeholder="08"
+                                    id="noKamar" value={noHp} onChange={(e) => setNoHp(e.target.value)}
                                 />
                             </span>
                             <span className="metode">
