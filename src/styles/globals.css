@@ -473,7 +473,7 @@ aside a {
   color: var(--primary-color);
 }
 
-.popKategori input{
+.popKategori input {
   border-radius: 5px;
   border: 0px solid black;
 }
@@ -595,6 +595,10 @@ aside a {
   color: #fff;
   padding: 5px 15px;
   border: none;
+}
+
+.costumer .keranjangs {
+  z-index: 999;
 }
 
 .transaksi .kosong,
