@@ -250,31 +250,60 @@ function Home() {
                                     <div className="row row-cols-2 row-cols-md-5 g-4">
                                         {filteredCategory.map((cardNumber) => (
                                             <div key={cardNumber} className="col">
-                                                <div className="card">
-                                                    <img
-                                                        src={cardNumber.gambar}
-                                                        className="card-img-top"
-                                                        alt={`Card ${cardNumber}`}
-                                                        style={{ objectFit: 'cover' }}
-                                                    />
-                                                    <div className="card-body d-flex">
-                                                        <span style={{ marginBottom: '10px' }}>
-                                                            <p className="">{cardNumber.name}</p>
-                                                            <button className="add" onClick={() => handleAddClick(cardNumber)}>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
-                                                                    <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
-                                                                    <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="white" />
-                                                                </svg>
-                                                            </button>
-                                                        </span>
-                                                        <span>
-                                                            <p >
-                                                                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(cardNumber.harga).replace(/\,00$/, '')}
-                                                            </p>
-                                                            <p className="card-text">Tersisa : {cardNumber.jml_produk}</p>
-                                                        </span>
+                                                {cardNumber.jml_produk != 0 ? (
+                                                    <div className="card">
+                                                        <img
+                                                            src={cardNumber.gambar}
+                                                            className="card-img-top"
+                                                            alt={`Card ${cardNumber}`}
+                                                            style={{ objectFit: 'cover' }}
+                                                        />
+                                                        <div className="card-body d-flex">
+                                                            <span style={{ marginBottom: '10px' }}>
+                                                                <p className="">{cardNumber.name}</p>
+                                                                <button className="add" onClick={() => handleAddClick(cardNumber)}>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                                                                        <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
+                                                                        <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="white" />
+                                                                    </svg>
+                                                                </button>
+                                                            </span>
+                                                            <span>
+                                                                <p >
+                                                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(cardNumber.harga).replace(/\,00$/, '')}
+                                                                </p>
+                                                                <p className="card-text">Tersisa : {cardNumber.jml_produk}</p>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                ) : (
+                                                    <div className="card">
+                                                        <div className="card-overlay"><h5 style={{ rotate: '-45deg', fontSize: '3rem' }}>HABIS</h5></div>
+                                                        <img
+                                                            src={cardNumber.gambar}
+                                                            className="card-img-top"
+                                                            alt={`Card ${cardNumber}`}
+                                                            style={{ objectFit: 'cover', backgroundColor: 'grey' }}
+                                                        />
+                                                        <div className="card-body d-flex">
+                                                            <span style={{ marginBottom: '10px' }}>
+                                                                <p className="">{cardNumber.name}</p>
+                                                                <button className="add" disabled style={{ backgroundColor: 'grey' }}>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                                                                        <rect y="6.29004" width="15" height="2.41935" rx="1.20968" fill="white" />
+                                                                        <rect x="6.29004" y="15" width="15" height="2.41935" rx="1.20968" transform="rotate(-90 6.29004 15)" fill="white" />
+                                                                    </svg>
+                                                                </button>
+                                                            </span>
+                                                            <span>
+                                                                <p >
+                                                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(cardNumber.harga).replace(/\,00$/, '')}
+                                                                </p>
+                                                                <p className="card-text">Tersisa : {cardNumber.jml_produk}</p>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
