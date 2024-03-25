@@ -1,0 +1,1356 @@
+:root {
+  --primary-color: #3598D7;
+  --secondary-color: #E9F6FF;
+  --two-primary: #E09200;
+
+}
+
+.login {
+  width: 100%;
+  height: 100vh;
+  background-color: #FAFEFF;
+}
+
+.login .loginFill {
+  width: 40%;
+  padding: 40px 0px 0px 40px;
+}
+
+.login .cards {
+  width: 100%;
+  height: 75%;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginFill .card {
+  display: flex;
+  width: 100%;
+  height: 90%;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 10px;
+  background: #FFF;
+  border: none;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.login .card span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px 20px 10px;
+}
+
+.login .card .email input,
+.login .card .passw {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  background-color: #E8E8E8;
+  padding-left: 15px;
+  border: none;
+  border-radius: 10px;
+}
+
+.login .card button {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  border: 1px solid var(--two-primary);
+  border-radius: 10px;
+}
+
+.login .card a {
+  text-align: end;
+  text-decoration: none;
+  color: var(--two-primary);
+}
+
+.login .loginBg {
+  width: 60%;
+  background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
+  background-size: contain;
+  background-repeat: no-repeat no-repeat;
+  background-position: center center;
+}
+
+.login .loginBgn {
+  display: none;
+}
+
+.login .passw input,
+.login .passw button {
+  background: transparent;
+  border: none;
+  outline: none;
+  margin: 0;
+}
+
+/* .register {
+  background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  background-position: center center;
+  background-repeat: no-repeat no-repeat;
+  background-size: cover;
+  filter: blur(10px);
+} */
+
+.register {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+}
+
+.register::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
+  filter: blur(10px);
+  background-position: center center;
+  background-repeat: no-repeat no-repeat;
+  background-size: cover;
+}
+
+.register .registerFill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  height: 80%;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.90);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  z-index: 9;
+}
+
+.registerFill span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.registerFill input {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #E8E8E8;
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  padding-left: 15px;
+}
+
+.registerFill button {
+  width: 100%;
+  margin-top: 20px;
+  background-color: transparent;
+  color: #000;
+  border: 1px solid var(--two-primary);
+  border-radius: 10px;
+  height: 40px;
+  padding-left: 15px;
+}
+
+.registerFill a {
+  width: 100%;
+}
+
+.lupaPassword {
+  height: fit-content !important;
+  background-color: #fff !important;
+}
+
+.owner,
+.dataAdmin,
+.kasir,
+.produk,
+.costumer,
+.transaksi {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--secondary-color);
+}
+
+aside {
+  width: 15%;
+  height: 100%;
+}
+
+aside section {
+  padding-top: 10px;
+}
+
+aside .edit {
+  border-radius: 10px;
+  height: 20px;
+  width: 80%;
+  margin-bottom: 10px;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+aside .edit p {
+  margin: 0;
+  font-size: 14px;
+}
+
+aside section,
+aside section span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+aside section button {
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: #FFF;
+  border: none;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+aside .logout {
+  border-radius: 10px;
+  background: #FFF;
+  width: 100%;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+aside a {
+  width: 100%;
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+.owner article,
+.dataAdmin article,
+.kasir article,
+.produk article,
+.costumer article,
+.transaksi article {
+  width: 85%;
+  height: 100%;
+  background-color: #fff;
+  padding-top: 20px;
+}
+
+.owner article section {
+  width: 100%;
+  /* height: 50%; */
+}
+
+.owner article .details span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  margin: 20px;
+}
+
+.owner .chart {
+  width: 80%;
+}
+
+.owner .pieCharts {
+  height: 70vh;
+  width: 800px;
+}
+
+.owner .pieCharts canvas {
+  height: fit-content;
+}
+
+.owner .tanggalHarian {
+  width: 100%;
+  text-align: right;
+}
+
+.owner .tanggalHarian input,
+.kasir .inputKasir input {
+  border-radius: 10px;
+  padding: 5px;
+  border: 1px solid #3598D7;
+  background-color: var(--secondary-color);
+}
+
+.kasir article .cards {
+  margin: 20px;
+}
+
+.kasir article .card section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kasir article .card p {
+  margin: 0;
+}
+
+
+.kasir .article {
+  width: 40%;
+}
+
+/* .kasir .article a, */
+.kasir .detailCos thead th,
+.dataAdmin thead th,
+.produk thead th {
+  background-color: var(--primary-color);
+  color: #fff;
+  text-align: center;
+}
+
+.dataAdmin tbody td,
+.produk tbody td {
+  background-color: var(--secondary-color);
+  text-align: center;
+}
+
+.kasir .detailCos {
+  width: 45%;
+  height: 100%;
+  padding-top: 20px;
+}
+
+.detailCos .data {
+  display: flex;
+  padding: 10px 20px;
+}
+
+.detailCos .data p {
+  margin: 7px;
+}
+
+.detailCos .dropdowns {
+  display: flex;
+  justify-content: end;
+  padding-right: 10px;
+}
+
+.detailCos .dropdown {
+  border: 1px solid black;
+  width: fit-content;
+  border-radius: 10px;
+}
+
+.addProduc {
+  display: flex;
+  justify-content: end;
+  padding-bottom: 20px;
+}
+
+.addProduc button {
+  background-color: var(--primary-color);
+  color: #FFF;
+  display: flex;
+  width: 160px;
+  padding: 10px;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  border-radius: 10px;
+}
+
+.produk article {
+  padding: 20px;
+}
+
+.dataAdmin .article,
+.produk .article {
+  width: 50%;
+}
+
+.dataAdmin article {
+  padding: 20px;
+}
+
+.dataAdmin .produkInput,
+.produk .produkInput {
+  width: 35%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 10px 0;
+}
+
+.dataAdmin .produkInput section button,
+.produk .produkInput section button {
+  width: 92%;
+  margin: 20px;
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border: none;
+  height: 35px;
+}
+
+.dataAdmin .produkInput span,
+.produk .produkInput span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dataAdmin .produkInput p,
+.produk .produkInput p {
+  align-items: center;
+  display: flex;
+  margin: auto 20px;
+  width: 30%;
+}
+
+.dataAdmin .produkInput input,
+.produk .produkInput input,
+.produk .produkInput select {
+  margin: 10px;
+  border-radius: 10px;
+  background: #FFF;
+  border: none;
+  height: 40px;
+  width: 70%;
+}
+
+.dataAdmin tbody button,
+.produk tbody button {
+  border: none;
+  background-color: transparent;
+}
+
+.popKategori {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgb(0, 0, 0, 0.6);
+}
+
+.popKategori .upKategori {
+  width: 35%;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.popKategori section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.popKategori button {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  border-radius: 5px;
+  color: var(--primary-color);
+}
+
+.popKategori input{
+  border-radius: 5px;
+  border: 0px solid black;
+}
+
+.dataAdmin .logoutAdmin {
+  display: none;
+}
+
+.costumer article {
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0px;
+}
+
+.costumer .navb {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.costumer .navb div {
+  width: fit-content;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  margin: 0;
+}
+
+.costumer .navb div button {
+  border: 1px solid #E09200;
+  margin-right: 10px;
+  border-radius: 20px;
+  background-color: transparent;
+  color: var(--two-primary);
+  padding: 7px 20px;
+}
+
+.costumer .navb form {
+  border-radius: 25.5px;
+  background: #FFF;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+  align-items: center;
+}
+
+.costumer .navb input {
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
+
+.costumer .card {
+  height: 250px;
+  box-shadow: 0px 6px 5px 0px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.costumer .card-body {
+  padding: 10px 5px;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.costumer .card-body span {
+  display: flex;
+  justify-content: space-between;
+}
+
+.costumer .card-body p {
+  margin: auto 0;
+}
+
+.costumer .card-body b {
+  margin-bottom: 0;
+}
+
+.asideCostumer a {
+  text-decoration: none;
+}
+
+.costumer .card-body .card-text {
+  background-color: #900000;
+  padding: 0px 5px;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 13px;
+  margin: auto 0;
+}
+
+.costumer .card img {
+  height: 150px;
+}
+
+.costumer .card-body button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--two-primary);
+}
+
+.costumer .kategoriButton button {
+  border: 2px solid var(--two-primary);
+  background: transparent;
+  padding: 5px 10px;
+  margin: 0 20px 20px 0;
+  border-radius: 10px;
+}
+
+.costumer button.disactive {
+  background-color: transparent;
+  color: #000;
+}
+
+.costumer button.active {
+  background-color: var(--two-primary);
+  color: #fff;
+  padding: 5px 15px;
+  border: none;
+}
+
+.transaksi .kosong,
+.rekap .kosong {
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  color: var(--two-primary)
+}
+
+.transaksi .card-body {
+  padding: 0px;
+  justify-content: space-between;
+  border-radius: 10px;
+  background: #FFF;
+  height: fit-content;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.transaksi .card img {
+  width: 150px;
+  border-radius: 10px 0px 0px 10px;
+  object-fit: cover;
+  height: 100px;
+  margin: auto 0;
+}
+
+.transaksi .card-body div p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.transaksi .card section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.transaksi .card-body span {
+  padding: 5px 10px;
+}
+
+.transaksi .card-body .cardd p {
+  margin: 0 0 7px;
+  font-size: 15px;
+}
+
+.transaksi .card-body .cardd .card-title {
+  width: 100%;
+  color: #FFF;
+  margin: auto;
+}
+
+.keranjang {
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.keranjang .cart {
+  width: 45%;
+  height: 100%;
+  padding: 10px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.keranjang .card-body {
+  padding: 0;
+  background-color: #fff;
+  box-shadow: 0px 0px 4px 0px rgb(0, 0, 0, 0.2);
+  height: 80px;
+  border-radius: 10px;
+}
+
+.keranjang .card img {
+  border-radius: 10px 0px 0px 10px;
+  width: 100px;
+  object-fit: cover;
+  height: 80px;
+}
+
+.keranjang .card .plusMin span {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.keranjang .card .plusMin div {
+  /* background-color: var(--secondary-color); */
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  height: 30px;
+}
+
+.keranjang .sum {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.keranjang .navbarButton button {
+  border-radius: 5px;
+  border: 2px solid #E09200;
+}
+
+.keranjang section button {
+  width: 100%;
+  /* background-color: var(--primary-color); */
+  border-radius: 10px;
+  border: none;
+  /* color: #fff; */
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.keranjang .section {
+  padding: 25px 30px 10px;
+}
+
+.keranjang .section button {
+  background-color: var(--two-primary);
+  color: #fff;
+}
+
+
+.keranjang .metode {
+  background-color: #fff;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0px 0px 4px 0px rgb(0, 0, 0, 0.2);
+  padding: 0 20px;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+.keranjang .metode p,
+.keranjang .inputan p {
+  margin: 0;
+}
+
+.inputan input {
+  background-color: transparent;
+  border: 1px solid black;
+  width: 45%;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.navbars {
+  text-decoration: none;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  z-index: 9999;
+  color: #fff;
+  display: none;
+  background: #FFF;
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.25);
+}
+
+.navbars a {
+  width: 33%;
+  display: flex;
+  text-decoration: none;
+  align-items: center;
+}
+
+.navOwners a {
+  width: 20%;
+}
+
+.owner .totals {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.owner .totals button {
+  border-radius: 10px;
+  border: 2px solid var(--primary-color);
+  background-color: transparent;
+  box-shadow: 0px 0px 31px 7px rgba(0, 0, 0, 0.1);
+}
+
+.owner .totals button:hover {
+  scale: 1.1;
+}
+
+.navbars span {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 35px;
+  border-radius: 5px;
+  background-color: var(--two-primary);
+}
+
+.navbars p {
+  font-size: 14px;
+  margin: auto;
+}
+
+.kasir .back {
+  display: none;
+}
+
+.cartNavbar section {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.cartNavbar .garis {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 5px;
+  align-items: center;
+  margin: 20px 30px;
+  background: repeating-linear-gradient(to right,
+      transparent,
+      transparent 10px,
+      black 10px,
+      black 20px);
+}
+
+.cartNavbar p {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+.cartNavbar .time {
+  padding: 0 15px 0 10px;
+}
+
+.cartNavbar .bulat {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background-color: #000;
+  z-index: 99;
+}
+
+.navbarButton {
+  display: flex;
+  justify-content: space-between;
+  width: 100%
+}
+
+.navbarButton button {
+  width: 49% !important;
+}
+
+.visibles {
+  display: none;
+}
+
+.popup {
+  width: 400px;
+  height: fit-content;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  z-index: 999;
+  border-radius: 10px;
+}
+
+.popup-content {
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 100%;
+}
+
+.popup button {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.popup button:hover {
+  background-color: #1a2328;
+  color: #fff;
+}
+
+.popup-content span {
+  display: flex;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.about {
+  width: 100%;
+  height: 100vh;
+  background-color: #FBCE01;
+}
+
+.about .contentAb {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0px 50px 70px;
+  color: var(--secondary-color);
+}
+
+.about .contentAb button {
+  width: 100%;
+  height: 40px;
+  background-color: var(--secondary-color);
+  color: #000;
+  border: none;
+  border-radius: 5px;
+}
+
+.about .imgAbout {
+  /* background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/about.jpeg?alt=media&token=71a85c60-a079-45e0-88fe-a3797c9ff702'); */
+  background: url('/imgAbout.jpeg');
+  margin: 30px;
+  border-radius: 20px;
+  width: 100%;
+  height: 90%;
+  background-size: cover;
+  background-repeat: no-repeat no-repeat;
+  background-position: center center;
+}
+
+.about .buttonLanjut button,
+.about .buttonLanjut {
+  display: none;
+}
+
+.keranjang .minBelanja {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+}
+
+.keranjang .minBelanja::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(10px);
+  /* Atur seberapa buram backgroundnya */
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.keranjang .minBelanja div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background-color: var(--two-primary);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.keranjang .minBelanja p {
+  font-size: 24px;
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.keranjang .minBelanja button {
+  padding: 10px 30px;
+  border-radius: 5px;
+}
+
+.animate-section {
+  animation: pulseAnimation 0.1s;
+}
+
+@keyframes pulseAnimation {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(2.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.rekap table thead th {
+  text-align: center;
+}
+
+@media print {
+  .rekap {
+    margin: 0;
+    width: 8.5in;
+    height: 12in;
+    margin: auto;
+    /* padding: 1in; */
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .print-button {
+    display: none;
+  }
+
+  .pilihBulan {
+    display: none;
+  }
+}
+
+.rekap {
+  width: 100%;
+}
+
+.rekap .print-button {
+  border: none;
+  margin: 0 10px;
+  font-weight: 500;
+  padding: 5px 15px;
+  border-radius: 5px;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  right: 3%;
+  background-color: rgb(101, 208, 101);
+}
+
+.rekap .pilihBulan select {
+  background-color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding-left: 5px;
+  margin-left: 5px;
+}
+
+.rekap .pilihBulan span {
+  border: none;
+  margin: 0 10px;
+  font-weight: 500;
+  padding: 5px 15px;
+  border-radius: 5px;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  right: 10%;
+  background-color: var(--two-primary);
+}
+
+
+
+@media screen and (min-width: 321px) and (max-width: 480px) {
+
+  .kasir aside,
+  .produk aside,
+  .owner aside,
+  .dataAdmin aside,
+  .costumer aside,
+  .transaksi aside {
+    display: none;
+  }
+
+  .kasir,
+  .dataAdmin,
+  .produk {
+    display: flex;
+    justify-content: center;
+  }
+
+  .owner article,
+  .dataAdmin article,
+  .kasir article,
+  .produk article,
+  .costumer article,
+  .transaksi article {
+    width: 100%;
+  }
+
+  .owner .chart {
+    width: 90%;
+    height: 50vh;
+  }
+
+  .dataAdmin .produkInput,
+  .produk .produkInput,
+  .kasir .detailCos {
+    width: 100%;
+  }
+
+  .produk .article,
+  .dataAdmin .article,
+  .kasir .article {
+    display: none;
+  }
+
+  .dataAdmin .logoutAdmin {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 20px;
+  }
+
+  .dataAdmin .logoutOwner {
+    border: none;
+    background-color: #900000;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .addProduk {
+    display: none;
+  }
+
+  .navbars,
+  .showIt {
+    display: block;
+  }
+
+  .kasir .mobileKasir {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .costumer .navb {
+    /* width: 100%;
+    display: flex; */
+    justify-content: center;
+  }
+
+  .costumer .navbar form {
+    width: 70%;
+  }
+
+  /* .navbar .ownersNavbar span{
+    padding: 0 !important;
+  } */
+
+  .costumer .keranjangs {
+    margin-bottom: 50px;
+    z-index: 9999;
+  }
+
+  .transaksi article,
+  .costumer article {
+    padding-bottom: 50px;
+    height: fit-content;
+  }
+
+  .transaksi .card img {
+    width: 120px;
+  }
+
+  .transaksi .card-body span {
+    padding: 0;
+    padding-right: 3px;
+  }
+
+  .transaksi .card-body b,
+  .transaksi .card-body p,
+  .transaksi .card-body div p {
+    font-size: 12px;
+  }
+
+  /* .transaksi .card-body div p {
+    font-size: 10px;
+  } */
+
+  .costumer .card-body .card-title {
+    font-size: 14px;
+  }
+
+  .costumer .card-body span p {
+    font-size: 12px;
+  }
+
+  .keranjang .cart {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .keranjang .card img {
+    width: 70px;
+  }
+
+  .keranjang .section {
+    padding: 20px 0 0;
+  }
+
+  .keranjang .plusMin {
+    width: 40%;
+  }
+
+  .keranjang .plusMin span {
+    margin: 8px !important;
+  }
+
+  .keranjang .plusMin svg,
+  .keranjang .plusMin div {
+    width: 20px;
+  }
+
+  .login .loginFill {
+    width: 90%;
+    margin: auto;
+    padding: 0;
+  }
+
+  .login .loginBgn {
+    display: block;
+    width: 90%;
+    height: 150px;
+    background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/login.jpeg?alt=media&token=f3ad9f07-f9f9-4ade-9639-76426f5a22e2');
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    background-position: top center;
+  }
+
+  .login .loginBg {
+    display: none;
+  }
+
+  .register .registerFill {
+    width: 90%;
+    height: 70%;
+  }
+
+  .asideCostumer,
+  .asideCashier {
+    width: 100%;
+    height: 100vh;
+    padding-top: 30px;
+  }
+
+  .asideCostumer .edit,
+  .asideCashier .edit {
+    background-color: var(--primary-color);
+    height: 20px;
+    color: #fff;
+  }
+
+  .asideCostumer a,
+  .asideCashier a {
+    display: none;
+  }
+
+  .asideCostumer .logout,
+  .asideCashier .logout {
+    margin-bottom: 80px;
+    background-color: #900000;
+    color: #fff;
+  }
+
+  .costumer .kategoriButton {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .costumer .kategoriButton button {
+    font-size: 12px;
+    margin: 5px;
+    padding: 5px;
+  }
+
+  .about {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    padding-top: 40px;
+  }
+
+  .about section {
+    width: 100% !important;
+    height: 100%;
+  }
+
+  .about .contentAb {
+    padding-bottom: 0;
+  }
+
+  .about .imgAbout {
+    /* background: url('https://firebasestorage.googleapis.com/v0/b/arif-fachmil.appspot.com/o/about.jpeg?alt=media&token=71a85c60-a079-45e0-88fe-a3797c9ff702'); */
+    background: url('/imgAbout.jpeg');
+    width: 85% !important;
+    height: 300px;
+    margin: auto !important;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
+    background-position: center center;
+  }
+
+  .about span button {
+    display: none;
+  }
+
+  .about .buttonLanjut button {
+    display: block;
+  }
+
+  .about .buttonLanjut {
+    display: block;
+    width: 100%;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .about .buttonLanjut button {
+    width: 70%;
+    height: 40px;
+    background-color: var(--secondary-color);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+  }
+
+  .keranjang .minBelanja div {
+    width: 80%;
+  }
+
+  .keranjang .minBelanja p {
+    font-size: 14px;
+  }
+
+}
