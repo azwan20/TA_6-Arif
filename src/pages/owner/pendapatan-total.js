@@ -43,7 +43,7 @@ async function fetchDataFromFirestoreProduk() {
         const transactionData = { id: doc.id, ...doc.data() };
         data.push(transactionData);
 
-        totalProduk = totalProduk + transactionData.jml_produk;
+        totalProduk = totalProduk + parseInt(transactionData.jml_produk);
     });
 
     // Mengembalikan data dan total produk
@@ -85,7 +85,7 @@ function calculateTotalJmlProduk(data) {
 
     data.forEach(item => {
         // Accumulate totalJmlProduk from each transaction
-        totalJmlProduk.jumlah_produk += item.jml_produk || 0;
+        totalJmlProduk.jumlah_produk += parseInt(item.jml_produk) || 0;
         // Add more properties here if needed
     });
 
