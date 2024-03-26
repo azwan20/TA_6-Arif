@@ -28,7 +28,15 @@ const ChartComponent = ({ data = {} }) => {
     const options = {
         scales: {
             x: { stacked: true },
-            y: { stacked: true },
+            y: {
+                stacked: true,
+                ticks: {
+                    callback: function (value, index, values) {
+                        // Add "Rp" to the beginning of the value
+                        return 'Rp ' + ' '.repeat(1) + value;
+                    }
+                }
+            },
         },
         plugins: {
             tooltip: {
