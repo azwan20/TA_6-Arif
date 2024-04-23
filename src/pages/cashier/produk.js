@@ -153,32 +153,41 @@ export default function Produk() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (gambar !== null) {
+            const allowedExtensions = ["jpeg", "jpg", "png"];
+            const fileExtension = gambar[0].name.split('.').pop().toLowerCase();
+    
+            // Periksa apakah ekstensi file gambar sesuai
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert("File harus berupa gambar dengan ekstensi jpeg, jpg, atau png");
+                return;
+            }
+    
             const fileName = gambar[0].name;
             const fileref = ref(storage, `imgProduk/${fileName}`);
-
+    
             try {
                 // Upload image to storage
                 const snapshot = await uploadBytes(fileref, gambar[0]);
                 const url = await getDownloadURL(snapshot.ref);
-
+    
                 // Add new data to Firebase
                 const added = await addDataToFirebase(name, url, kode, harga, jml_produk, kategori);
-
+    
                 if (added) {
                     // If data is successfully added, fetch the updated data
                     const newData = await fetchData_ModelProduk();
                     setProdukData(newData);
-
+    
                     // Reset form fields
                     setName("");
                     setGambar("");
                     setKode("");
                     setHarga("");
                     setJml_produk(0);
-                    setKategori("")
-
+                    setKategori("");
+    
                     // Optionally, show a success message
                     alert("Data berhasil di upload");
                 } else {
@@ -192,6 +201,7 @@ export default function Produk() {
             alert("Pilih gambar");
         }
     };
+    
 
     useEffect(() => {
         if (email) {
