@@ -56,8 +56,20 @@ async function addDataToFirebase(name, gambar, kode, harga, jml_produk, kategori
 
 async function addDataKategori(nama) {
     try {
-        const docRef = await addDoc(collection(db, "kategori"), { nama: nama });
-        return true;
+        // Ubah inputan menjadi huruf kecil
+        const lowerCaseNama = nama.toLowerCase();
+        
+        // Periksa apakah kategori sudah ada
+        const querySnapshot = await getDocs(collection(db, "kategori"));
+        const existingCategories = querySnapshot.docs.map(doc => doc.data().nama.toLowerCase());
+        
+        if(existingCategories.includes(lowerCaseNama)) {
+            console.log("Kategori sudah ada");
+            return false;
+        } else {
+            const docRef = await addDoc(collection(db, "kategori"), { nama: nama });
+            return true;
+        }
     } catch (error) {
         console.error("Error adding document: ", error);
         return false;
@@ -228,12 +240,22 @@ export default function Produk() {
     };
 
     const handleAddKategori = async () => {
+        // Periksa apakah inputan tidak kosong
+        if (addKategori.trim() === "") {
+            alert("Inputan kategori tidak boleh kosong");
+            return;
+        }
+        
         const isAdd = await addDataKategori(addKategori);
         if (isAdd) {
             router.reload();
             setShowKategori(!showKategori);
+        } else {
+            // Tampilkan pesan bahwa kategori sudah ada
+            alert("Kategori sudah ada");
         }
     };
+    
 
 
     // const [produkData, setProdukData] = useState([]);
@@ -548,6 +570,7 @@ export default function Produk() {
                                     style={{ border: '1px solid black' }}
                                     type="text"
                                     className="w-100"
+                                    required
                                     value={addKategori}
                                     onChange={(e) => setAddkategori(e.target.value)}
                                 />
