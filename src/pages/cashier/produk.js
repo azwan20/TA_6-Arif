@@ -164,6 +164,20 @@ export default function Produk() {
                 return;
             }
     
+            // Validasi kode produk
+            const kodeRegex = /^[A-Za-z0-9\/]+$/;
+            if (!kodeRegex.test(kode)) {
+                alert("Format kode produk salah. Harus terdiri dari huruf, angka ");
+                return;
+            }
+    
+            // Validasi harga
+            const hargaRegex = /^[0-9]+$/;
+            if (!hargaRegex.test(harga)) {
+                alert("Format harga salah. Harus terdiri dari angka saja");
+                return;
+            }
+    
             const fileName = gambar[0].name;
             const fileref = ref(storage, `imgProduk/${fileName}`);
     
@@ -201,6 +215,7 @@ export default function Produk() {
             alert("Pilih gambar");
         }
     };
+    
     
 
     useEffect(() => {
